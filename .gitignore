@@ -57,3 +57,16 @@ nunit-*.xml
 .vs/
 bin/
 obj/
+AGENTS.MD
+
+# Local tool/cache folder used in this workspace
+/.dotnet/
+
+# Local secrets (do not commit)
+.env
+.env.*
+**/appsettings.Development.json
+**/appsettings.*.Development.json
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+**/*secrets*.json
