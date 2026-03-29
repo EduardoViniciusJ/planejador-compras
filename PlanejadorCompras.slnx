@@ -1,1 +1,9 @@
-<Solution />
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PlanejadorCompras.API/PlanejadorCompras.API.csproj" Id="11e08750-c09c-4c66-8968-643f2a6cac55" />
+    <Project Path="src/PlanejadorCompras.Application/PlanejadorCompras.Application.csproj" Id="daceab6f-4056-470b-8f73-9e1ec9a0c682" />
+    <Project Path="src/PlanejadorCompras.Domain/PlanejadorCompras.Domain.csproj" Id="28be1c0a-5342-4b88-bc06-c1b0bd009ab6" />
+    <Project Path="src/PlanejadorCompras.Infrastructure/PlanejadorCompras.Infrastructure.csproj" Id="1ad18626-cdee-4524-ba7f-4e6e04112395" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>
