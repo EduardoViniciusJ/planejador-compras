@@ -12,6 +12,7 @@ public sealed class ShoppingItem
         CreatedAt = createdAt;
     }
 
+
     public Guid Id { get; private set; }
 
     public Guid ShoppingListId { get; private set; }

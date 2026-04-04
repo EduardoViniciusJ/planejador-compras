@@ -18,7 +18,7 @@ public sealed class User
     public static User Create(string googleId, string email)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(googleId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(email);
+        ArgumentException.ThrowIfNullOrWhiteSpace(email); 
 
         return new User(
             Guid.NewGuid(),
