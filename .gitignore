@@ -58,6 +58,7 @@ nunit-*.xml
 bin/
 obj/
 AGENTS.MD
+*.csproj.user
 
 # Local tool/cache folder used in this workspace
 /.dotnet/
