@@ -3,6 +3,7 @@ using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.UseCases.Auth;
 using PlanejadorCompras.Domain.Entities;
+using PlanejadorCompras.Domain.Repositories;
 using PlanejadorCompras.Domain.Repositories.User;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.Auth;
@@ -11,6 +12,7 @@ public sealed class GoogleLoginUseCaseTests
 {
     private readonly Mock<IGoogleTokenValidator> _googleTokenValidatorMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 
     [Fact]
     public async Task ExecuteAsync_ShouldCreateUser_WhenUserDoesNotExist()
@@ -32,8 +34,8 @@ public sealed class GoogleLoginUseCaseTests
             .Callback<User, CancellationToken>((user, _) => createdUser = user)
             .Returns(Task.CompletedTask);
 
-        _userRepositoryMock
-            .Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+        _unitOfWorkMock
+            .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         var useCase = CreateUseCase();
@@ -46,7 +48,7 @@ public sealed class GoogleLoginUseCaseTests
         Assert.Equal("Test User", response.Name);
 
         _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Once);
-        _userRepositoryMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _unitOfWorkMock.Verify(x => x.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -73,7 +75,7 @@ public sealed class GoogleLoginUseCaseTests
         Assert.Equal("Existing User", response.Name);
 
         _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Never);
-        _userRepositoryMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _unitOfWorkMock.Verify(x => x.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -114,6 +116,7 @@ public sealed class GoogleLoginUseCaseTests
     {
         return new GoogleLoginUseCase(
             _googleTokenValidatorMock.Object,
-            _userRepositoryMock.Object);
+            _userRepositoryMock.Object,
+            _unitOfWorkMock.Object);
     }
 }
