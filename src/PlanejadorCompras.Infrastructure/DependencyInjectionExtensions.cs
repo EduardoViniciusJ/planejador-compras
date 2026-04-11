@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PlanejadorCompras.Application.Services.Interfaces;
+using PlanejadorCompras.Domain.Repositories;
 using PlanejadorCompras.Domain.Repositories.User;
 using PlanejadorCompras.Infrastructure.Persistence;
 using PlanejadorCompras.Infrastructure.Repositories;
@@ -15,6 +16,7 @@ public static class DependencyInjectionExtensions
     {
         AddDbContextSqlServer(services, configuration);
         AddRepositories(services);
+        AddUnitOfWork(services);
         AddExternalServices(services);
 
         return services;
@@ -37,6 +39,11 @@ public static class DependencyInjectionExtensions
     private static void AddRepositories(IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+    }
+
+    private static void AddUnitOfWork(IServiceCollection services)
+    {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     private static void AddExternalServices(IServiceCollection services)
