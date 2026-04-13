@@ -23,9 +23,4 @@ public sealed class UserRepository : IUserRepository
     {
         return await _context.Users.FirstOrDefaultAsync(x => x.GoogleId == googleId, cancellationToken);
     }
-
-    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        return _context.SaveChangesAsync(cancellationToken);
-    }
 }
