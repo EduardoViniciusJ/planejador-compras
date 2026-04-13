@@ -11,14 +11,14 @@ public sealed class User
     }
 
     public Guid Id { get; private set; }
-    public string GoogleId { get; private set; }
-    public string Email { get; private set; }
+    public string GoogleId { get; private set; } = null!;
+    public string Email { get; private set; } = null!;
     public DateTime CreatedAt { get; private set; }
 
     public static User Create(string googleId, string email)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(googleId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(email); 
+        ArgumentException.ThrowIfNullOrWhiteSpace(email);
 
         return new User(
             Guid.NewGuid(),
