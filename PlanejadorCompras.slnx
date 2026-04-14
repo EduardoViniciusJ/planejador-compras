@@ -5,5 +5,7 @@
     <Project Path="src/PlanejadorCompras.Domain/PlanejadorCompras.Domain.csproj" Id="28be1c0a-5342-4b88-bc06-c1b0bd009ab6" />
     <Project Path="src/PlanejadorCompras.Infrastructure/PlanejadorCompras.Infrastructure.csproj" Id="1ad18626-cdee-4524-ba7f-4e6e04112395" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="tests/PlanejadorCompras.Application.UnitTests/PlanejadorCompras.Application.UnitTests.csproj" Id="86f7d3db-a0b4-4aa2-a7f2-40ad2d0afd53" />
+  </Folder>
 </Solution>
