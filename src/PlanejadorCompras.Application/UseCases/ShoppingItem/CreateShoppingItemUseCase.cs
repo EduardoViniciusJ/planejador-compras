@@ -1,10 +1,10 @@
 using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Common.Dtos.Responses;
-using PlanejadorCompras.Domain.Entities;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 using PlanejadorCompras.Domain.Repositories;
+using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
 
-namespace PlanejadorCompras.Application.UseCases.ShoppingItem;
+namespace PlanejadorCompras.Application.UseCases.ShoppingItem.Create;
 
 public sealed class CreateShoppingItemUseCase
 {
@@ -25,7 +25,7 @@ public sealed class CreateShoppingItemUseCase
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var shoppingItem = ShoppingItem.Create(request.ShoppingListId, request.Name, request.Quantity, request.Unit);
+        var shoppingItem = ShoppingItemEntity.Create(request.ShoppingListId, request.Name, request.Quantity, request.Unit);
         await _shoppingItemRepository.AddAsync(shoppingItem, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 

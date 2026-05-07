@@ -1,11 +1,11 @@
 using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.Services.Interfaces;
-using PlanejadorCompras.Domain.Entities;
 using PlanejadorCompras.Domain.Repositories.ShoppingList;
 using PlanejadorCompras.Domain.Repositories;
+using ShoppingListEntity = PlanejadorCompras.Domain.Entities.ShoppingList;
 
-namespace PlanejadorCompras.Application.UseCases.ShoppingList;
+namespace PlanejadorCompras.Application.UseCases.ShoppingList.Create;
 
 public sealed class CreateShoppingListUseCase
 {
@@ -28,7 +28,7 @@ public sealed class CreateShoppingListUseCase
         ArgumentNullException.ThrowIfNull(request);
         ArgumentOutOfRangeException.ThrowIfEqual(userId, Guid.Empty);
 
-        var shoppingList = ShoppingList.Create(userId, request.Name, request.Description);
+        var shoppingList = ShoppingListEntity.Create(userId, request.Name, request.Description);
         await _shoppingListRepository.AddAsync(shoppingList, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 

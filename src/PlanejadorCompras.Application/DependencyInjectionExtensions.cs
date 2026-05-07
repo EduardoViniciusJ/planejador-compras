@@ -1,8 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using PlanejadorCompras.Application.UseCases.Auth;
-using PlanejadorCompras.Application.UseCases.ShoppingList;
-using PlanejadorCompras.Application.UseCases.ShoppingItem;
+using PlanejadorCompras.Application.UseCases.ItemQuote.Create;
+using PlanejadorCompras.Application.UseCases.ShoppingItem.Create;
+using PlanejadorCompras.Application.UseCases.ShoppingList.Create;
 using PlanejadorCompras.Application.UseCases.ItemQuote;
+using PlanejadorCompras.Application.UseCases.ShoppingItem;
+using PlanejadorCompras.Application.UseCases.ShoppingList;
 
 namespace PlanejadorCompras.Application;
 

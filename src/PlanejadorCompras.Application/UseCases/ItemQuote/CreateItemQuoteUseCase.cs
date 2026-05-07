@@ -1,10 +1,10 @@
 using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Common.Dtos.Responses;
-using PlanejadorCompras.Domain.Entities;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Domain.Repositories;
+using ItemQuoteEntity = PlanejadorCompras.Domain.Entities.ItemQuote;
 
-namespace PlanejadorCompras.Application.UseCases.ItemQuote;
+namespace PlanejadorCompras.Application.UseCases.ItemQuote.Create;
 
 public sealed class CreateItemQuoteUseCase
 {
@@ -25,7 +25,7 @@ public sealed class CreateItemQuoteUseCase
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var itemQuote = ItemQuote.Create(request.ShoppingItemId, request.SupplierName, request.UnitPrice);
+        var itemQuote = ItemQuoteEntity.Create(request.ShoppingItemId, request.SupplierName, request.UnitPrice);
         await _itemQuoteRepository.AddAsync(itemQuote, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
