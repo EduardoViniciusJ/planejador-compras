@@ -32,6 +32,7 @@ public sealed class UpdateShoppingItemUseCase
             return null;
         }
 
+        shoppingItem.Update(request.ShoppingListId, request.Name, request.Quantity, request.Unit);
         await _shoppingItemRepository.UpdateAsync(shoppingItem, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
