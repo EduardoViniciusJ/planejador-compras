@@ -44,4 +44,21 @@ public sealed class ShoppingItem
             unit.Trim(),
             DateTime.UtcNow);
     }
+
+    public void Update(Guid shoppingListId, string name, decimal quantity, string unit)
+    {
+        ArgumentOutOfRangeException.ThrowIfEqual(shoppingListId, Guid.Empty);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentException.ThrowIfNullOrWhiteSpace(unit);
+
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than zero.");
+        }
+
+        ShoppingListId = shoppingListId;
+        Name = name.Trim();
+        Quantity = quantity;
+        Unit = unit.Trim();
+    }
 }

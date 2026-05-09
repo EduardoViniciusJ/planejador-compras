@@ -33,4 +33,12 @@ public sealed class ShoppingList
             string.IsNullOrWhiteSpace(description) ? null : description.Trim(),
             DateTime.UtcNow);
     }
+
+    public void Update(string name, string? description = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        Name = name.Trim();
+        Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+    }
 }
