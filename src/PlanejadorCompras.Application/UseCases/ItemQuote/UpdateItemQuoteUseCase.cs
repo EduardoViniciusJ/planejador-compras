@@ -32,6 +32,7 @@ public sealed class UpdateItemQuoteUseCase
             return null;
         }
 
+        itemQuote.Update(request.ShoppingItemId, request.SupplierName, request.UnitPrice);
         await _itemQuoteRepository.UpdateAsync(itemQuote, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 

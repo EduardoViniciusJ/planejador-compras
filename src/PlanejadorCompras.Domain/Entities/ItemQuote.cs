@@ -43,4 +43,19 @@ public sealed class ItemQuote
             unitPrice,
             DateTime.UtcNow);
     }
+
+    public void Update(Guid shoppingItemId, string supplierName, decimal unitPrice)
+    {
+        ArgumentOutOfRangeException.ThrowIfEqual(shoppingItemId, Guid.Empty);
+        ArgumentException.ThrowIfNullOrWhiteSpace(supplierName);
+
+        if (unitPrice < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(unitPrice), "Unit price cannot be negative.");
+        }
+
+        ShoppingItemId = shoppingItemId;
+        SupplierName = supplierName.Trim();
+        UnitPrice = unitPrice;
+    }
 }

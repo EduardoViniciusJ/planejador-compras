@@ -31,9 +31,9 @@ public sealed class UpdateItemQuoteUseCaseTests
 
         Assert.NotNull(response);
         Assert.Equal(itemQuote.Id, response.Id);
-        Assert.Equal(itemQuote.ShoppingItemId, response.ShoppingItemId);
-        Assert.Equal(itemQuote.SupplierName, response.SupplierName);
-        Assert.Equal(itemQuote.UnitPrice, response.UnitPrice);
+        Assert.Equal(request.ShoppingItemId, response.ShoppingItemId);
+        Assert.Equal(request.SupplierName, response.SupplierName);
+        Assert.Equal(request.UnitPrice, response.UnitPrice);
     }
 
     [Fact]
@@ -52,9 +52,9 @@ public sealed class UpdateItemQuoteUseCaseTests
             x => x.UpdateAsync(
                 It.Is<ItemQuoteEntity>(iq =>
                     iq.Id == itemQuote.Id &&
-                    iq.ShoppingItemId == itemQuote.ShoppingItemId &&
-                    iq.SupplierName == itemQuote.SupplierName &&
-                    iq.UnitPrice == itemQuote.UnitPrice),
+                    iq.ShoppingItemId == request.ShoppingItemId &&
+                    iq.SupplierName == request.SupplierName &&
+                    iq.UnitPrice == request.UnitPrice),
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
