@@ -1,3 +1,4 @@
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Domain.Repositories.ShoppingList;
 using PlanejadorCompras.Domain.Repositories;
 
@@ -20,7 +21,12 @@ public sealed class DeleteShoppingListUseCase
     {
         ArgumentOutOfRangeException.ThrowIfEqual(id, Guid.Empty);
 
-        await _shoppingListRepository.DeleteAsync(id, cancellationToken);
+        var deleted = await _shoppingListRepository.DeleteAsync(id, cancellationToken);
+        if (!deleted)
+        {
+            throw new NotFoundException("Shopping list not found.", "shopping_list_not_found");
+        }
+
         await _unitOfWork.CommitAsync(cancellationToken);
     }
 }
