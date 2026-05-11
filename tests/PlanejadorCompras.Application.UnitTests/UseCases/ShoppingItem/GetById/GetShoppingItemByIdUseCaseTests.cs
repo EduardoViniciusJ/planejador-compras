@@ -1,4 +1,5 @@
 using Moq;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ShoppingItem;
 using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
 
@@ -34,16 +35,14 @@ public sealed class GetShoppingItemByIdUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ShouldReturnNull_WhenShoppingItemDoesNotExist()
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenShoppingItemDoesNotExist()
     {
         var shoppingItemId = Guid.NewGuid();
         _helper.ShoppingItemRepositoryMock
             .Setup(x => x.GetByIdAsync(shoppingItemId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ShoppingItemEntity?)null);
 
-        var response = await _handler.ExecuteAsync(shoppingItemId);
-
-        Assert.Null(response);
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingItemId));
     }
 
     [Fact]

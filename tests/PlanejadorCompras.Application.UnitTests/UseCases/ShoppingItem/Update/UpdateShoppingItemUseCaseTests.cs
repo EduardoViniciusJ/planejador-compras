@@ -1,4 +1,5 @@
 using Moq;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ShoppingItem;
 using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
 
@@ -87,7 +88,7 @@ public sealed class UpdateShoppingItemUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ShouldReturnNull_WhenShoppingItemDoesNotExist()
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenShoppingItemDoesNotExist()
     {
         var shoppingItemId = Guid.NewGuid();
         var request = UpdateShoppingItemTestHelper.CreateRequestDto();
@@ -96,9 +97,7 @@ public sealed class UpdateShoppingItemUseCaseTests
             .Setup(x => x.GetByIdAsync(shoppingItemId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ShoppingItemEntity?)null);
 
-        var response = await _handler.ExecuteAsync(shoppingItemId, request);
-
-        Assert.Null(response);
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingItemId, request));
     }
 
     [Fact]
@@ -125,7 +124,7 @@ public sealed class UpdateShoppingItemUseCaseTests
             .Setup(x => x.GetByIdAsync(shoppingItemId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ShoppingItemEntity?)null);
 
-        await _handler.ExecuteAsync(shoppingItemId, request);
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingItemId, request));
 
         _helper.ShoppingItemRepositoryMock.Verify(
             x => x.UpdateAsync(It.IsAny<ShoppingItemEntity>(), It.IsAny<CancellationToken>()),
