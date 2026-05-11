@@ -1,5 +1,6 @@
 using Google.Apis.Auth;
 using Microsoft.Extensions.Configuration;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.Services.Interfaces;
 
 namespace PlanejadorCompras.Infrastructure.Services;
@@ -18,12 +19,20 @@ public sealed class GoogleTokenValidator : IGoogleTokenValidator
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(idToken);
 
-        var payload = await GoogleJsonWebSignature.ValidateAsync(
-            idToken,
-            new GoogleJsonWebSignature.ValidationSettings
-            {
-                Audience = [_clientId]
-            });
+        GoogleJsonWebSignature.Payload payload;
+        try
+        {
+            payload = await GoogleJsonWebSignature.ValidateAsync(
+                idToken,
+                new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = [_clientId]
+                });
+        }
+        catch (InvalidJwtException ex)
+        {
+            throw new UnauthorizedException("Invalid Google token.", "google_token_invalid", ex);
+        }
 
         if (string.IsNullOrWhiteSpace(payload.Subject) || string.IsNullOrWhiteSpace(payload.Email))
         {
