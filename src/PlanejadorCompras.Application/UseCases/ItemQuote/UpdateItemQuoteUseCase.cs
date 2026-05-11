@@ -1,5 +1,6 @@
 using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Domain.Repositories;
 
@@ -18,7 +19,7 @@ public sealed class UpdateItemQuoteUseCase
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ItemQuoteResponseDto?> ExecuteAsync(
+    public async Task<ItemQuoteResponseDto> ExecuteAsync(
         Guid id,
         ItemQuoteRequestDto request,
         CancellationToken cancellationToken = default)
@@ -29,7 +30,7 @@ public sealed class UpdateItemQuoteUseCase
         var itemQuote = await _itemQuoteRepository.GetByIdAsync(id, cancellationToken);
         if (itemQuote is null)
         {
-            return null;
+            throw new NotFoundException("Item quote not found.", "item_quote_not_found");
         }
 
         itemQuote.Update(request.ShoppingItemId, request.SupplierName, request.UnitPrice);

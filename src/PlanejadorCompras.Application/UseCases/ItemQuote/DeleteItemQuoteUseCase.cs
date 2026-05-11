@@ -1,3 +1,4 @@
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Domain.Repositories;
 
@@ -20,7 +21,12 @@ public sealed class DeleteItemQuoteUseCase
     {
         ArgumentOutOfRangeException.ThrowIfEqual(id, Guid.Empty);
 
-        await _itemQuoteRepository.DeleteAsync(id, cancellationToken);
+        var deleted = await _itemQuoteRepository.DeleteAsync(id, cancellationToken);
+        if (!deleted)
+        {
+            throw new NotFoundException("Item quote not found.", "item_quote_not_found");
+        }
+
         await _unitOfWork.CommitAsync(cancellationToken);
     }
 }
