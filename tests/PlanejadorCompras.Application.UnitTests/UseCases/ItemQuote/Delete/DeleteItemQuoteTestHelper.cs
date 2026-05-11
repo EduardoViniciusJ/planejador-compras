@@ -9,6 +9,9 @@ public sealed class DeleteItemQuoteTestHelper
     public DeleteItemQuoteTestHelper()
     {
         ItemQuoteRepositoryMock = new Mock<IItemQuoteRepository>();
+        ItemQuoteRepositoryMock
+            .Setup(x => x.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
         UnitOfWorkMock = new Mock<IUnitOfWork>();
         UnitOfWorkMock
             .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))

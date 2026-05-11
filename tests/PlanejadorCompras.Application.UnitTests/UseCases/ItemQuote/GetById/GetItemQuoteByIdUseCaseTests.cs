@@ -1,4 +1,5 @@
 using Moq;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ItemQuote;
 using ItemQuoteEntity = PlanejadorCompras.Domain.Entities.ItemQuote;
 
@@ -33,16 +34,14 @@ public sealed class GetItemQuoteByIdUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ShouldReturnNull_WhenItemQuoteDoesNotExist()
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenItemQuoteDoesNotExist()
     {
         var itemQuoteId = Guid.NewGuid();
         _helper.ItemQuoteRepositoryMock
             .Setup(x => x.GetByIdAsync(itemQuoteId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ItemQuoteEntity?)null);
 
-        var response = await _handler.ExecuteAsync(itemQuoteId);
-
-        Assert.Null(response);
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(itemQuoteId));
     }
 
     [Fact]

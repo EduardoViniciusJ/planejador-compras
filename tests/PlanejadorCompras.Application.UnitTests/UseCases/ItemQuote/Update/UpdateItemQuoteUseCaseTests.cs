@@ -1,4 +1,5 @@
 using Moq;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ItemQuote;
 using ItemQuoteEntity = PlanejadorCompras.Domain.Entities.ItemQuote;
 
@@ -77,7 +78,7 @@ public sealed class UpdateItemQuoteUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ShouldReturnNull_WhenItemQuoteDoesNotExist()
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenItemQuoteDoesNotExist()
     {
         var itemQuoteId = Guid.NewGuid();
         var request = UpdateItemQuoteTestHelper.CreateRequestDto();
@@ -86,9 +87,7 @@ public sealed class UpdateItemQuoteUseCaseTests
             .Setup(x => x.GetByIdAsync(itemQuoteId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ItemQuoteEntity?)null);
 
-        var response = await _handler.ExecuteAsync(itemQuoteId, request);
-
-        Assert.Null(response);
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(itemQuoteId, request));
     }
 
     [Fact]
@@ -115,7 +114,7 @@ public sealed class UpdateItemQuoteUseCaseTests
             .Setup(x => x.GetByIdAsync(itemQuoteId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ItemQuoteEntity?)null);
 
-        await _handler.ExecuteAsync(itemQuoteId, request);
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(itemQuoteId, request));
 
         _helper.ItemQuoteRepositoryMock.Verify(
             x => x.UpdateAsync(It.IsAny<ItemQuoteEntity>(), It.IsAny<CancellationToken>()),

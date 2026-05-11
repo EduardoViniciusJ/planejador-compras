@@ -1,4 +1,5 @@
 using Moq;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ItemQuote;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ItemQuote.Delete;
@@ -38,6 +39,21 @@ public sealed class DeleteItemQuoteUseCaseTests
         _helper.UnitOfWorkMock.Verify(
             x => x.CommitAsync(It.IsAny<CancellationToken>()),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenItemQuoteDoesNotExist()
+    {
+        var itemQuoteId = Guid.NewGuid();
+        _helper.ItemQuoteRepositoryMock
+            .Setup(x => x.DeleteAsync(itemQuoteId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(itemQuoteId));
+
+        _helper.UnitOfWorkMock.Verify(
+            x => x.CommitAsync(It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]
