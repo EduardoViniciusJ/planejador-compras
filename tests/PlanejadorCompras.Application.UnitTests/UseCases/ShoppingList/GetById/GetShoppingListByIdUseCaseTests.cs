@@ -1,4 +1,5 @@
 using Moq;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ShoppingList.GetById;
@@ -33,16 +34,14 @@ public sealed class GetShoppingListByIdUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ShouldReturnNull_WhenShoppingListDoesNotExist()
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenShoppingListDoesNotExist()
     {
         var shoppingListId = Guid.NewGuid();
         _helper.ShoppingListRepositoryMock
             .Setup(x => x.GetByIdAsync(shoppingListId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((PlanejadorCompras.Domain.Entities.ShoppingList?)null);
 
-        var response = await _handler.ExecuteAsync(shoppingListId);
-
-        Assert.Null(response);
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingListId));
     }
 
     [Fact]

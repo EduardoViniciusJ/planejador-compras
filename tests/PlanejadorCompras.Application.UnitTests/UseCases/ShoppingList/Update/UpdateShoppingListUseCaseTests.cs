@@ -1,5 +1,6 @@
 using Moq;
 using PlanejadorCompras.Application.Common.Dtos.Requests;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
 using ShoppingListEntity = PlanejadorCompras.Domain.Entities.ShoppingList;
 
@@ -75,7 +76,7 @@ public sealed class UpdateShoppingListUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ShouldReturnNull_WhenShoppingListDoesNotExist()
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenShoppingListDoesNotExist()
     {
         var shoppingListId = Guid.NewGuid();
         var request = UpdateShoppingListTestHelper.CreateRequestDto();
@@ -83,9 +84,7 @@ public sealed class UpdateShoppingListUseCaseTests
             .Setup(x => x.GetByIdAsync(shoppingListId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ShoppingListEntity?)null);
 
-        var response = await _handler.ExecuteAsync(shoppingListId, request);
-
-        Assert.Null(response);
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingListId, request));
     }
 
     [Fact]
@@ -111,7 +110,7 @@ public sealed class UpdateShoppingListUseCaseTests
             .Setup(x => x.GetByIdAsync(shoppingListId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ShoppingListEntity?)null);
 
-        await _handler.ExecuteAsync(shoppingListId, request);
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingListId, request));
 
         _helper.ShoppingListRepositoryMock.Verify(
             x => x.UpdateAsync(It.IsAny<ShoppingListEntity>(), It.IsAny<CancellationToken>()),

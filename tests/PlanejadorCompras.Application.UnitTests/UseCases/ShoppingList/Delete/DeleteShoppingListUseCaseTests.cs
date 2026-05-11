@@ -1,4 +1,5 @@
 using Moq;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ShoppingList.Delete;
@@ -40,6 +41,21 @@ public sealed class DeleteShoppingListUseCaseTests
         _helper.UnitOfWorkMock.Verify(
             x => x.CommitAsync(It.IsAny<CancellationToken>()),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenShoppingListDoesNotExist()
+    {
+        var shoppingListId = Guid.NewGuid();
+        _helper.ShoppingListRepositoryMock
+            .Setup(x => x.DeleteAsync(shoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingListId));
+
+        _helper.UnitOfWorkMock.Verify(
+            x => x.CommitAsync(It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]

@@ -9,6 +9,9 @@ public sealed class DeleteShoppingListTestHelper
     public DeleteShoppingListTestHelper()
     {
         ShoppingListRepositoryMock = new Mock<IShoppingListRepository>();
+        ShoppingListRepositoryMock
+            .Setup(x => x.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
         UnitOfWorkMock = new Mock<IUnitOfWork>();
         UnitOfWorkMock
             .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
