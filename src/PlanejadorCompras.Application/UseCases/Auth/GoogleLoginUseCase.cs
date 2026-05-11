@@ -1,5 +1,5 @@
 using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Common.Dtos.Results;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Entities;
 using PlanejadorCompras.Domain.Repositories;
@@ -10,20 +10,23 @@ namespace PlanejadorCompras.Application.UseCases.Auth;
 public sealed class GoogleLoginUseCase
 {
     private readonly IGoogleTokenValidator _googleTokenValidator;
+    private readonly IJwtTokenService _jwtTokenService;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public GoogleLoginUseCase(
         IGoogleTokenValidator googleTokenValidator,
+        IJwtTokenService jwtTokenService,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
         _googleTokenValidator = googleTokenValidator;
+        _jwtTokenService = jwtTokenService;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<GoogleLoginResponseDto> ExecuteAsync(
+    public async Task<GoogleLoginResultDto> ExecuteAsync(
         GoogleLoginRequestDto request,
         CancellationToken cancellationToken = default)
     {
@@ -39,6 +42,11 @@ public sealed class GoogleLoginUseCase
             await _unitOfWork.CommitAsync(cancellationToken);
         }
 
-        return new GoogleLoginResponseDto(user.Id, user.Email, googleUser.Name);
+        var tokenResult = _jwtTokenService.GenerateAccessToken(
+            new GenerateAccessTokenRequestDto(user.Id, user.Email, googleUser.Name));
+
+        return new GoogleLoginResultDto(
+            tokenResult.AccessToken,
+            tokenResult.ExpiresAtUtc);
     }
 }
