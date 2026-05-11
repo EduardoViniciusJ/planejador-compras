@@ -11,7 +11,9 @@ public sealed class GetShoppingListsByUserIdUseCaseTests
     public GetShoppingListsByUserIdUseCaseTests()
     {
         _helper = new GetShoppingListsByUserIdTestHelper();
-        _handler = new GetShoppingListsByUserIdUseCase(_helper.ShoppingListRepositoryMock.Object);
+        _handler = new GetShoppingListsByUserIdUseCase(
+            _helper.ShoppingListRepositoryMock.Object,
+            _helper.CurrentUserMock.Object);
     }
 
     [Fact]
@@ -28,7 +30,7 @@ public sealed class GetShoppingListsByUserIdUseCaseTests
             .Setup(x => x.GetByUserIdAsync(userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(shoppingLists);
 
-        var response = await _handler.ExecuteAsync(userId);
+        var response = await _handler.ExecuteAsync();
 
         Assert.Equal(2, response.Count);
         Assert.Equal(shoppingLists[0].Id, response[0].Id);
@@ -45,16 +47,11 @@ public sealed class GetShoppingListsByUserIdUseCaseTests
             .Setup(x => x.GetByUserIdAsync(userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<PlanejadorCompras.Domain.Entities.ShoppingList>());
 
-        var response = await _handler.ExecuteAsync(userId);
+        var response = await _handler.ExecuteAsync();
 
         Assert.Empty(response);
     }
 
-    [Fact]
-    public async Task ExecuteAsync_ShouldThrowArgumentOutOfRangeException_WhenUserIdIsEmpty()
-    {
-        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => _handler.ExecuteAsync(Guid.Empty));
-    }
 
     [Fact]
     public async Task ExecuteAsync_ShouldCallRepositoryWithCorrectUserId()
@@ -64,7 +61,7 @@ public sealed class GetShoppingListsByUserIdUseCaseTests
             .Setup(x => x.GetByUserIdAsync(userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<PlanejadorCompras.Domain.Entities.ShoppingList>());
 
-        await _handler.ExecuteAsync(userId);
+        await _handler.ExecuteAsync();
 
         _helper.ShoppingListRepositoryMock.Verify(
             x => x.GetByUserIdAsync(userId, It.IsAny<CancellationToken>()),

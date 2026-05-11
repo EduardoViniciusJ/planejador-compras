@@ -15,18 +15,18 @@ public sealed class CreateShoppingListUseCaseTests
         _helper = new CreateShoppingListTestHelper();
         _handler = new CreateShoppingListUseCase(
             _helper.ShoppingListRepositoryMock.Object,
-            _helper.UnitOfWorkMock.Object);
+            _helper.UnitOfWorkMock.Object,
+            _helper.CurrentUserMock.Object);
     }
 
     [Fact]
     public async Task ExecuteAsync_ShouldCreateShoppingList_WhenRequestIsValid()
     {
         var request = new ShoppingListRequestDto("Monthly Tech Shopping", "Monitor, keyboard, and mouse");
-        var userId = Guid.NewGuid();
 
-        var response = await _handler.ExecuteAsync(request, userId);
+        var response = await _handler.ExecuteAsync(request);
 
-        Assert.Equal(userId, response.UserId);
+        Assert.Equal(CreateShoppingListTestHelper.DefaultUserId, response.UserId);
         Assert.Equal(request.Name, response.Name);
         Assert.Equal(request.Description, response.Description);
         Assert.NotEqual(Guid.Empty, response.Id);
@@ -36,14 +36,13 @@ public sealed class CreateShoppingListUseCaseTests
     public async Task ExecuteAsync_ShouldCallRepositoryWithCorrectData()
     {
         var request = CreateShoppingListTestHelper.CreateRequestDto("Monthly Shopping List", "Monitor and printer ink");
-        var userId = Guid.NewGuid();
 
-        await _handler.ExecuteAsync(request, userId);
+        await _handler.ExecuteAsync(request);
 
         _helper.ShoppingListRepositoryMock.Verify(
             x => x.AddAsync(
                 It.Is<ShoppingListEntity>(s =>
-                    s.UserId == userId &&
+                    s.UserId == CreateShoppingListTestHelper.DefaultUserId &&
                     s.Name == request.Name &&
                     s.Description == request.Description),
                 It.IsAny<CancellationToken>()),
@@ -53,24 +52,16 @@ public sealed class CreateShoppingListUseCaseTests
     [Fact]
     public async Task ExecuteAsync_ShouldThrowArgumentNullException_WhenRequestIsNull()
     {
-        await Assert.ThrowsAsync<ArgumentNullException>(() => _handler.ExecuteAsync(null!, Guid.NewGuid()));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _handler.ExecuteAsync(null!));
     }
 
-    [Fact]
-    public async Task ExecuteAsync_ShouldThrowArgumentOutOfRangeException_WhenUserIdIsEmpty()
-    {
-        var request = CreateShoppingListTestHelper.CreateRequestDto();
-
-        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => _handler.ExecuteAsync(request, Guid.Empty));
-    }
 
     [Fact]
     public async Task ExecuteAsync_ShouldTrimNameAndDescription()
     {
         var request = new ShoppingListRequestDto("  Office Monitor List  ", "  Monitor stand and HDMI cable  ");
-        var userId = CreateShoppingListTestHelper.DefaultUserId;
 
-        var response = await _handler.ExecuteAsync(request, userId);
+        var response = await _handler.ExecuteAsync(request);
 
         Assert.Equal("Office Monitor List", response.Name);
         Assert.Equal("Monitor stand and HDMI cable", response.Description);
@@ -80,10 +71,9 @@ public sealed class CreateShoppingListUseCaseTests
     public async Task ExecuteAsync_ShouldSetCreatedAtToCurrentUtcTime()
     {
         var request = CreateShoppingListTestHelper.CreateRequestDto();
-        var userId = CreateShoppingListTestHelper.DefaultUserId;
         var beforeExecution = DateTime.UtcNow.AddSeconds(-1);
 
-        var response = await _handler.ExecuteAsync(request, userId);
+        var response = await _handler.ExecuteAsync(request);
 
         var afterExecution = DateTime.UtcNow.AddSeconds(1);
         Assert.True(response.CreatedAt >= beforeExecution && response.CreatedAt <= afterExecution);
