@@ -1,4 +1,5 @@
 using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 
 namespace PlanejadorCompras.Application.UseCases.ShoppingItem;
@@ -12,14 +13,14 @@ public sealed class GetShoppingItemByIdUseCase
         _shoppingItemRepository = shoppingItemRepository;
     }
 
-    public async Task<ShoppingItemResponseDto?> ExecuteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ShoppingItemResponseDto> ExecuteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         ArgumentOutOfRangeException.ThrowIfEqual(id, Guid.Empty);
 
         var shoppingItem = await _shoppingItemRepository.GetByIdAsync(id, cancellationToken);
         if (shoppingItem is null)
         {
-            return null;
+            throw new NotFoundException("Shopping item not found.", "shopping_item_not_found");
         }
 
         return new ShoppingItemResponseDto(

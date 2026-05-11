@@ -1,5 +1,6 @@
 using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 using PlanejadorCompras.Domain.Repositories;
 
@@ -18,7 +19,7 @@ public sealed class UpdateShoppingItemUseCase
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ShoppingItemResponseDto?> ExecuteAsync(
+    public async Task<ShoppingItemResponseDto> ExecuteAsync(
         Guid id,
         ShoppingItemRequestDto request,
         CancellationToken cancellationToken = default)
@@ -29,7 +30,7 @@ public sealed class UpdateShoppingItemUseCase
         var shoppingItem = await _shoppingItemRepository.GetByIdAsync(id, cancellationToken);
         if (shoppingItem is null)
         {
-            return null;
+            throw new NotFoundException("Shopping item not found.", "shopping_item_not_found");
         }
 
         shoppingItem.Update(request.ShoppingListId, request.Name, request.Quantity, request.Unit);
