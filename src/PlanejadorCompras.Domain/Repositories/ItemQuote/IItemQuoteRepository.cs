@@ -6,5 +6,5 @@ public interface IItemQuoteRepository
     Task<List<Entities.ItemQuote>> GetByShoppingItemIdAsync(Guid shoppingItemId, CancellationToken cancellationToken = default);
     Task AddAsync(Entities.ItemQuote itemQuote, CancellationToken cancellationToken = default);
     Task UpdateAsync(Entities.ItemQuote itemQuote, CancellationToken cancellationToken = default);
-    Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 }

@@ -37,12 +37,15 @@ public sealed class ItemQuoteRepository : IItemQuoteRepository
         await Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var itemQuote = await GetByIdAsync(id, cancellationToken);
         if (itemQuote is not null)
         {
             _context.ItemQuotes.Remove(itemQuote);
+            return true;
         }
+
+        return false;
     }
 }

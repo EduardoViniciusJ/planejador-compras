@@ -37,12 +37,15 @@ public sealed class ShoppingListRepository : IShoppingListRepository
         await Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var shoppingList = await GetByIdAsync(id, cancellationToken);
         if (shoppingList is not null)
         {
             _context.ShoppingLists.Remove(shoppingList);
+            return true;
         }
+
+        return false;
     }
 }

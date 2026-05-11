@@ -6,5 +6,5 @@ public interface IShoppingListRepository
     Task<List<Entities.ShoppingList>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
     Task AddAsync(Entities.ShoppingList shoppingList, CancellationToken cancellationToken = default);
     Task UpdateAsync(Entities.ShoppingList shoppingList, CancellationToken cancellationToken = default);
-    Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 }
