@@ -1,3 +1,4 @@
+using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Domain.Repositories.ShoppingList;
 using PlanejadorCompras.Domain.Repositories;
@@ -8,18 +9,21 @@ public sealed class DeleteShoppingListUseCase
 {
     private readonly IShoppingListRepository _shoppingListRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IShoppingListAccessService _shoppingListAccessService;
 
     public DeleteShoppingListUseCase(
         IShoppingListRepository shoppingListRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IShoppingListAccessService shoppingListAccessService)
     {
         _shoppingListRepository = shoppingListRepository;
         _unitOfWork = unitOfWork;
+        _shoppingListAccessService = shoppingListAccessService;
     }
 
     public async Task ExecuteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        ArgumentOutOfRangeException.ThrowIfEqual(id, Guid.Empty);
+        await _shoppingListAccessService.GetForCurrentUserAsync(id, cancellationToken);
 
         var deleted = await _shoppingListRepository.DeleteAsync(id, cancellationToken);
         if (!deleted)

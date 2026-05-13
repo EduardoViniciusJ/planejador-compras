@@ -20,6 +20,7 @@ public static class DependencyInjectionExtensions
         AddDbContextSqlServer(services, configuration);
         AddRepositories(services);
         AddUnitOfWork(services);
+        AddApplicationServices(services);
         AddExternalServices(services);
 
         return services;
@@ -50,6 +51,11 @@ public static class DependencyInjectionExtensions
     private static void AddUnitOfWork(IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+    }
+
+    private static void AddApplicationServices(IServiceCollection services)
+    {
+        services.AddScoped<IShoppingListAccessService, ShoppingListAccessService>();
     }
 
     private static void AddExternalServices(IServiceCollection services)

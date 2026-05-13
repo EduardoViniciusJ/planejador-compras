@@ -1,6 +1,6 @@
 using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Common.Dtos.Responses;
-using PlanejadorCompras.Application.Exceptions;
+using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories.ShoppingList;
 using PlanejadorCompras.Domain.Repositories;
 
@@ -10,13 +10,16 @@ public sealed class UpdateShoppingListUseCase
 {
     private readonly IShoppingListRepository _shoppingListRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IShoppingListAccessService _shoppingListAccessService;
 
     public UpdateShoppingListUseCase(
         IShoppingListRepository shoppingListRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IShoppingListAccessService shoppingListAccessService)
     {
         _shoppingListRepository = shoppingListRepository;
         _unitOfWork = unitOfWork;
+        _shoppingListAccessService = shoppingListAccessService;
     }
 
     public async Task<ShoppingListResponseDto> ExecuteAsync(
@@ -25,13 +28,7 @@ public sealed class UpdateShoppingListUseCase
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
-        ArgumentOutOfRangeException.ThrowIfEqual(id, Guid.Empty);
-
-        var shoppingList = await _shoppingListRepository.GetByIdAsync(id, cancellationToken);
-        if (shoppingList is null)
-        {
-            throw new NotFoundException("Shopping list not found.", "shopping_list_not_found");
-        }
+        var shoppingList = await _shoppingListAccessService.GetForCurrentUserAsync(id, cancellationToken);
 
         shoppingList.Update(request.Name, request.Description);
         await _shoppingListRepository.UpdateAsync(shoppingList, cancellationToken);

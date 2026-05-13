@@ -1,27 +1,20 @@
 using PlanejadorCompras.Application.Common.Dtos.Responses;
-using PlanejadorCompras.Application.Exceptions;
-using PlanejadorCompras.Domain.Repositories.ShoppingList;
+using PlanejadorCompras.Application.Services.Interfaces;
 
 namespace PlanejadorCompras.Application.UseCases.ShoppingList;
 
 public sealed class GetShoppingListByIdUseCase
 {
-    private readonly IShoppingListRepository _shoppingListRepository;
+    private readonly IShoppingListAccessService _shoppingListAccessService;
 
-    public GetShoppingListByIdUseCase(IShoppingListRepository shoppingListRepository)
+    public GetShoppingListByIdUseCase(IShoppingListAccessService shoppingListAccessService)
     {
-        _shoppingListRepository = shoppingListRepository;
+        _shoppingListAccessService = shoppingListAccessService;
     }
 
     public async Task<ShoppingListResponseDto> ExecuteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        ArgumentOutOfRangeException.ThrowIfEqual(id, Guid.Empty);
-
-        var shoppingList = await _shoppingListRepository.GetByIdAsync(id, cancellationToken);
-        if (shoppingList is null)
-        {
-            throw new NotFoundException("Shopping list not found.", "shopping_list_not_found");
-        }
+        var shoppingList = await _shoppingListAccessService.GetForCurrentUserAsync(id, cancellationToken);
 
         return new ShoppingListResponseDto(
             shoppingList.Id,
