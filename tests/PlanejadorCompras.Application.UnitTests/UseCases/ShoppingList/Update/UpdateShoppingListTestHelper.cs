@@ -1,5 +1,6 @@
 using Moq;
 using PlanejadorCompras.Application.Common.Dtos.Requests;
+using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories;
 using PlanejadorCompras.Domain.Repositories.ShoppingList;
 using ShoppingListEntity = PlanejadorCompras.Domain.Entities.ShoppingList;
@@ -11,6 +12,8 @@ public sealed class UpdateShoppingListTestHelper
     public UpdateShoppingListTestHelper()
     {
         ShoppingListRepositoryMock = new Mock<IShoppingListRepository>();
+        CurrentUserMock = new Mock<ICurrentUser>();
+        CurrentUserMock.Setup(x => x.UserId).Returns(DefaultUserId);
         UnitOfWorkMock = new Mock<IUnitOfWork>();
         UnitOfWorkMock
             .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
@@ -20,6 +23,7 @@ public sealed class UpdateShoppingListTestHelper
     public static Guid DefaultUserId => Guid.Parse("11111111-1111-1111-1111-111111111111");
 
     public Mock<IShoppingListRepository> ShoppingListRepositoryMock { get; }
+    public Mock<ICurrentUser> CurrentUserMock { get; }
 
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
 

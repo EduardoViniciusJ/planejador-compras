@@ -1,6 +1,7 @@
 using Moq;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
+using PlanejadorCompras.Infrastructure.Services;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ShoppingList.GetById;
 
@@ -12,7 +13,11 @@ public sealed class GetShoppingListByIdUseCaseTests
     public GetShoppingListByIdUseCaseTests()
     {
         _helper = new GetShoppingListByIdTestHelper();
-        _handler = new GetShoppingListByIdUseCase(_helper.ShoppingListRepositoryMock.Object);
+        var accessService = new ShoppingListAccessService(
+            _helper.ShoppingListRepositoryMock.Object,
+            _helper.CurrentUserMock.Object);
+
+        _handler = new GetShoppingListByIdUseCase(accessService);
     }
 
     [Fact]
@@ -42,6 +47,17 @@ public sealed class GetShoppingListByIdUseCaseTests
             .ReturnsAsync((PlanejadorCompras.Domain.Entities.ShoppingList?)null);
 
         await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingListId));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenShoppingListDoesNotBelongToUser()
+    {
+        var otherUserList = GetShoppingListByIdTestHelper.CreateShoppingListEntity(Guid.NewGuid());
+        _helper.ShoppingListRepositoryMock
+            .Setup(x => x.GetByIdAsync(otherUserList.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(otherUserList);
+
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(otherUserList.Id));
     }
 
     [Fact]

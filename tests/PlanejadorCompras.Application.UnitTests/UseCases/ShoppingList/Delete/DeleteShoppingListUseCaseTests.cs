@@ -1,6 +1,7 @@
 using Moq;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
+using PlanejadorCompras.Infrastructure.Services;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ShoppingList.Delete;
 
@@ -12,9 +13,14 @@ public sealed class DeleteShoppingListUseCaseTests
     public DeleteShoppingListUseCaseTests()
     {
         _helper = new DeleteShoppingListTestHelper();
+        var accessService = new ShoppingListAccessService(
+            _helper.ShoppingListRepositoryMock.Object,
+            _helper.CurrentUserMock.Object);
+
         _handler = new DeleteShoppingListUseCase(
             _helper.ShoppingListRepositoryMock.Object,
-            _helper.UnitOfWorkMock.Object);
+            _helper.UnitOfWorkMock.Object,
+            accessService);
     }
 
     [Fact]
@@ -48,13 +54,29 @@ public sealed class DeleteShoppingListUseCaseTests
     {
         var shoppingListId = Guid.NewGuid();
         _helper.ShoppingListRepositoryMock
-            .Setup(x => x.DeleteAsync(shoppingListId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+            .Setup(x => x.GetByIdAsync(shoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((PlanejadorCompras.Domain.Entities.ShoppingList?)null);
 
         await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingListId));
 
         _helper.UnitOfWorkMock.Verify(
             x => x.CommitAsync(It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenShoppingListDoesNotBelongToUser()
+    {
+        var shoppingListId = Guid.NewGuid();
+        var otherUserList = DeleteShoppingListTestHelper.CreateShoppingListEntity(Guid.NewGuid());
+        _helper.ShoppingListRepositoryMock
+            .Setup(x => x.GetByIdAsync(shoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(otherUserList);
+
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingListId));
+
+        _helper.ShoppingListRepositoryMock.Verify(
+            x => x.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
