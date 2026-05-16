@@ -1,3 +1,5 @@
+using PlanejadorCompras.Application.Common.Dtos.Models;
+
 namespace PlanejadorCompras.Application.Common.Dtos.Responses;
 
 public record BestSupplierBudgetResponseDto(

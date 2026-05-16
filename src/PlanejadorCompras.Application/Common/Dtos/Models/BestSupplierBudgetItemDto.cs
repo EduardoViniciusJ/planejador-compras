@@ -1,4 +1,4 @@
-namespace PlanejadorCompras.Application.Common.Dtos.Responses;
+namespace PlanejadorCompras.Application.Common.Dtos.Models;
 
 public record BestSupplierBudgetItemDto(
     Guid ShoppingItemId,
