@@ -17,19 +17,22 @@ public sealed class ShoppingListsController : ControllerBase
     private readonly GetShoppingListsByUserIdUseCase _getByUserIdUseCase;
     private readonly UpdateShoppingListUseCase _updateUseCase;
     private readonly DeleteShoppingListUseCase _deleteUseCase;
+    private readonly ICalculateBestSupplierBudgetUseCase _calculateBestSupplierBudgetUseCase;
 
     public ShoppingListsController(
         CreateShoppingListUseCase createUseCase,
         GetShoppingListByIdUseCase getByIdUseCase,
         GetShoppingListsByUserIdUseCase getByUserIdUseCase,
         UpdateShoppingListUseCase updateUseCase,
-        DeleteShoppingListUseCase deleteUseCase)
+        DeleteShoppingListUseCase deleteUseCase,
+        ICalculateBestSupplierBudgetUseCase calculateBestSupplierBudgetUseCase)
     {
         _createUseCase = createUseCase;
         _getByIdUseCase = getByIdUseCase;
         _getByUserIdUseCase = getByUserIdUseCase;
         _updateUseCase = updateUseCase;
         _deleteUseCase = deleteUseCase;
+        _calculateBestSupplierBudgetUseCase = calculateBestSupplierBudgetUseCase;
     }
 
     [HttpPost]
@@ -87,4 +90,14 @@ public sealed class ShoppingListsController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("{id:guid}/best-supplier-budget")]
+    [ProducesResponseType(typeof(BestSupplierBudgetResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetBestSupplierBudget(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var result = await _calculateBestSupplierBudgetUseCase.ExecuteAsync(id, cancellationToken);
+        return Ok(result);
+    }
 }
