@@ -48,4 +48,11 @@ public sealed class ItemQuoteRepository : IItemQuoteRepository
 
         return false;
     }
+
+    public async Task<List<ItemQuote>> GetByShoppingListIdAsync(Guid shoppingListId, CancellationToken cancellationToken = default)
+    {
+        return await _context.ItemQuotes
+            .Where(q => _context.ShoppingItems.Any(i => i.Id == q.ShoppingItemId && i.ShoppingListId == shoppingListId))
+            .ToListAsync(cancellationToken);
+    }
 }
