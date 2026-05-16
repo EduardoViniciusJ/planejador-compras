@@ -6,6 +6,7 @@ using PlanejadorCompras.Application.UseCases.ShoppingList.Create;
 using PlanejadorCompras.Application.UseCases.ItemQuote;
 using PlanejadorCompras.Application.UseCases.ShoppingItem;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
+using PlanejadorCompras.Application.UseCases.Interfaces;
 
 namespace PlanejadorCompras.Application;
 
@@ -30,6 +31,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<UpdateShoppingListUseCase>();
         services.AddScoped<DeleteShoppingListUseCase>();
         services.AddScoped<ICalculateBestSupplierBudgetUseCase, CalculateBestSupplierBudgetUseCase>();
+        services.AddScoped<IGetShoppingListEqualizationUseCase, GetShoppingListEqualizationUseCase>();
 
         // ShoppingItem
         services.AddScoped<CreateShoppingItemUseCase>();

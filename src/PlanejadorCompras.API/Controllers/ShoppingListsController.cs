@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.UseCases.Interfaces;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
 using PlanejadorCompras.Application.UseCases.ShoppingList.Create;
 
@@ -18,6 +19,7 @@ public sealed class ShoppingListsController : ControllerBase
     private readonly UpdateShoppingListUseCase _updateUseCase;
     private readonly DeleteShoppingListUseCase _deleteUseCase;
     private readonly ICalculateBestSupplierBudgetUseCase _calculateBestSupplierBudgetUseCase;
+    private readonly IGetShoppingListEqualizationUseCase _getShoppingListEqualizationUseCase;
 
     public ShoppingListsController(
         CreateShoppingListUseCase createUseCase,
@@ -25,7 +27,8 @@ public sealed class ShoppingListsController : ControllerBase
         GetShoppingListsByUserIdUseCase getByUserIdUseCase,
         UpdateShoppingListUseCase updateUseCase,
         DeleteShoppingListUseCase deleteUseCase,
-        ICalculateBestSupplierBudgetUseCase calculateBestSupplierBudgetUseCase)
+        ICalculateBestSupplierBudgetUseCase calculateBestSupplierBudgetUseCase,
+        IGetShoppingListEqualizationUseCase getShoppingListEqualizationUseCase)
     {
         _createUseCase = createUseCase;
         _getByIdUseCase = getByIdUseCase;
@@ -33,6 +36,7 @@ public sealed class ShoppingListsController : ControllerBase
         _updateUseCase = updateUseCase;
         _deleteUseCase = deleteUseCase;
         _calculateBestSupplierBudgetUseCase = calculateBestSupplierBudgetUseCase;
+        _getShoppingListEqualizationUseCase = getShoppingListEqualizationUseCase;
     }
 
     [HttpPost]
@@ -98,6 +102,17 @@ public sealed class ShoppingListsController : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await _calculateBestSupplierBudgetUseCase.ExecuteAsync(id, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("{id:guid}/equalization")]
+    [ProducesResponseType(typeof(EqualizationResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetEqualization(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var result = await _getShoppingListEqualizationUseCase.ExecuteAsync(id, cancellationToken);
         return Ok(result);
     }
 }
