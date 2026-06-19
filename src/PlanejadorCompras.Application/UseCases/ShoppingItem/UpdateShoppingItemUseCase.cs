@@ -1,6 +1,7 @@
 using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.Exceptions;
+using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 using PlanejadorCompras.Domain.Repositories;
 
@@ -10,13 +11,16 @@ public sealed class UpdateShoppingItemUseCase
 {
     private readonly IShoppingItemRepository _shoppingItemRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IShoppingListAccessService _shoppingListAccessService;
 
     public UpdateShoppingItemUseCase(
         IShoppingItemRepository shoppingItemRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IShoppingListAccessService shoppingListAccessService)
     {
         _shoppingItemRepository = shoppingItemRepository;
         _unitOfWork = unitOfWork;
+        _shoppingListAccessService = shoppingListAccessService;
     }
 
     public async Task<ShoppingItemResponseDto> ExecuteAsync(
@@ -32,6 +36,9 @@ public sealed class UpdateShoppingItemUseCase
         {
             throw new NotFoundException("Shopping item not found.", "shopping_item_not_found");
         }
+
+        await _shoppingListAccessService.GetForCurrentUserAsync(shoppingItem.ShoppingListId, cancellationToken);
+        await _shoppingListAccessService.GetForCurrentUserAsync(request.ShoppingListId, cancellationToken);
 
         shoppingItem.Update(request.ShoppingListId, request.Name, request.Quantity, request.Unit);
         await _shoppingItemRepository.UpdateAsync(shoppingItem, cancellationToken);

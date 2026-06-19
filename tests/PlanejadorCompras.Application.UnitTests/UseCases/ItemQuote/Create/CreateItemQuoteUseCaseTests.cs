@@ -15,7 +15,9 @@ public sealed class CreateItemQuoteUseCaseTests
         _helper = new CreateItemQuoteTestHelper();
         _handler = new CreateItemQuoteUseCase(
             _helper.ItemQuoteRepositoryMock.Object,
-            _helper.UnitOfWorkMock.Object);
+            _helper.ShoppingItemRepositoryMock.Object,
+            _helper.UnitOfWorkMock.Object,
+            _helper.ShoppingListAccessServiceMock.Object);
     }
 
     [Fact]
@@ -25,6 +27,11 @@ public sealed class CreateItemQuoteUseCaseTests
             CreateItemQuoteTestHelper.DefaultShoppingItemId,
             "Best Monitor Supplier",
             199.90m);
+        var shoppingItem = CreateItemQuoteTestHelper.CreateShoppingItemEntity();
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(request.ShoppingItemId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(shoppingItem);
+        _helper.SetupShoppingListAccess(shoppingItem.ShoppingListId);
 
         var response = await _handler.ExecuteAsync(request);
 
@@ -38,6 +45,11 @@ public sealed class CreateItemQuoteUseCaseTests
     public async Task ExecuteAsync_ShouldCallRepositoryWithCorrectData()
     {
         var request = CreateItemQuoteTestHelper.CreateRequestDto();
+        var shoppingItem = CreateItemQuoteTestHelper.CreateShoppingItemEntity();
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(request.ShoppingItemId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(shoppingItem);
+        _helper.SetupShoppingListAccess(shoppingItem.ShoppingListId);
 
         await _handler.ExecuteAsync(request);
 
@@ -55,6 +67,11 @@ public sealed class CreateItemQuoteUseCaseTests
     public async Task ExecuteAsync_ShouldCommitUnitOfWork_WhenCreationSucceeds()
     {
         var request = CreateItemQuoteTestHelper.CreateRequestDto();
+        var shoppingItem = CreateItemQuoteTestHelper.CreateShoppingItemEntity();
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(request.ShoppingItemId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(shoppingItem);
+        _helper.SetupShoppingListAccess(shoppingItem.ShoppingListId);
 
         await _handler.ExecuteAsync(request);
 
@@ -76,6 +93,11 @@ public sealed class CreateItemQuoteUseCaseTests
             CreateItemQuoteTestHelper.DefaultShoppingItemId,
             "  Best Monitor Supplier  ",
             199.90m);
+        var shoppingItem = CreateItemQuoteTestHelper.CreateShoppingItemEntity();
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(request.ShoppingItemId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(shoppingItem);
+        _helper.SetupShoppingListAccess(shoppingItem.ShoppingListId);
 
         var response = await _handler.ExecuteAsync(request);
 

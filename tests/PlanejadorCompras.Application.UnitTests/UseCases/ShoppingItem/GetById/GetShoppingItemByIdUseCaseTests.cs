@@ -1,6 +1,7 @@
 using Moq;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ShoppingItem;
+using PlanejadorCompras.Application.UnitTests.UseCases.ShoppingList.GetById;
 using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ShoppingItem.GetById;
@@ -13,7 +14,9 @@ public sealed class GetShoppingItemByIdUseCaseTests
     public GetShoppingItemByIdUseCaseTests()
     {
         _helper = new GetShoppingItemByIdTestHelper();
-        _handler = new GetShoppingItemByIdUseCase(_helper.ShoppingItemRepositoryMock.Object);
+        _handler = new GetShoppingItemByIdUseCase(
+            _helper.ShoppingItemRepositoryMock.Object,
+            _helper.ShoppingListAccessServiceMock.Object);
     }
 
     [Fact]
@@ -23,6 +26,9 @@ public sealed class GetShoppingItemByIdUseCaseTests
         _helper.ShoppingItemRepositoryMock
             .Setup(x => x.GetByIdAsync(shoppingItem.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(shoppingItem);
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(shoppingItem.ShoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(GetShoppingListByIdTestHelper.CreateShoppingListEntity());
 
         var response = await _handler.ExecuteAsync(shoppingItem.Id);
 
@@ -58,6 +64,9 @@ public sealed class GetShoppingItemByIdUseCaseTests
         _helper.ShoppingItemRepositoryMock
             .Setup(x => x.GetByIdAsync(shoppingItem.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(shoppingItem);
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(shoppingItem.ShoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(GetShoppingListByIdTestHelper.CreateShoppingListEntity());
 
         await _handler.ExecuteAsync(shoppingItem.Id);
 

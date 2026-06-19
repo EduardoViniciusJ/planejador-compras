@@ -4,12 +4,9 @@ using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 
-namespace PlanejadorCompras.Application.UseCases.ShoppingList;
+using PlanejadorCompras.Application.UseCases.Interfaces;
 
-public interface ICalculateBestSupplierBudgetUseCase
-{
-    Task<BestSupplierBudgetResponseDto> ExecuteAsync(Guid shoppingListId, CancellationToken cancellationToken = default);
-}
+namespace PlanejadorCompras.Application.UseCases.ShoppingList;
 
 public sealed class CalculateBestSupplierBudgetUseCase : ICalculateBestSupplierBudgetUseCase
 {

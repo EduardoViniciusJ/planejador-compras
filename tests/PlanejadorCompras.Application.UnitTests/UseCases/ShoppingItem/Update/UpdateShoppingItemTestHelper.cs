@@ -1,7 +1,9 @@
 using Moq;
 using PlanejadorCompras.Application.Common.Dtos.Requests;
+using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
+using ShoppingListEntity = PlanejadorCompras.Domain.Entities.ShoppingList;
 using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ShoppingItem.Update;
@@ -12,6 +14,7 @@ public sealed class UpdateShoppingItemTestHelper
     {
         ShoppingItemRepositoryMock = new Mock<IShoppingItemRepository>();
         UnitOfWorkMock = new Mock<IUnitOfWork>();
+        ShoppingListAccessServiceMock = new Mock<IShoppingListAccessService>();
         UnitOfWorkMock
             .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
@@ -22,6 +25,8 @@ public sealed class UpdateShoppingItemTestHelper
     public Mock<IShoppingItemRepository> ShoppingItemRepositoryMock { get; }
 
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
+
+    public Mock<IShoppingListAccessService> ShoppingListAccessServiceMock { get; }
 
     public static ShoppingItemRequestDto CreateRequestDto(
         Guid? shoppingListId = null,
@@ -39,5 +44,12 @@ public sealed class UpdateShoppingItemTestHelper
         string unit = "pcs")
     {
         return ShoppingItemEntity.Create(shoppingListId ?? DefaultShoppingListId, name, quantity, unit);
+    }
+
+    public void SetupShoppingListAccess(Guid shoppingListId)
+    {
+        ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(shoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ShoppingListEntity.Create(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "Authorized List"));
     }
 }

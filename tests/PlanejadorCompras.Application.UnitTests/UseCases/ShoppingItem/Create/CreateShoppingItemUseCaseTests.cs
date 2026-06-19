@@ -15,7 +15,8 @@ public sealed class CreateShoppingItemUseCaseTests
         _helper = new CreateShoppingItemTestHelper();
         _handler = new CreateShoppingItemUseCase(
             _helper.ShoppingItemRepositoryMock.Object,
-            _helper.UnitOfWorkMock.Object);
+            _helper.UnitOfWorkMock.Object,
+            _helper.ShoppingListAccessServiceMock.Object);
     }
 
     [Fact]
@@ -26,6 +27,8 @@ public sealed class CreateShoppingItemUseCaseTests
             "Monthly Tech Shopping Item",
             2,
             "pcs");
+
+        _helper.SetupShoppingListAccess(request.ShoppingListId);
 
         var response = await _handler.ExecuteAsync(request);
 
@@ -40,6 +43,8 @@ public sealed class CreateShoppingItemUseCaseTests
     public async Task ExecuteAsync_ShouldCallRepositoryWithCorrectData()
     {
         var request = CreateShoppingItemTestHelper.CreateRequestDto();
+
+        _helper.SetupShoppingListAccess(request.ShoppingListId);
 
         await _handler.ExecuteAsync(request);
 
@@ -80,6 +85,8 @@ public sealed class CreateShoppingItemUseCaseTests
             "  Monitor Arm  ",
             1,
             "  pcs  ");
+
+        _helper.SetupShoppingListAccess(request.ShoppingListId);
 
         var response = await _handler.ExecuteAsync(request);
 

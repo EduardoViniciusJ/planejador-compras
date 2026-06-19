@@ -1,5 +1,6 @@
 using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.Exceptions;
+using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 
 namespace PlanejadorCompras.Application.UseCases.ShoppingItem;
@@ -7,10 +8,14 @@ namespace PlanejadorCompras.Application.UseCases.ShoppingItem;
 public sealed class GetShoppingItemByIdUseCase
 {
     private readonly IShoppingItemRepository _shoppingItemRepository;
+    private readonly IShoppingListAccessService _shoppingListAccessService;
 
-    public GetShoppingItemByIdUseCase(IShoppingItemRepository shoppingItemRepository)
+    public GetShoppingItemByIdUseCase(
+        IShoppingItemRepository shoppingItemRepository,
+        IShoppingListAccessService shoppingListAccessService)
     {
         _shoppingItemRepository = shoppingItemRepository;
+        _shoppingListAccessService = shoppingListAccessService;
     }
 
     public async Task<ShoppingItemResponseDto> ExecuteAsync(Guid id, CancellationToken cancellationToken = default)
@@ -22,6 +27,8 @@ public sealed class GetShoppingItemByIdUseCase
         {
             throw new NotFoundException("Shopping item not found.", "shopping_item_not_found");
         }
+
+        await _shoppingListAccessService.GetForCurrentUserAsync(shoppingItem.ShoppingListId, cancellationToken);
 
         return new ShoppingItemResponseDto(
             shoppingItem.Id,

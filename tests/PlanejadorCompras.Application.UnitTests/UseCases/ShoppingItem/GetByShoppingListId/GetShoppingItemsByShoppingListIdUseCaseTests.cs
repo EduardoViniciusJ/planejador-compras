@@ -1,5 +1,6 @@
 using Moq;
 using PlanejadorCompras.Application.UseCases.ShoppingItem;
+using PlanejadorCompras.Application.UnitTests.UseCases.ShoppingList.GetById;
 using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ShoppingItem.GetByShoppingListId;
@@ -12,7 +13,9 @@ public sealed class GetShoppingItemsByShoppingListIdUseCaseTests
     public GetShoppingItemsByShoppingListIdUseCaseTests()
     {
         _helper = new GetShoppingItemsByShoppingListIdTestHelper();
-        _handler = new GetShoppingItemsByShoppingListIdUseCase(_helper.ShoppingItemRepositoryMock.Object);
+        _handler = new GetShoppingItemsByShoppingListIdUseCase(
+            _helper.ShoppingItemRepositoryMock.Object,
+            _helper.ShoppingListAccessServiceMock.Object);
     }
 
     [Fact]
@@ -24,6 +27,9 @@ public sealed class GetShoppingItemsByShoppingListIdUseCaseTests
             GetShoppingItemsByShoppingListIdTestHelper.CreateShoppingItemEntity(shoppingListId, "Monitor", 1, "pcs"),
             GetShoppingItemsByShoppingListIdTestHelper.CreateShoppingItemEntity(shoppingListId, "Keyboard", 2, "pcs")
         };
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(shoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(GetShoppingListByIdTestHelper.CreateShoppingListEntity());
 
         _helper.ShoppingItemRepositoryMock
             .Setup(x => x.GetByShoppingListIdAsync(shoppingListId, It.IsAny<CancellationToken>()))
@@ -42,6 +48,9 @@ public sealed class GetShoppingItemsByShoppingListIdUseCaseTests
     public async Task ExecuteAsync_ShouldReturnEmptyList_WhenListHasNoItems()
     {
         var shoppingListId = GetShoppingItemsByShoppingListIdTestHelper.DefaultShoppingListId;
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(shoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(GetShoppingListByIdTestHelper.CreateShoppingListEntity());
         _helper.ShoppingItemRepositoryMock
             .Setup(x => x.GetByShoppingListIdAsync(shoppingListId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<ShoppingItemEntity>());
@@ -61,6 +70,9 @@ public sealed class GetShoppingItemsByShoppingListIdUseCaseTests
     public async Task ExecuteAsync_ShouldCallRepositoryWithCorrectShoppingListId()
     {
         var shoppingListId = GetShoppingItemsByShoppingListIdTestHelper.DefaultShoppingListId;
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(shoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(GetShoppingListByIdTestHelper.CreateShoppingListEntity());
         _helper.ShoppingItemRepositoryMock
             .Setup(x => x.GetByShoppingListIdAsync(shoppingListId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<ShoppingItemEntity>());

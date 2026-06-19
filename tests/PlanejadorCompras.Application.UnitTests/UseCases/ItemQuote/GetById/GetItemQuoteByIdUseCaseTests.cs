@@ -13,16 +13,26 @@ public sealed class GetItemQuoteByIdUseCaseTests
     public GetItemQuoteByIdUseCaseTests()
     {
         _helper = new GetItemQuoteByIdTestHelper();
-        _handler = new GetItemQuoteByIdUseCase(_helper.ItemQuoteRepositoryMock.Object);
+        _handler = new GetItemQuoteByIdUseCase(
+            _helper.ItemQuoteRepositoryMock.Object,
+            _helper.ShoppingItemRepositoryMock.Object,
+            _helper.ShoppingListAccessServiceMock.Object);
     }
 
     [Fact]
     public async Task ExecuteAsync_ShouldReturnItemQuote_WhenItemQuoteExists()
     {
         var itemQuote = GetItemQuoteByIdTestHelper.CreateItemQuoteEntity();
+        var shoppingItem = GetItemQuoteByIdTestHelper.CreateShoppingItemEntity();
         _helper.ItemQuoteRepositoryMock
             .Setup(x => x.GetByIdAsync(itemQuote.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(itemQuote);
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(itemQuote.ShoppingItemId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(shoppingItem);
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(shoppingItem.ShoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(PlanejadorCompras.Domain.Entities.ShoppingList.Create(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "Authorized List"));
 
         var response = await _handler.ExecuteAsync(itemQuote.Id);
 
@@ -54,9 +64,16 @@ public sealed class GetItemQuoteByIdUseCaseTests
     public async Task ExecuteAsync_ShouldCallRepositoryWithCorrectId()
     {
         var itemQuote = GetItemQuoteByIdTestHelper.CreateItemQuoteEntity();
+        var shoppingItem = GetItemQuoteByIdTestHelper.CreateShoppingItemEntity();
         _helper.ItemQuoteRepositoryMock
             .Setup(x => x.GetByIdAsync(itemQuote.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(itemQuote);
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(itemQuote.ShoppingItemId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(shoppingItem);
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(shoppingItem.ShoppingListId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(PlanejadorCompras.Domain.Entities.ShoppingList.Create(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "Authorized List"));
 
         await _handler.ExecuteAsync(itemQuote.Id);
 

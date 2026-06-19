@@ -15,7 +15,8 @@ public sealed class UpdateShoppingItemUseCaseTests
         _helper = new UpdateShoppingItemTestHelper();
         _handler = new UpdateShoppingItemUseCase(
             _helper.ShoppingItemRepositoryMock.Object,
-            _helper.UnitOfWorkMock.Object);
+            _helper.UnitOfWorkMock.Object,
+            _helper.ShoppingListAccessServiceMock.Object);
     }
 
     [Fact]
@@ -27,6 +28,8 @@ public sealed class UpdateShoppingItemUseCaseTests
             "Updated Tech Shopping Item",
             5,
             "box");
+        _helper.SetupShoppingListAccess(shoppingItem.ShoppingListId);
+        _helper.SetupShoppingListAccess(request.ShoppingListId);
 
         _helper.ShoppingItemRepositoryMock
             .Setup(x => x.GetByIdAsync(shoppingItem.Id, It.IsAny<CancellationToken>()))
@@ -51,6 +54,8 @@ public sealed class UpdateShoppingItemUseCaseTests
             "Office Upgrade Item",
             4,
             "pcs");
+        _helper.SetupShoppingListAccess(shoppingItem.ShoppingListId);
+        _helper.SetupShoppingListAccess(request.ShoppingListId);
 
         _helper.ShoppingItemRepositoryMock
             .Setup(x => x.GetByIdAsync(shoppingItem.Id, It.IsAny<CancellationToken>()))
@@ -75,6 +80,8 @@ public sealed class UpdateShoppingItemUseCaseTests
     {
         var shoppingItem = UpdateShoppingItemTestHelper.CreateShoppingItemEntity();
         var request = UpdateShoppingItemTestHelper.CreateRequestDto(shoppingItem.ShoppingListId);
+        _helper.SetupShoppingListAccess(shoppingItem.ShoppingListId);
+        _helper.SetupShoppingListAccess(request.ShoppingListId);
 
         _helper.ShoppingItemRepositoryMock
             .Setup(x => x.GetByIdAsync(shoppingItem.Id, It.IsAny<CancellationToken>()))
@@ -133,5 +140,23 @@ public sealed class UpdateShoppingItemUseCaseTests
         _helper.UnitOfWorkMock.Verify(
             x => x.CommitAsync(It.IsAny<CancellationToken>()),
             Times.Never);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenTargetListDoesNotBelongToUser()
+    {
+        var shoppingItem = UpdateShoppingItemTestHelper.CreateShoppingItemEntity();
+        var unauthorizedListId = Guid.NewGuid();
+        var request = UpdateShoppingItemTestHelper.CreateRequestDto(unauthorizedListId);
+
+        _helper.SetupShoppingListAccess(shoppingItem.ShoppingListId);
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(shoppingItem.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(shoppingItem);
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(unauthorizedListId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NotFoundException("Shopping list not found.", "shopping_list_not_found"));
+
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(shoppingItem.Id, request));
     }
 }

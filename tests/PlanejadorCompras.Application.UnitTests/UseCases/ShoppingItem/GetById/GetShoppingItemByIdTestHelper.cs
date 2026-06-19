@@ -1,4 +1,5 @@
 using Moq;
+using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
 
@@ -9,11 +10,14 @@ public sealed class GetShoppingItemByIdTestHelper
     public GetShoppingItemByIdTestHelper()
     {
         ShoppingItemRepositoryMock = new Mock<IShoppingItemRepository>();
+        ShoppingListAccessServiceMock = new Mock<IShoppingListAccessService>();
     }
 
     public static Guid DefaultShoppingListId => Guid.Parse("55555555-5555-5555-5555-555555555555");
 
     public Mock<IShoppingItemRepository> ShoppingItemRepositoryMock { get; }
+
+    public Mock<IShoppingListAccessService> ShoppingListAccessServiceMock { get; }
 
     public static ShoppingItemEntity CreateShoppingItemEntity(
         Guid? shoppingListId = null,
