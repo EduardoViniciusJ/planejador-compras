@@ -22,7 +22,6 @@ public sealed class GetShoppingListsByUserIdUseCase
         var shoppingLists = await _shoppingListRepository.GetByUserIdAsync(_currentUser.UserId, cancellationToken);
         return shoppingLists.Select(sl => new ShoppingListResponseDto(
             sl.Id,
-            sl.UserId,
             sl.Name,
             sl.Description,
             sl.CreatedAt)).ToList();

@@ -35,7 +35,6 @@ public sealed class CreateShoppingListUseCase
 
         return new ShoppingListResponseDto(
             shoppingList.Id,
-            shoppingList.UserId,
             shoppingList.Name,
             shoppingList.Description,
             shoppingList.CreatedAt);

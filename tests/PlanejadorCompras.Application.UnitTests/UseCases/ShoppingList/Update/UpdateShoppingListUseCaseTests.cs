@@ -40,7 +40,6 @@ public sealed class UpdateShoppingListUseCaseTests
         Assert.Equal(shoppingList.Id, response.Id);
         Assert.Equal(request.Name, response.Name);
         Assert.Equal(request.Description, response.Description);
-        Assert.Equal(shoppingList.UserId, response.UserId);
     }
 
     [Fact]

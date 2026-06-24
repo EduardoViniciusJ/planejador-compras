@@ -26,7 +26,6 @@ public sealed class CreateShoppingListUseCaseTests
 
         var response = await _handler.ExecuteAsync(request);
 
-        Assert.Equal(CreateShoppingListTestHelper.DefaultUserId, response.UserId);
         Assert.Equal(request.Name, response.Name);
         Assert.Equal(request.Description, response.Description);
         Assert.NotEqual(Guid.Empty, response.Id);

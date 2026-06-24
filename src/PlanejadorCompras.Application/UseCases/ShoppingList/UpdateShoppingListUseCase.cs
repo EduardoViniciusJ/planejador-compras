@@ -36,7 +36,6 @@ public sealed class UpdateShoppingListUseCase
 
         return new ShoppingListResponseDto(
             shoppingList.Id,
-            shoppingList.UserId,
             shoppingList.Name,
             shoppingList.Description,
             shoppingList.CreatedAt);

@@ -32,7 +32,6 @@ public sealed class GetShoppingListByIdUseCaseTests
 
         Assert.NotNull(response);
         Assert.Equal(shoppingList.Id, response.Id);
-        Assert.Equal(shoppingList.UserId, response.UserId);
         Assert.Equal(shoppingList.Name, response.Name);
         Assert.Equal(shoppingList.Description, response.Description);
         Assert.Equal(shoppingList.CreatedAt, response.CreatedAt);
