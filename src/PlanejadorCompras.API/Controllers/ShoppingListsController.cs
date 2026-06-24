@@ -10,7 +10,6 @@ namespace PlanejadorCompras.API.Controllers;
 
 [ApiController]
 [Route("api/shopping-lists")]
-[Authorize]
 public sealed class ShoppingListsController : ControllerBase
 {
     private readonly CreateShoppingListUseCase _createUseCase;
