@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 namespace PlanejadorCompras.Application.Common.Dtos.Requests;
 
 public sealed record ItemQuoteRequestDto(
-    [property: Required]
+    [Required]
     Guid ShoppingItemId,
-    [property: Required]
-    [property: MinLength(1)]
-    [property: MaxLength(100)]
+    [Required]
+    [MinLength(1)]
+    [MaxLength(100)]
     string SupplierName,
-    [property: Required]
-    [property: Range(0, double.MaxValue)]
+    [Required]
+    [Range(0, double.MaxValue)]
     decimal UnitPrice);
