@@ -9,7 +9,6 @@ namespace PlanejadorCompras.API.Controllers;
 
 [ApiController]
 [Route("api/item-quotes")]
-[Authorize]
 public sealed class ItemQuotesController : ControllerBase
 {
     private readonly CreateItemQuoteUseCase _createUseCase;
