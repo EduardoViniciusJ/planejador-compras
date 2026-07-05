@@ -3,9 +3,19 @@ import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
+    localStorage.clear();
+    document.documentElement.removeAttribute('data-bs-theme');
+    document.documentElement.style.colorScheme = '';
+
     await TestBed.configureTestingModule({
       imports: [App],
     }).compileComponents();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+    document.documentElement.removeAttribute('data-bs-theme');
+    document.documentElement.style.colorScheme = '';
   });
 
   it('should create the app', () => {
@@ -16,8 +26,26 @@ describe('App', () => {
 
   it('should render title', async () => {
     const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
     await fixture.whenStable();
+
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, frontend');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Frontend Angular pronto para evoluir');
+  });
+
+  it('should apply and persist the selected theme', async () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const themeToggle = compiled.querySelector<HTMLButtonElement>('.theme-toggle');
+
+    themeToggle?.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(document.documentElement.getAttribute('data-bs-theme')).toBe('dark');
+    expect(localStorage.getItem('planejador-theme')).toBe('dark');
   });
 });

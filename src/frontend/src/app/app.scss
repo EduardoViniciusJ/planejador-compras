@@ -1,3 +1,140 @@
 .app-shell {
-  background: var(--bs-body-bg);
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--app-page-alt-bg) 62%, transparent), transparent 38%),
+    radial-gradient(circle at bottom right, color-mix(in srgb, var(--app-surface-elevated-bg) 65%, transparent), transparent 34%),
+    linear-gradient(180deg, var(--app-page-bg), var(--app-surface-alt-bg));
+  color: var(--app-text-color, var(--bs-body-color));
+  transition:
+    background-color var(--app-transition-fast),
+    color var(--app-transition-fast);
+}
+
+.app-header {
+  min-height: var(--app-header-height);
+  background: var(--app-header-bg, var(--bs-body-bg));
+  border-color: var(--app-border-color, var(--bs-border-color)) !important;
+  backdrop-filter: blur(14px);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.theme-toggle {
+  justify-content: center;
+  min-width: 9.5rem;
+  min-height: var(--app-control-height-sm);
+  border-radius: var(--app-control-radius);
+}
+
+.login-stage {
+  position: relative;
+  overflow: hidden;
+}
+
+.login-stage::before {
+  content: '';
+  position: absolute;
+  inset: 10% auto auto -8%;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--app-page-alt-bg) 30%, transparent);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.login-stage::after {
+  content: '';
+  position: absolute;
+  inset: auto -10% 8% auto;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--app-surface-elevated-bg) 28%, transparent);
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+.login-panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 30rem);
+  padding: 2rem;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-radius-xl);
+  background: var(--app-surface-elevated-bg);
+  box-shadow: var(--app-shadow-lg);
+  backdrop-filter: blur(18px);
+}
+
+.login-mark {
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--app-radius-pill);
+  background: color-mix(in srgb, var(--app-page-alt-bg) 72%, transparent);
+  color: var(--bs-primary);
+}
+
+.login-kicker {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--app-text-soft);
+}
+
+.login-title {
+  font-size: clamp(1.8rem, 2.6vw, 2.3rem);
+  line-height: 1.08;
+  font-weight: 700;
+  color: var(--app-text-color);
+}
+
+.login-copy {
+  color: var(--app-text-muted);
+}
+
+.google-login-btn {
+  min-height: var(--app-control-height-lg);
+  padding-inline: 1.25rem;
+  border: 1px solid var(--app-border-strong);
+  border-radius: var(--app-radius-pill);
+  background: var(--app-surface-bg);
+  color: var(--app-text-color);
+  box-shadow: var(--app-shadow-sm);
+  transition:
+    transform var(--app-transition-fast),
+    box-shadow var(--app-transition-fast),
+    border-color var(--app-transition-fast),
+    background-color var(--app-transition-fast);
+}
+
+.google-login-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--app-shadow-md);
+  border-color: color-mix(in srgb, var(--bs-primary) 24%, var(--app-border-strong));
+}
+
+.google-login-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.google-logo {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1rem;
+  color: #4285f4;
+}
+
+.google-login-text {
+  font-weight: 600;
+}
+
+.login-footnote {
+  font-size: 0.875rem;
+  color: var(--app-text-soft);
 }

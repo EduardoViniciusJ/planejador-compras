@@ -1,19 +1,55 @@
-<div class="app-shell min-vh-100 d-flex flex-column bg-light">
-  <header class="navbar navbar-dark bg-dark border-bottom border-secondary">
+<div class="app-shell min-vh-100 d-flex flex-column">
+  <header class="app-header navbar border-bottom">
     <div class="container-fluid px-4">
-      <span class="navbar-brand d-flex align-items-center gap-2 mb-0 fw-semibold">
+      <span class="navbar-brand text-body d-flex align-items-center gap-2 mb-0 fw-semibold">
         <i class="bi bi-cart3 fs-4"></i>
         Planejador de Compras
       </span>
+
+      <button
+        type="button"
+        class="theme-toggle btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2"
+        [attr.aria-label]="themeButtonLabel()"
+        [attr.title]="themeButtonLabel()"
+        [attr.aria-pressed]="currentTheme() === 'dark'"
+        (click)="toggleTheme()"
+      >
+        <i
+          class="bi"
+          [class.bi-moon-stars-fill]="currentTheme() === 'light'"
+          [class.bi-sun-fill]="currentTheme() === 'dark'"
+          aria-hidden="true"
+        ></i>
+        <span class="d-none d-sm-inline">
+          {{ currentTheme() === 'dark' ? 'Tema escuro' : 'Tema claro' }}
+        </span>
+      </button>
     </div>
   </header>
 
-  <main class="flex-grow-1 d-flex align-items-center justify-content-center">
-    <div class="text-center px-4">
-      <i class="bi bi-bag-check display-1 text-primary mb-3"></i>
-      <h1 class="h3 mb-2">Frontend Angular pronto para evoluir</h1>
-      <p class="text-secondary mb-0">Bootstrap 5 e Bootstrap Icons já estão integrados.</p>
-    </div>
+  <main class="login-stage flex-grow-1 d-flex align-items-center justify-content-center px-3 py-4">
+    <section class="login-panel text-center">
+      <div class="login-mark mx-auto mb-4 d-inline-flex align-items-center justify-content-center">
+        <i class="bi bi-bag-check-fill fs-2"></i>
+      </div>
+
+      <div class="mb-4">
+        <p class="login-kicker mb-2">Planejador de Compras</p>
+        <h1 class="login-title mb-2">Entre para organizar suas compras</h1>
+        <p class="login-copy mb-0">
+          Acesso simples com sua conta Google para acompanhar listas, itens e cotações em um só lugar.
+        </p>
+      </div>
+
+      <button type="button" class="google-login-btn btn w-100 d-inline-flex align-items-center justify-content-center gap-3">
+        <span class="google-logo" aria-hidden="true">
+          <i class="bi bi-google"></i>
+        </span>
+        <span class="google-login-text">Continuar com Google</span>
+      </button>
+
+      <p class="login-footnote mb-0 mt-3">Visual de demonstração da tela inicial.</p>
+    </section>
   </main>
 
   <router-outlet />

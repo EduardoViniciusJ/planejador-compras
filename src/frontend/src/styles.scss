@@ -1,5 +1,68 @@
 :root {
   color-scheme: light;
+  --app-page-bg: #f8fafc;
+  --app-page-alt-bg: #eef2ff;
+  --app-surface-bg: #ffffff;
+  --app-surface-alt-bg: #f8fafc;
+  --app-surface-elevated-bg: rgba(255, 255, 255, 0.92);
+  --app-surface-inset-bg: #f1f5f9;
+  --app-header-bg: rgba(255, 255, 255, 0.94);
+  --app-sidebar-bg: rgba(255, 255, 255, 0.98);
+  --app-overlay-bg: rgba(15, 23, 42, 0.48);
+  --app-text-color: #0f172a;
+  --app-text-muted: #475569;
+  --app-text-soft: #64748b;
+  --app-border-color: rgba(15, 23, 42, 0.12);
+  --app-border-strong: rgba(15, 23, 42, 0.18);
+  --app-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --app-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --app-shadow-lg: 0 18px 48px rgba(15, 23, 42, 0.12);
+  --app-radius-xs: 6px;
+  --app-radius-sm: 8px;
+  --app-radius-md: 12px;
+  --app-radius-lg: 16px;
+  --app-radius-xl: 20px;
+  --app-radius-pill: 999px;
+  --app-page-padding-x: clamp(1rem, 2.2vw, 1.75rem);
+  --app-page-padding-y: clamp(1rem, 2vw, 1.5rem);
+  --app-content-max-width: 72rem;
+  --app-content-wide-max-width: 88rem;
+  --app-section-gap: clamp(1rem, 2vw, 1.5rem);
+  --app-stack-gap: 1rem;
+  --app-control-height: 2.75rem;
+  --app-control-height-sm: 2.25rem;
+  --app-control-height-lg: 3.25rem;
+  --app-control-radius: 0.625rem;
+  --app-surface-padding: clamp(1rem, 2vw, 1.5rem);
+  --app-surface-padding-lg: clamp(1.25rem, 2.5vw, 2rem);
+  --app-header-height: 4.5rem;
+  --app-nav-height: 3.5rem;
+  --app-toolbar-height: 3.25rem;
+  --app-transition-fast: 160ms ease;
+  --app-transition-base: 220ms ease;
+  --app-focus-ring: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+[data-bs-theme='dark'] {
+  color-scheme: dark;
+  --app-page-bg: #0f172a;
+  --app-page-alt-bg: #111827;
+  --app-surface-bg: #111827;
+  --app-surface-alt-bg: #0b1220;
+  --app-surface-elevated-bg: rgba(15, 23, 42, 0.9);
+  --app-surface-inset-bg: #1e293b;
+  --app-header-bg: rgba(15, 23, 42, 0.94);
+  --app-sidebar-bg: rgba(15, 23, 42, 0.98);
+  --app-overlay-bg: rgba(2, 6, 23, 0.64);
+  --app-text-color: #e2e8f0;
+  --app-text-muted: #cbd5e1;
+  --app-text-soft: #94a3b8;
+  --app-border-color: rgba(148, 163, 184, 0.18);
+  --app-border-strong: rgba(148, 163, 184, 0.28);
+  --app-shadow-sm: 0 1px 2px rgba(2, 6, 23, 0.35);
+  --app-shadow-md: 0 12px 32px rgba(2, 6, 23, 0.35);
+  --app-shadow-lg: 0 24px 56px rgba(2, 6, 23, 0.45);
+  --app-focus-ring: 0 0 0 0.2rem rgba(96, 165, 250, 0.22);
 }
 
 html,
@@ -9,6 +72,35 @@ body {
 
 body {
   margin: 0;
-  background: var(--bs-body-bg);
-  color: var(--bs-body-color);
+  background: var(--app-page-bg, var(--bs-body-bg));
+  color: var(--app-text-color, var(--bs-body-color));
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.16em;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(59, 130, 246, 0.25);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--app-focus-ring);
+  border-radius: var(--app-radius-sm);
 }
