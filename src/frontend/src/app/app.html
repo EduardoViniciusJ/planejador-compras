@@ -1,56 +1,193 @@
-<div class="app-shell min-vh-100 d-flex flex-column">
+<div id="top" class="app-shell min-vh-100 d-flex flex-column">
   <header class="app-header navbar border-bottom">
-    <div class="container-fluid px-4">
-      <span class="navbar-brand text-body d-flex align-items-center gap-2 mb-0 fw-semibold">
-        <i class="bi bi-cart3 fs-4"></i>
+    <div class="app-header-inner container-fluid">
+      <a class="navbar-brand text-body d-flex align-items-center gap-2 mb-0 fw-semibold" href="#top" aria-label="Voltar para o início">
+        <img class="brand-mark" src="/icons/brand-mark.svg" alt="" width="32" height="32" aria-hidden="true" />
         Planejador de Compras
-      </span>
+      </a>
 
-      <button
-        type="button"
-        class="theme-toggle btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2"
-        [attr.aria-label]="themeButtonLabel()"
-        [attr.title]="themeButtonLabel()"
-        [attr.aria-pressed]="currentTheme() === 'dark'"
-        (click)="toggleTheme()"
-      >
-        <i
-          class="bi"
-          [class.bi-moon-stars-fill]="currentTheme() === 'light'"
-          [class.bi-sun-fill]="currentTheme() === 'dark'"
-          aria-hidden="true"
-        ></i>
-        <span class="d-none d-sm-inline">
-          {{ currentTheme() === 'dark' ? 'Tema escuro' : 'Tema claro' }}
-        </span>
-      </button>
+      <nav class="landing-nav d-none d-lg-flex align-items-center gap-4" aria-label="Navegação principal">
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#beneficios">Benefícios</a>
+      </nav>
+
+      <div class="d-flex align-items-center gap-2">
+        <button
+          type="button"
+          class="theme-toggle btn btn-outline-secondary btn-sm d-inline-flex align-items-center justify-content-center"
+          [attr.aria-label]="themeButtonLabel()"
+          [attr.title]="themeButtonLabel()"
+          [attr.aria-pressed]="currentTheme() === 'dark'"
+          (click)="toggleTheme()"
+        >
+          <i
+            class="bi"
+            [class.bi-moon-stars-fill]="currentTheme() === 'light'"
+            [class.bi-brightness-high-fill]="currentTheme() === 'dark'"
+            aria-hidden="true"
+          ></i>
+        </button>
+
+        <button type="button" class="header-login-btn btn btn-primary btn-sm d-none d-sm-inline-flex align-items-center gap-2">
+          Entrar
+          <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
   </header>
 
-  <main class="login-stage flex-grow-1 d-flex align-items-center justify-content-center px-3 py-4">
-    <section class="login-panel text-center">
-      <div class="login-mark mx-auto mb-4 d-inline-flex align-items-center justify-content-center">
-        <i class="bi bi-bag-check-fill fs-2"></i>
+  <main class="landing-page flex-grow-1">
+    <section class="hero-section">
+      <img
+        class="hero-image"
+        src="/images/landing-hero.png"
+        alt="Painel do Planejador de Compras mostrando listas, cotações por fornecedor e melhor preço destacado."
+        decoding="async"
+        fetchpriority="high"
+      />
+
+      <div class="hero-overlay" aria-hidden="true"></div>
+
+      <div class="hero-content container-fluid">
+        <div class="hero-copy">
+          <h1 class="hero-title mb-3">Planeje compras</h1>
+
+          <p class="hero-description mb-4">
+            Tenha mais controle sobre suas compras: organize o que precisa comprar, compare propostas e escolha o melhor fornecedor com confiança.
+          </p>
+
+          <div class="hero-actions d-flex flex-column flex-sm-row gap-3 mb-4">
+            <button type="button" class="google-login-btn btn btn-primary d-inline-flex align-items-center justify-content-center gap-3">
+              <span class="google-logo" aria-hidden="true">
+                <i class="fa-brands fa-google"></i>
+              </span>
+              <span>Continuar com Google</span>
+            </button>
+
+            <a class="hero-secondary-link btn btn-outline-secondary d-inline-flex align-items-center justify-content-center gap-2" href="#como-funciona">
+              Ver como funciona
+              <i class="bi bi-arrow-down-short" aria-hidden="true"></i>
+            </a>
+          </div>
+
+          <div class="hero-summary d-flex flex-column flex-sm-row gap-3" aria-label="Resumo do produto">
+            <div>
+              <strong>Listas</strong>
+              <span>centralize pedidos e itens</span>
+            </div>
+            <div>
+              <strong>Cotações</strong>
+              <span>compare fornecedores</span>
+            </div>
+            <div>
+              <strong>Escolha</strong>
+              <span>veja o menor custo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="como-funciona" class="process-section container-fluid">
+      <div class="process-heading">
+        <h2 class="process-title mb-0">Em <span>3 passos</span> simples</h2>
       </div>
 
-      <div class="mb-4">
-        <p class="login-kicker mb-2">Planejador de Compras</p>
-        <h1 class="login-title mb-2">Entre para organizar suas compras</h1>
-        <p class="login-copy mb-0">
-          Acesso simples com sua conta Google para acompanhar listas, itens e cotações em um só lugar.
+      <div class="process-grid">
+        <article class="process-card">
+          <div class="process-card-top">
+            <strong>01</strong>
+            <i class="bi bi-card-checklist" aria-hidden="true"></i>
+          </div>
+          <h3>Monte sua lista</h3>
+          <p>Adicione os itens, quantidades e unidades que sua empresa precisa comprar.</p>
+        </article>
+
+        <article class="process-card">
+          <div class="process-card-top">
+            <strong>02</strong>
+            <i class="bi bi-shop" aria-hidden="true"></i>
+          </div>
+          <h3>Compare cotações</h3>
+          <p>Registre os preços recebidos por fornecedor e visualize tudo lado a lado.</p>
+        </article>
+
+        <article class="process-card">
+          <div class="process-card-top">
+            <strong>03</strong>
+            <i class="bi bi-check2-circle" aria-hidden="true"></i>
+          </div>
+          <h3>Escolha melhor</h3>
+          <p>Veja o menor custo com clareza e decida sem depender de planilhas confusas.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="beneficios" class="benefits-section container-fluid">
+      <div class="section-heading">
+        <h2 class="section-title mb-0">Mais controle para comprar com segurança</h2>
+      </div>
+
+      <div class="benefits-grid">
+        <article class="benefit-card">
+          <span class="benefit-icon">
+            <i class="bi bi-folder-check" aria-hidden="true"></i>
+          </span>
+          <h3>Tudo centralizado</h3>
+          <p>Listas, itens e cotações ficam organizados no mesmo fluxo.</p>
+        </article>
+
+        <article class="benefit-card">
+          <span class="benefit-icon">
+            <i class="bi bi-eye" aria-hidden="true"></i>
+          </span>
+          <h3>Comparação clara</h3>
+          <p>Você entende rapidamente qual fornecedor vale mais a pena.</p>
+        </article>
+
+        <article class="benefit-card">
+          <span class="benefit-icon">
+            <i class="bi bi-graph-down-arrow" aria-hidden="true"></i>
+          </span>
+          <h3>Menos custo perdido</h3>
+          <p>O melhor preço aparece com destaque para apoiar a decisão de compra.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="app-footer-inner container-fluid">
+      <div class="footer-brand">
+        <span class="footer-logo d-inline-flex align-items-center gap-2">
+          <img class="brand-mark" src="/icons/brand-mark.svg" alt="" width="32" height="32" aria-hidden="true" />
+          Planejador de Compras
+        </span>
+        <p class="mb-0">
+          Organize listas, compare cotações e escolha fornecedores com mais clareza.
         </p>
       </div>
 
-      <button type="button" class="google-login-btn btn w-100 d-inline-flex align-items-center justify-content-center gap-3">
-        <span class="google-logo" aria-hidden="true">
-          <i class="bi bi-google"></i>
-        </span>
-        <span class="google-login-text">Continuar com Google</span>
-      </button>
+      <div class="footer-column">
+        <h2>Produto</h2>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#beneficios">Benefícios</a>
+        <a href="#top">Entrar com Google</a>
+      </div>
 
-      <p class="login-footnote mb-0 mt-3">Visual de demonstração da tela inicial.</p>
-    </section>
-  </main>
+      <div class="footer-column">
+        <h2>Legal</h2>
+        <a href="#top">Política de Privacidade</a>
+        <a href="#top">Termos de Uso</a>
+        <a href="#top">Política de Cookies</a>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Planejador de Compras. Todos os direitos reservados.</span>
+        <span>Brasil</span>
+      </div>
+    </div>
+  </footer>
 
   <router-outlet />
 </div>

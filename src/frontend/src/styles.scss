@@ -1,22 +1,44 @@
 :root {
   color-scheme: light;
-  --app-page-bg: #f8fafc;
-  --app-page-alt-bg: #eef2ff;
+  --bs-primary: #10b981;
+  --bs-primary-rgb: 16, 185, 129;
+  --bs-primary-text-emphasis: #047857;
+  --bs-primary-bg-subtle: #d1fae5;
+  --bs-primary-border-subtle: #6ee7b7;
+  --bs-font-sans-serif: var(--app-font-family);
+  --bs-body-font-family: var(--app-font-family);
+  --bs-body-bg: #f9fafb;
+  --bs-body-color: #111827;
+  --bs-secondary-color: #4b5563;
+  --bs-border-color: rgba(17, 24, 39, 0.12);
+  --bs-link-color: #047857;
+  --bs-link-color-rgb: 4, 120, 87;
+  --bs-link-hover-color: #065f46;
+  --bs-link-hover-color-rgb: 6, 95, 70;
+  --app-brand-ink: #111827;
+  --app-brand-muted: #374151;
+  --app-brand-accent: #10b981;
+  --app-brand-accent-strong: #059669;
+  --app-brand-accent-contrast: #04251c;
+  --app-brand-accent-soft: #d1fae5;
+  --app-font-family: 'Satoshi', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --app-page-bg: #f9fafb;
+  --app-page-alt-bg: #f3f4f6;
   --app-surface-bg: #ffffff;
-  --app-surface-alt-bg: #f8fafc;
+  --app-surface-alt-bg: #f3f4f6;
   --app-surface-elevated-bg: rgba(255, 255, 255, 0.92);
-  --app-surface-inset-bg: #f1f5f9;
-  --app-header-bg: rgba(255, 255, 255, 0.94);
+  --app-surface-inset-bg: #e5e7eb;
+  --app-header-bg: rgba(255, 255, 255, 0.72);
   --app-sidebar-bg: rgba(255, 255, 255, 0.98);
-  --app-overlay-bg: rgba(15, 23, 42, 0.48);
-  --app-text-color: #0f172a;
-  --app-text-muted: #475569;
-  --app-text-soft: #64748b;
-  --app-border-color: rgba(15, 23, 42, 0.12);
-  --app-border-strong: rgba(15, 23, 42, 0.18);
-  --app-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --app-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
-  --app-shadow-lg: 0 18px 48px rgba(15, 23, 42, 0.12);
+  --app-overlay-bg: rgba(17, 24, 39, 0.5);
+  --app-text-color: #111827;
+  --app-text-muted: #4b5563;
+  --app-text-soft: #6b7280;
+  --app-border-color: rgba(17, 24, 39, 0.12);
+  --app-border-strong: rgba(17, 24, 39, 0.2);
+  --app-shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.05);
+  --app-shadow-md: 0 8px 24px rgba(17, 24, 39, 0.08);
+  --app-shadow-lg: 0 18px 48px rgba(17, 24, 39, 0.12);
   --app-radius-xs: 6px;
   --app-radius-sm: 8px;
   --app-radius-md: 12px;
@@ -40,29 +62,48 @@
   --app-toolbar-height: 3.25rem;
   --app-transition-fast: 160ms ease;
   --app-transition-base: 220ms ease;
-  --app-focus-ring: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+  --app-focus-ring: 0 0 0 0.2rem rgba(16, 185, 129, 0.24);
 }
 
 [data-bs-theme='dark'] {
   color-scheme: dark;
-  --app-page-bg: #0f172a;
-  --app-page-alt-bg: #111827;
+  --bs-primary: #34d399;
+  --bs-primary-rgb: 52, 211, 153;
+  --bs-primary-text-emphasis: #6ee7b7;
+  --bs-primary-bg-subtle: #064e3b;
+  --bs-primary-border-subtle: #047857;
+  --bs-body-bg: #080b10;
+  --bs-body-color: #f9fafb;
+  --bs-secondary-color: #d1d5db;
+  --bs-border-color: rgba(156, 163, 175, 0.18);
+  --bs-link-color: #6ee7b7;
+  --bs-link-color-rgb: 110, 231, 183;
+  --bs-link-hover-color: #a7f3d0;
+  --bs-link-hover-color-rgb: 167, 243, 208;
+  --app-brand-ink: #f9fafb;
+  --app-brand-muted: #d1d5db;
+  --app-brand-accent: #34d399;
+  --app-brand-accent-strong: #6ee7b7;
+  --app-brand-accent-contrast: #04251c;
+  --app-brand-accent-soft: rgba(52, 211, 153, 0.14);
+  --app-page-bg: #080b10;
+  --app-page-alt-bg: #0d1117;
   --app-surface-bg: #111827;
-  --app-surface-alt-bg: #0b1220;
-  --app-surface-elevated-bg: rgba(15, 23, 42, 0.9);
-  --app-surface-inset-bg: #1e293b;
-  --app-header-bg: rgba(15, 23, 42, 0.94);
-  --app-sidebar-bg: rgba(15, 23, 42, 0.98);
-  --app-overlay-bg: rgba(2, 6, 23, 0.64);
-  --app-text-color: #e2e8f0;
-  --app-text-muted: #cbd5e1;
-  --app-text-soft: #94a3b8;
-  --app-border-color: rgba(148, 163, 184, 0.18);
-  --app-border-strong: rgba(148, 163, 184, 0.28);
-  --app-shadow-sm: 0 1px 2px rgba(2, 6, 23, 0.35);
-  --app-shadow-md: 0 12px 32px rgba(2, 6, 23, 0.35);
-  --app-shadow-lg: 0 24px 56px rgba(2, 6, 23, 0.45);
-  --app-focus-ring: 0 0 0 0.2rem rgba(96, 165, 250, 0.22);
+  --app-surface-alt-bg: #0b1018;
+  --app-surface-elevated-bg: rgba(17, 24, 39, 0.9);
+  --app-surface-inset-bg: #1f2937;
+  --app-header-bg: rgba(8, 11, 16, 0.72);
+  --app-sidebar-bg: rgba(8, 11, 16, 0.98);
+  --app-overlay-bg: rgba(0, 0, 0, 0.64);
+  --app-text-color: #f9fafb;
+  --app-text-muted: #d1d5db;
+  --app-text-soft: #9ca3af;
+  --app-border-color: rgba(156, 163, 175, 0.18);
+  --app-border-strong: rgba(156, 163, 175, 0.28);
+  --app-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --app-shadow-md: 0 12px 32px rgba(0, 0, 0, 0.35);
+  --app-shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.45);
+  --app-focus-ring: 0 0 0 0.2rem rgba(52, 211, 153, 0.22);
 }
 
 html,
@@ -72,6 +113,7 @@ body {
 
 body {
   margin: 0;
+  font-family: var(--app-font-family);
   background: var(--app-page-bg, var(--bs-body-bg));
   color: var(--app-text-color, var(--bs-body-color));
 }
@@ -95,8 +137,42 @@ textarea {
   font: inherit;
 }
 
+.btn-primary {
+  --bs-btn-color: var(--app-brand-accent-contrast);
+  --bs-btn-bg: var(--app-brand-accent);
+  --bs-btn-border-color: var(--app-brand-accent);
+  --bs-btn-hover-color: var(--app-brand-accent-contrast);
+  --bs-btn-hover-bg: var(--app-brand-accent-strong);
+  --bs-btn-hover-border-color: var(--app-brand-accent-strong);
+  --bs-btn-focus-shadow-rgb: var(--bs-primary-rgb);
+  --bs-btn-active-color: var(--app-brand-accent-contrast);
+  --bs-btn-active-bg: var(--app-brand-accent-strong);
+  --bs-btn-active-border-color: var(--app-brand-accent-strong);
+  --bs-btn-disabled-color: var(--app-brand-accent-contrast);
+  --bs-btn-disabled-bg: var(--app-brand-accent);
+  --bs-btn-disabled-border-color: var(--app-brand-accent);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--app-brand-accent-strong);
+  --bs-btn-border-color: var(--app-brand-accent);
+  --bs-btn-hover-color: var(--app-brand-accent-contrast);
+  --bs-btn-hover-bg: var(--app-brand-accent);
+  --bs-btn-hover-border-color: var(--app-brand-accent);
+  --bs-btn-focus-shadow-rgb: var(--bs-primary-rgb);
+  --bs-btn-active-color: var(--app-brand-accent-contrast);
+  --bs-btn-active-bg: var(--app-brand-accent);
+  --bs-btn-active-border-color: var(--app-brand-accent);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--app-brand-accent);
+  box-shadow: var(--app-focus-ring);
+}
+
 ::selection {
-  background: rgba(59, 130, 246, 0.25);
+  background: rgba(16, 185, 129, 0.24);
 }
 
 :focus-visible {
