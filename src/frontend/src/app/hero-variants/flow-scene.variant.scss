@@ -1,0 +1,202 @@
+.hero-flow-scene {
+  position: relative;
+  width: min(100%, 34rem);
+  aspect-ratio: 1.08;
+  justify-self: end;
+  border: 1px solid color-mix(in srgb, var(--bs-primary) 18%, var(--app-border-color));
+  border-radius: var(--app-radius-xl);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--bs-primary) 13%, transparent), transparent 38%),
+    color-mix(in srgb, var(--app-surface-elevated-bg) 82%, var(--app-page-bg));
+  box-shadow:
+    0 24px 70px color-mix(in srgb, var(--app-brand-ink) 14%, transparent),
+    0 0 80px color-mix(in srgb, var(--bs-primary) 18%, transparent);
+  overflow: visible;
+  animation: flowSceneFloat 7s ease-in-out infinite;
+}
+
+.flow-scene-grid {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--app-border-color) 50%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--app-border-color) 50%, transparent) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  opacity: 0.34;
+  pointer-events: none;
+}
+
+.flow-connector {
+  position: absolute;
+  z-index: 1;
+  height: 2px;
+  border-radius: var(--app-radius-pill);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--bs-primary) 72%, transparent), transparent);
+  transform-origin: left center;
+  animation: flowConnectorPulse 4.8s ease-in-out infinite;
+}
+
+.flow-connector-one {
+  top: 29%;
+  left: 24%;
+  width: 31%;
+  transform: rotate(15deg);
+}
+
+.flow-connector-two {
+  top: 40%;
+  right: 19%;
+  width: 31%;
+  transform: rotate(-22deg);
+  animation-delay: 0.9s;
+}
+
+.flow-step {
+  position: absolute;
+  z-index: 2;
+  width: 10.5rem;
+  min-height: 9.75rem;
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  padding: 1rem;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-radius-lg);
+  background: color-mix(in srgb, var(--app-surface-bg) 84%, transparent);
+  box-shadow: var(--app-shadow-md);
+  backdrop-filter: blur(18px);
+  animation: flowStepFloat 5.8s ease-in-out infinite;
+}
+
+.flow-step-number {
+  color: var(--bs-primary);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.flow-step-icon {
+  width: 2.55rem;
+  height: 2.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--app-radius-sm);
+  background: color-mix(in srgb, var(--bs-primary) 14%, var(--app-surface-bg));
+  color: var(--bs-primary);
+  font-size: 1.2rem;
+}
+
+.flow-step strong {
+  color: var(--app-text-color);
+  font-size: 1.08rem;
+}
+
+.flow-step small {
+  color: var(--app-text-muted);
+  line-height: 1.45;
+}
+
+.flow-step-list {
+  top: 14%;
+  left: 7%;
+}
+
+.flow-step-quote {
+  top: 24%;
+  left: 39%;
+  animation-delay: 0.9s;
+}
+
+.flow-step-choice {
+  top: 11%;
+  right: 6%;
+  border-color: color-mix(in srgb, var(--bs-primary) 48%, var(--app-border-color));
+  box-shadow:
+    var(--app-shadow-md),
+    0 0 34px color-mix(in srgb, var(--bs-primary) 18%, transparent);
+  animation-delay: 1.8s;
+}
+
+.flow-detail-card {
+  position: absolute;
+  right: 8%;
+  bottom: 10%;
+  left: 9%;
+  z-index: 2;
+  display: grid;
+  gap: 0.65rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--app-border-color) 72%, transparent);
+  border-radius: var(--app-radius-lg);
+  background: color-mix(in srgb, var(--app-surface-bg) 86%, transparent);
+  box-shadow: var(--app-shadow-lg);
+  backdrop-filter: blur(18px);
+}
+
+.flow-detail-header,
+.flow-detail-row,
+.flow-status-chip {
+  display: flex;
+  align-items: center;
+}
+
+.flow-detail-header,
+.flow-detail-row {
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.flow-detail-header {
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid var(--app-border-color);
+}
+
+.flow-detail-header span,
+.flow-detail-row span {
+  color: var(--app-text-muted);
+}
+
+.flow-detail-header strong,
+.flow-detail-row strong {
+  color: var(--app-text-color);
+}
+
+.flow-detail-row {
+  min-height: 2.5rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  background: color-mix(in srgb, var(--app-surface-elevated-bg) 78%, transparent);
+}
+
+.flow-detail-row-best {
+  border-color: color-mix(in srgb, var(--bs-primary) 48%, var(--app-border-color));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--bs-primary) 18%, transparent), transparent 70%),
+    color-mix(in srgb, var(--app-surface-elevated-bg) 88%, transparent);
+  animation: flowBestPulse 3.8s ease-in-out infinite;
+}
+
+.flow-status-chip {
+  position: absolute;
+  left: 12%;
+  bottom: 14%;
+  z-index: 3;
+  gap: 0.5rem;
+  min-height: 2.7rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid color-mix(in srgb, var(--bs-primary) 30%, var(--app-border-color));
+  border-radius: var(--app-radius-pill);
+  background: color-mix(in srgb, var(--app-surface-bg) 86%, transparent);
+  box-shadow: var(--app-shadow-md);
+  color: var(--app-text-color);
+  font-size: 0.88rem;
+  font-weight: 700;
+  backdrop-filter: blur(16px);
+  animation: flowChipFloat 5.4s ease-in-out infinite;
+}
+
+.flow-status-chip i {
+  color: var(--bs-primary);
+}

@@ -1,0 +1,199 @@
+.hero-quote-scene {
+  position: relative;
+  width: min(100%, 34rem);
+  aspect-ratio: 1.08;
+  justify-self: end;
+  border: 1px solid color-mix(in srgb, var(--bs-primary) 18%, var(--app-border-color));
+  border-radius: var(--app-radius-xl);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--bs-primary) 13%, transparent), transparent 38%),
+    color-mix(in srgb, var(--app-surface-elevated-bg) 82%, var(--app-page-bg));
+  box-shadow:
+    0 24px 70px color-mix(in srgb, var(--app-brand-ink) 14%, transparent),
+    0 0 80px color-mix(in srgb, var(--bs-primary) 18%, transparent);
+  overflow: visible;
+  transform: rotate(-1.5deg);
+  animation: quoteSceneFloat 7s ease-in-out infinite;
+}
+
+.quote-scene-grid {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--app-border-color) 50%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--app-border-color) 50%, transparent) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  opacity: 0.34;
+  pointer-events: none;
+}
+
+.quote-panel {
+  position: absolute;
+  inset: 15% 9% auto;
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--app-border-color) 72%, transparent);
+  border-radius: var(--app-radius-lg);
+  background: color-mix(in srgb, var(--app-surface-bg) 84%, transparent);
+  box-shadow: var(--app-shadow-lg);
+  backdrop-filter: blur(18px);
+}
+
+.quote-panel-header,
+.quote-panel-footer,
+.quote-item,
+.quote-float-badge,
+.quote-mini-card {
+  display: flex;
+  align-items: center;
+}
+
+.quote-panel-header,
+.quote-panel-footer {
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.quote-panel-header span,
+.quote-item span,
+.quote-panel-footer span {
+  color: var(--app-text-muted);
+}
+
+.quote-panel-header span,
+.quote-item span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.quote-panel-header i,
+.quote-item-best i,
+.quote-float-badge i,
+.quote-mini-card i {
+  color: var(--bs-primary);
+}
+
+.quote-panel-header strong,
+.quote-panel-footer strong,
+.quote-item strong {
+  color: var(--app-text-color);
+}
+
+.quote-items {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.quote-item {
+  justify-content: space-between;
+  min-height: 3.15rem;
+  gap: 1rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  background: color-mix(in srgb, var(--app-surface-elevated-bg) 82%, transparent);
+}
+
+.quote-item-best {
+  border-color: color-mix(in srgb, var(--bs-primary) 52%, var(--app-border-color));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--bs-primary) 20%, transparent), transparent 62%),
+    color-mix(in srgb, var(--app-surface-elevated-bg) 92%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bs-primary) 18%, transparent);
+  animation: quoteBestPulse 3.8s ease-in-out infinite;
+}
+
+.quote-panel-footer {
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--app-border-color);
+}
+
+.quote-float-badge,
+.quote-mini-card {
+  position: absolute;
+  z-index: 2;
+  gap: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--bs-primary) 22%, var(--app-border-color));
+  border-radius: var(--app-radius-pill);
+  background: color-mix(in srgb, var(--app-surface-bg) 82%, transparent);
+  box-shadow: var(--app-shadow-md);
+  color: var(--app-text-color);
+  font-size: 0.88rem;
+  font-weight: 700;
+  backdrop-filter: blur(16px);
+  animation: quoteChipFloat 5.6s ease-in-out infinite;
+}
+
+.quote-float-badge {
+  min-height: 2.6rem;
+  padding: 0.7rem 0.95rem;
+}
+
+.quote-float-badge-top {
+  top: 7%;
+  left: 8%;
+}
+
+.quote-float-badge-side {
+  top: 34%;
+  right: -4%;
+  animation-delay: 0.8s;
+}
+
+.quote-mini-card {
+  min-height: 2.85rem;
+  padding: 0.75rem 0.95rem;
+  border-radius: var(--app-radius-md);
+}
+
+.quote-mini-card-left {
+  left: -4%;
+  bottom: 25%;
+  animation-delay: 1.4s;
+}
+
+.quote-mini-card-bottom {
+  right: 14%;
+  bottom: 7%;
+  animation-delay: 2s;
+}
+
+@keyframes quoteSceneFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+
+  50% {
+    transform: translateY(-0.65rem) rotate(-0.6deg);
+  }
+}
+
+@keyframes quoteChipFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-0.55rem);
+  }
+}
+
+@keyframes quoteBestPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--bs-primary) 18%, transparent),
+      0 0 0 color-mix(in srgb, var(--bs-primary) 0%, transparent);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--bs-primary) 32%, transparent),
+      0 0 32px color-mix(in srgb, var(--bs-primary) 22%, transparent);
+  }
+}
