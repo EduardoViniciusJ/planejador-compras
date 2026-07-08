@@ -7,6 +7,7 @@ using PlanejadorCompras.Application.UseCases.ItemQuote.Create;
 
 namespace PlanejadorCompras.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/item-quotes")]
 public sealed class ItemQuotesController : ControllerBase

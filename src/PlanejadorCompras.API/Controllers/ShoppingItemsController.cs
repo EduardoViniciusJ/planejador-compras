@@ -7,6 +7,7 @@ using PlanejadorCompras.Application.UseCases.ShoppingItem.Create;
 
 namespace PlanejadorCompras.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/shopping-items")]
 public sealed class ShoppingItemsController : ControllerBase

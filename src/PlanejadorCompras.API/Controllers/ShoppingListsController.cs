@@ -8,6 +8,7 @@ using PlanejadorCompras.Application.UseCases.ShoppingList.Create;
 
 namespace PlanejadorCompras.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/shopping-lists")]
 public sealed class ShoppingListsController : ControllerBase
