@@ -36,12 +36,21 @@ public sealed class AuthController : ControllerBase
         [FromBody] GoogleAuthorizationCodeLoginRequestDto request,
         CancellationToken cancellationToken)
     {
-        if (!IsXmlHttpRequest())
+        if (!string.Equals(
+            Request.Headers[AuthenticationConstants.XmlHttpRequestHeaderName],
+            AuthenticationConstants.XmlHttpRequestHeaderValue,
+            StringComparison.OrdinalIgnoreCase))
         {
-            return Unauthorized(CreateProblemDetails(
-                StatusCodes.Status401Unauthorized,
-                "Missing required Google login request header.",
-                "google_code_missing_x_requested_with"));
+            var problemDetails = new ProblemDetails
+            {
+                Status = StatusCodes.Status401Unauthorized,
+                Title = "Missing required Google login request header.",
+                Instance = Request.Path
+            };
+
+            problemDetails.Extensions["errorCode"] = "google_code_missing_x_requested_with";
+
+            return Unauthorized(problemDetails);
         }
 
         var result = await _googleAuthorizationCodeLoginUseCase.ExecuteAsync(request, cancellationToken);
@@ -70,27 +79,5 @@ public sealed class AuthController : ControllerBase
         _authCookieService.DeleteAccessToken(HttpContext);
 
         return NoContent();
-    }
-
-    private bool IsXmlHttpRequest()
-    {
-        return string.Equals(
-            Request.Headers[AuthenticationConstants.XmlHttpRequestHeaderName],
-            AuthenticationConstants.XmlHttpRequestHeaderValue,
-            StringComparison.OrdinalIgnoreCase);
-    }
-
-    private ProblemDetails CreateProblemDetails(int status, string title, string errorCode)
-    {
-        var problemDetails = new ProblemDetails
-        {
-            Status = status,
-            Title = title,
-            Instance = Request.Path
-        };
-
-        problemDetails.Extensions["errorCode"] = errorCode;
-
-        return problemDetails;
     }
 }
