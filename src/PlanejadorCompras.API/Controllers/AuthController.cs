@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PlanejadorCompras.API.Security;
 using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.Services.Interfaces;
@@ -12,38 +13,40 @@ namespace PlanejadorCompras.API.Controllers;
 [Route("api/[controller]")]
 public sealed class AuthController : ControllerBase
 {
-    private readonly GoogleLoginUseCase _googleLoginUseCase;
+    private readonly GoogleAuthorizationCodeLoginUseCase _googleAuthorizationCodeLoginUseCase;
     private readonly ICurrentUser _currentUser;
+    private readonly IAuthCookieService _authCookieService;
 
     public AuthController(
-        GoogleLoginUseCase googleLoginUseCase,
-        ICurrentUser currentUser)
+        GoogleAuthorizationCodeLoginUseCase googleAuthorizationCodeLoginUseCase,
+        ICurrentUser currentUser,
+        IAuthCookieService authCookieService)
     {
-        _googleLoginUseCase = googleLoginUseCase;
+        _googleAuthorizationCodeLoginUseCase = googleAuthorizationCodeLoginUseCase;
         _currentUser = currentUser;
+        _authCookieService = authCookieService;
     }
 
-    [HttpPost("google")]
+    [HttpPost("google-code")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GoogleLogin(
-        [FromBody] GoogleLoginRequestDto request,
+    public async Task<IActionResult> GoogleCodeLogin(
+        [FromBody] GoogleAuthorizationCodeLoginRequestDto request,
         CancellationToken cancellationToken)
     {
-        var result = await _googleLoginUseCase.ExecuteAsync(request, cancellationToken);
-
-        var cookieOptions = new CookieOptions
+        if (!IsXmlHttpRequest())
         {
-            HttpOnly = true,
-            Secure = Request.IsHttps,
-            SameSite = SameSiteMode.Lax,
-            Path = "/",
-            Expires = result.ExpiresAtUtc
-        };
+            return Unauthorized(CreateProblemDetails(
+                StatusCodes.Status401Unauthorized,
+                "Missing required Google login request header.",
+                "google_code_missing_x_requested_with"));
+        }
 
-        Response.Cookies.Append("access_token", result.AccessToken, cookieOptions);
+        var result = await _googleAuthorizationCodeLoginUseCase.ExecuteAsync(request, cancellationToken);
+
+        _authCookieService.AppendAccessToken(HttpContext, result.AccessToken, result.ExpiresAtUtc);
 
         return Ok();
     }
@@ -64,14 +67,30 @@ public sealed class AuthController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public IActionResult Logout()
     {
-        Response.Cookies.Delete("access_token", new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = Request.IsHttps,
-            SameSite = SameSiteMode.Lax,
-            Path = "/"
-        });
+        _authCookieService.DeleteAccessToken(HttpContext);
 
         return NoContent();
+    }
+
+    private bool IsXmlHttpRequest()
+    {
+        return string.Equals(
+            Request.Headers[AuthenticationConstants.XmlHttpRequestHeaderName],
+            AuthenticationConstants.XmlHttpRequestHeaderValue,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    private ProblemDetails CreateProblemDetails(int status, string title, string errorCode)
+    {
+        var problemDetails = new ProblemDetails
+        {
+            Status = status,
+            Title = title,
+            Instance = Request.Path
+        };
+
+        problemDetails.Extensions["errorCode"] = errorCode;
+
+        return problemDetails;
     }
 }
