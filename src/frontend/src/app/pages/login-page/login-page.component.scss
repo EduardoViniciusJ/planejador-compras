@@ -37,9 +37,13 @@
   font-weight: 700;
 }
 
-.google-login-btn:hover {
+.google-login-btn:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: var(--app-shadow-lg);
+}
+
+.google-login-btn:disabled {
+  cursor: wait;
 }
 
 .google-logo {
@@ -59,6 +63,11 @@
   background: conic-gradient(from -35deg, #4285f4 0 28%, #34a853 0 47%, #fbbc05 0 68%, #ea4335 0 86%, #4285f4 0);
   background-clip: text;
   -webkit-background-clip: text;
+}
+
+.alert {
+  margin-top: 1rem;
+  text-align: left;
 }
 
 .login-note {

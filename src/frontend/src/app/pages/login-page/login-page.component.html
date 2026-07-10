@@ -1,18 +1,40 @@
 <section class="login-page-section px-3 py-5">
   <div class="login-card">
     <p class="login-description">
-      Use sua conta Google para acessar listas, itens e cotações com segurança.
+      Use sua conta Google para acessar listas, itens e cotacoes com seguranca.
     </p>
 
-    <button type="button" class="google-login-btn btn btn-primary d-inline-flex align-items-center justify-content-center gap-3">
-      <span class="google-logo" aria-hidden="true">
-        <i class="fa-brands fa-google"></i>
-      </span>
-      <span>Entrar com Google</span>
+    <button
+      type="button"
+      class="google-login-btn btn btn-primary d-inline-flex align-items-center justify-content-center gap-3"
+      [disabled]="isLoading() || isPreparingGoogleLogin()"
+      (click)="startGoogleLogin()"
+    >
+      @if (isLoading() || isPreparingGoogleLogin()) {
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      } @else {
+        <span class="google-logo" aria-hidden="true">
+          <i class="fa-brands fa-google"></i>
+        </span>
+      }
+
+      @if (isLoading()) {
+        <span>Validando acesso...</span>
+      } @else if (isPreparingGoogleLogin()) {
+        <span>Carregando Google...</span>
+      } @else {
+        <span>Entrar com Google</span>
+      }
     </button>
 
+    @if (errorMessage()) {
+      <div class="alert alert-danger mb-0" role="alert">
+        {{ errorMessage() }}
+      </div>
+    }
+
     <p class="login-note mb-0">
-      Login seguro com autenticação Google.
+      Login seguro com autenticacao Google.
     </p>
   </div>
 </section>
