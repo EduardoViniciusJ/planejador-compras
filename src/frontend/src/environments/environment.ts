@@ -1,3 +1,8 @@
+import { getRuntimeConfig } from './runtime-config';
+
+const runtimeConfig = getRuntimeConfig();
+
 export const environment = {
-  apiBaseUrl: '',
+  apiBaseUrl: runtimeConfig.apiBaseUrl ?? '',
+  googleClientId: runtimeConfig.googleClientId ?? '',
 };

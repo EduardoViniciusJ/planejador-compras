@@ -39,6 +39,10 @@ testem.log
 /typings
 __screenshots__/
 
+# Local runtime configuration
+/public/env.js
+/.angularjs-lsp/
+
 # System files
 .DS_Store
 Thumbs.db

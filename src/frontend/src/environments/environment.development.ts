@@ -1,3 +1,8 @@
+import { getRuntimeConfig } from './runtime-config';
+
+const runtimeConfig = getRuntimeConfig();
+
 export const environment = {
-  apiBaseUrl: 'http://localhost:5005',
+  apiBaseUrl: runtimeConfig.apiBaseUrl ?? 'https://localhost:7064',
+  googleClientId: runtimeConfig.googleClientId ?? '',
 };
