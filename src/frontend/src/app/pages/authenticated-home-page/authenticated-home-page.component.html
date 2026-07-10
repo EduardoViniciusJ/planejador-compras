@@ -1,0 +1,46 @@
+<section class="authenticated-page container-fluid">
+  <div class="authenticated-shell">
+    <div class="authenticated-heading">
+      <span class="authenticated-kicker">Sessao ativa</span>
+      <h1>Area logada pronta</h1>
+      <p>
+        O login Google foi validado no backend. A proxima etapa natural e trazer as listas de compras para esta tela.
+      </p>
+    </div>
+
+    <div class="session-panel">
+      <div class="session-icon" aria-hidden="true">
+        <i class="bi bi-person-check"></i>
+      </div>
+
+      @if (user(); as currentUser) {
+        <div class="session-copy">
+          <span>Usuario autenticado</span>
+          <strong>{{ currentUser.name || currentUser.email }}</strong>
+          <small>{{ currentUser.email }}</small>
+        </div>
+      } @else {
+        <div class="session-copy">
+          <span>Carregando sessao</span>
+          <strong>Validando acesso</strong>
+        </div>
+      }
+
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2"
+        [disabled]="isLoggingOut()"
+        (click)="logout()"
+      >
+        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+        {{ isLoggingOut() ? 'Saindo...' : 'Sair' }}
+      </button>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert alert-danger mb-0" role="alert">
+        {{ errorMessage() }}
+      </div>
+    }
+  </div>
+</section>

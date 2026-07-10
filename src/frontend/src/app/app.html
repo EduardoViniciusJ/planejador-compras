@@ -36,8 +36,12 @@
     </div>
   </header>
 
-  @if (isLoginRoute()) {
-    <main class="login-route-main flex-grow-1">
+  @if (isRoutedRoute()) {
+    <main
+      class="flex-grow-1"
+      [class.login-route-main]="isLoginRoute()"
+      [class.authenticated-route-main]="isAuthenticatedRoute()"
+    >
       <router-outlet />
     </main>
   } @else {
