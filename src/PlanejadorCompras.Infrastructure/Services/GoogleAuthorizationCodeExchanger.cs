@@ -1,7 +1,5 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.Services.Interfaces;
 
@@ -12,18 +10,15 @@ public sealed class GoogleAuthorizationCodeExchanger : IGoogleAuthorizationCodeE
     private const string GoogleTokenEndpoint = "https://oauth2.googleapis.com/token";
 
     private readonly HttpClient _httpClient;
-    private readonly ILogger<GoogleAuthorizationCodeExchanger> _logger;
     private readonly string _clientId;
     private readonly string _clientSecret;
     private readonly string _redirectUri;
 
     public GoogleAuthorizationCodeExchanger(
         HttpClient httpClient,
-        IConfiguration configuration,
-        ILogger<GoogleAuthorizationCodeExchanger> logger)
+        IConfiguration configuration)
     {
         _httpClient = httpClient;
-        _logger = logger;
         _clientId = GetRequiredConfigurationValue(configuration, "Authentication:Google:ClientId");
         _clientSecret = GetRequiredConfigurationValue(configuration, "Authentication:Google:ClientSecret");
         _redirectUri = GetRequiredConfigurationValue(configuration, "Authentication:Google:RedirectUri");
@@ -52,29 +47,12 @@ public sealed class GoogleAuthorizationCodeExchanger : IGoogleAuthorizationCodeE
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogWarning(
-                "Google authorization code exchange failed. StatusCode: {StatusCode}; GoogleError: {GoogleError}; GoogleDescription: {GoogleDescription}; RedirectUri: {RedirectUri}; ClientId: {ClientId}",
-                (int)response.StatusCode,
-                tokenResponse?.Error,
-                tokenResponse?.ErrorDescription,
-                _redirectUri,
-                _clientId);
-
-            throw new UnauthorizedException(
-                BuildGoogleUnauthorizedMessage(tokenResponse),
-                BuildGoogleErrorCode(tokenResponse));
+            throw CreateInvalidGoogleLoginException();
         }
 
         if (string.IsNullOrWhiteSpace(tokenResponse?.IdToken))
         {
-            _logger.LogWarning(
-                "Google authorization code exchange succeeded but did not return an id_token. RedirectUri: {RedirectUri}; ClientId: {ClientId}",
-                _redirectUri,
-                _clientId);
-
-            throw new UnauthorizedException(
-                "Google authorization response did not include an ID token.",
-                "google_id_token_missing");
+            throw CreateInvalidGoogleLoginException();
         }
 
         return tokenResponse.IdToken;
@@ -92,7 +70,7 @@ public sealed class GoogleAuthorizationCodeExchanger : IGoogleAuthorizationCodeE
         return value;
     }
 
-    private static GoogleTokenResponse? DeserializeTokenResponse(string responseBody)
+    private static GoogleTokenResponsePayload? DeserializeTokenResponse(string responseBody)
     {
         if (string.IsNullOrWhiteSpace(responseBody))
         {
@@ -101,7 +79,7 @@ public sealed class GoogleAuthorizationCodeExchanger : IGoogleAuthorizationCodeE
 
         try
         {
-            return JsonSerializer.Deserialize<GoogleTokenResponse>(responseBody);
+            return JsonSerializer.Deserialize<GoogleTokenResponsePayload>(responseBody);
         }
         catch (JsonException)
         {
@@ -109,37 +87,10 @@ public sealed class GoogleAuthorizationCodeExchanger : IGoogleAuthorizationCodeE
         }
     }
 
-    private static string BuildGoogleUnauthorizedMessage(GoogleTokenResponse? tokenResponse)
+    private static UnauthorizedException CreateInvalidGoogleLoginException()
     {
-        if (string.IsNullOrWhiteSpace(tokenResponse?.Error))
-        {
-            return "Invalid Google authorization code.";
-        }
-
-        return $"Google rejected authorization code: {tokenResponse.Error}.";
-    }
-
-    private static string BuildGoogleErrorCode(GoogleTokenResponse? tokenResponse)
-    {
-        if (string.IsNullOrWhiteSpace(tokenResponse?.Error))
-        {
-            return "google_code_invalid";
-        }
-
-        var normalizedError = new string(tokenResponse.Error
-            .ToLowerInvariant()
-            .Select(character => char.IsLetterOrDigit(character) ? character : '_')
-            .ToArray());
-
-        return $"google_code_{normalizedError}";
-    }
-
-    private sealed record GoogleTokenResponse(
-        [property: JsonPropertyName("id_token")]
-        string? IdToken,
-        [property: JsonPropertyName("error")]
-        string? Error,
-        [property: JsonPropertyName("error_description")]
-        string? ErrorDescription);
+        return new UnauthorizedException(
+            "Unable to validate Google login.",
+            "google_login_invalid");
     }
 }
