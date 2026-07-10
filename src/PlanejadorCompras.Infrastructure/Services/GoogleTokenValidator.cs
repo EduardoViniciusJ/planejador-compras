@@ -11,8 +11,14 @@ public sealed class GoogleTokenValidator : IGoogleTokenValidator
 
     public GoogleTokenValidator(IConfiguration configuration)
     {
-        _clientId = configuration["Authentication:Google:ClientId"]
-            ?? throw new InvalidOperationException("Missing configuration 'Authentication:Google:ClientId'.");
+        var clientId = configuration["Authentication:Google:ClientId"];
+
+        if (string.IsNullOrWhiteSpace(clientId))
+        {
+            throw new InvalidOperationException("Missing configuration 'Authentication:Google:ClientId'.");
+        }
+
+        _clientId = clientId;
     }
 
     public async Task<GoogleUserInfo> ValidateAsync(string idToken, CancellationToken cancellationToken = default)
@@ -37,6 +43,11 @@ public sealed class GoogleTokenValidator : IGoogleTokenValidator
         if (string.IsNullOrWhiteSpace(payload.Subject) || string.IsNullOrWhiteSpace(payload.Email))
         {
             throw new InvalidOperationException("Google token payload is missing required fields.");
+        }
+
+        if (!payload.EmailVerified)
+        {
+            throw new UnauthorizedException("Google account email is not verified.", "google_email_not_verified");
         }
 
         return new GoogleUserInfo(

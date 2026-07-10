@@ -23,6 +23,7 @@ public static class DependencyInjectionExtensions
     {
         // Auth
         services.AddScoped<GoogleLoginUseCase>();
+        services.AddScoped<GoogleAuthorizationCodeLoginUseCase>();
 
         // ShoppingList
         services.AddScoped<CreateShoppingListUseCase>();

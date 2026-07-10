@@ -63,6 +63,10 @@ public static class DependencyInjectionExtensions
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
+        services.AddHttpClient<IGoogleAuthorizationCodeExchanger, GoogleAuthorizationCodeExchanger>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(10);
+        });
         services.AddScoped<IJwtTokenService, JwtTokenService>();
     }
 }
