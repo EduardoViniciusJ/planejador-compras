@@ -63,7 +63,7 @@ public sealed class ShoppingListsController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<ShoppingListResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ShoppingListsOverviewResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetByUserId(CancellationToken cancellationToken)
     {
         var result = await _getByUserIdUseCase.ExecuteAsync(cancellationToken);
