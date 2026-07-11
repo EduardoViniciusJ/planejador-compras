@@ -1,29 +1,36 @@
+using PlanejadorCompras.Application.Common.Dtos.Models;
 using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.Services.Interfaces;
-using PlanejadorCompras.Domain.Repositories.ShoppingList;
 
 namespace PlanejadorCompras.Application.UseCases.ShoppingList;
 
 public sealed class GetShoppingListsByUserIdUseCase
 {
-    private readonly IShoppingListRepository _shoppingListRepository;
+    private readonly IShoppingListOverviewQuery _shoppingListOverviewQuery;
     private readonly ICurrentUser _currentUser;
 
     public GetShoppingListsByUserIdUseCase(
-        IShoppingListRepository shoppingListRepository,
+        IShoppingListOverviewQuery shoppingListOverviewQuery,
         ICurrentUser currentUser)
     {
-        _shoppingListRepository = shoppingListRepository;
+        _shoppingListOverviewQuery = shoppingListOverviewQuery;
         _currentUser = currentUser;
     }
 
-    public async Task<List<ShoppingListResponseDto>> ExecuteAsync(CancellationToken cancellationToken = default)
+    public async Task<ShoppingListsOverviewResponseDto> ExecuteAsync(
+        CancellationToken cancellationToken = default)
     {
-        var shoppingLists = await _shoppingListRepository.GetByUserIdAsync(_currentUser.UserId, cancellationToken);
-        return shoppingLists.Select(sl => new ShoppingListResponseDto(
-            sl.Id,
-            sl.Name,
-            sl.Description,
-            sl.CreatedAt)).ToList();
+        var lists = await _shoppingListOverviewQuery.GetByUserIdAsync(
+            _currentUser.UserId,
+            cancellationToken);
+
+        var summary = new ShoppingListsSummaryDto(
+            lists.Count,
+            lists.Count(list => list.ItemCount == 0),
+            lists.Count(list => list.ItemCount > 0 && list.QuotedItemCount < list.ItemCount),
+            lists.Count(list => list.ItemCount > 0 && list.QuotedItemCount == list.ItemCount),
+            lists.Sum(list => list.EstimatedTotal));
+
+        return new ShoppingListsOverviewResponseDto(summary, lists);
     }
 }

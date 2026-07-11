@@ -12,7 +12,7 @@ public sealed class GetShoppingListsByUserIdUseCaseTests
     {
         _helper = new GetShoppingListsByUserIdTestHelper();
         _handler = new GetShoppingListsByUserIdUseCase(
-            _helper.ShoppingListRepositoryMock.Object,
+            _helper.ShoppingListOverviewQueryMock.Object,
             _helper.CurrentUserMock.Object);
     }
 
@@ -20,36 +20,41 @@ public sealed class GetShoppingListsByUserIdUseCaseTests
     public async Task ExecuteAsync_ShouldReturnShoppingLists_WhenUserHasLists()
     {
         var userId = GetShoppingListsByUserIdTestHelper.DefaultUserId;
-        var shoppingLists = new List<PlanejadorCompras.Domain.Entities.ShoppingList>
+        var shoppingLists = new List<PlanejadorCompras.Application.Common.Dtos.Models.ShoppingListOverviewDto>
         {
-            GetShoppingListsByUserIdTestHelper.CreateShoppingListEntity(userId, "Monthly Shopping List", "Monitor and printer ink"),
-            GetShoppingListsByUserIdTestHelper.CreateShoppingListEntity(userId, "Office Setup List", "Keyboard, mouse, and webcam")
+            GetShoppingListsByUserIdTestHelper.CreateOverview("Monthly Shopping List"),
+            GetShoppingListsByUserIdTestHelper.CreateOverview("Office Setup List", 2, 1, 120m),
+            GetShoppingListsByUserIdTestHelper.CreateOverview("Ready List", 3, 3, 350m)
         };
 
-        _helper.ShoppingListRepositoryMock
+        _helper.ShoppingListOverviewQueryMock
             .Setup(x => x.GetByUserIdAsync(userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(shoppingLists);
 
         var response = await _handler.ExecuteAsync();
 
-        Assert.Equal(2, response.Count);
-        Assert.Equal(shoppingLists[0].Id, response[0].Id);
-        Assert.Equal(shoppingLists[0].Name, response[0].Name);
-        Assert.Equal(shoppingLists[1].Id, response[1].Id);
-        Assert.Equal(shoppingLists[1].Name, response[1].Name);
+        Assert.Equal(3, response.Lists.Count);
+        Assert.Equal(shoppingLists[0].Id, response.Lists[0].Id);
+        Assert.Equal(3, response.Summary.TotalLists);
+        Assert.Equal(1, response.Summary.DraftLists);
+        Assert.Equal(1, response.Summary.AwaitingQuotesLists);
+        Assert.Equal(1, response.Summary.ReadyForEqualizationLists);
+        Assert.Equal(470m, response.Summary.TotalEstimated);
     }
 
     [Fact]
     public async Task ExecuteAsync_ShouldReturnEmptyList_WhenUserHasNoLists()
     {
         var userId = GetShoppingListsByUserIdTestHelper.DefaultUserId;
-        _helper.ShoppingListRepositoryMock
+        _helper.ShoppingListOverviewQueryMock
             .Setup(x => x.GetByUserIdAsync(userId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<PlanejadorCompras.Domain.Entities.ShoppingList>());
+            .ReturnsAsync(Array.Empty<PlanejadorCompras.Application.Common.Dtos.Models.ShoppingListOverviewDto>());
 
         var response = await _handler.ExecuteAsync();
 
-        Assert.Empty(response);
+        Assert.Empty(response.Lists);
+        Assert.Equal(0, response.Summary.TotalLists);
+        Assert.Equal(0m, response.Summary.TotalEstimated);
     }
 
 
@@ -57,13 +62,13 @@ public sealed class GetShoppingListsByUserIdUseCaseTests
     public async Task ExecuteAsync_ShouldCallRepositoryWithCorrectUserId()
     {
         var userId = GetShoppingListsByUserIdTestHelper.DefaultUserId;
-        _helper.ShoppingListRepositoryMock
+        _helper.ShoppingListOverviewQueryMock
             .Setup(x => x.GetByUserIdAsync(userId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<PlanejadorCompras.Domain.Entities.ShoppingList>());
+            .ReturnsAsync(Array.Empty<PlanejadorCompras.Application.Common.Dtos.Models.ShoppingListOverviewDto>());
 
         await _handler.ExecuteAsync();
 
-        _helper.ShoppingListRepositoryMock.Verify(
+        _helper.ShoppingListOverviewQueryMock.Verify(
             x => x.GetByUserIdAsync(userId, It.IsAny<CancellationToken>()),
             Times.Once);
     }

@@ -1,7 +1,6 @@
 using Moq;
 using PlanejadorCompras.Application.Services.Interfaces;
-using PlanejadorCompras.Domain.Repositories.ShoppingList;
-using ShoppingListEntity = PlanejadorCompras.Domain.Entities.ShoppingList;
+using PlanejadorCompras.Application.Common.Dtos.Models;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ShoppingList.GetByUserId;
 
@@ -9,7 +8,7 @@ public sealed class GetShoppingListsByUserIdTestHelper
 {
     public GetShoppingListsByUserIdTestHelper()
     {
-        ShoppingListRepositoryMock = new Mock<IShoppingListRepository>();
+        ShoppingListOverviewQueryMock = new Mock<IShoppingListOverviewQuery>();
 
         CurrentUserMock = new Mock<ICurrentUser>();
         CurrentUserMock
@@ -19,15 +18,23 @@ public sealed class GetShoppingListsByUserIdTestHelper
 
     public static Guid DefaultUserId => Guid.Parse("11111111-1111-1111-1111-111111111111");
 
-    public Mock<IShoppingListRepository> ShoppingListRepositoryMock { get; }
+    public Mock<IShoppingListOverviewQuery> ShoppingListOverviewQueryMock { get; }
 
     public Mock<ICurrentUser> CurrentUserMock { get; }
 
-    public static ShoppingListEntity CreateShoppingListEntity(
-        Guid? userId = null,
+    public static ShoppingListOverviewDto CreateOverview(
         string name = "Monthly Tech Shopping",
-        string? description = "Monitor, keyboard, and mouse")
+        int itemCount = 0,
+        int quotedItemCount = 0,
+        decimal estimatedTotal = 0m)
     {
-        return ShoppingListEntity.Create(userId ?? DefaultUserId, name, description);
+        return new ShoppingListOverviewDto(
+            Guid.NewGuid(),
+            name,
+            "Monitor, keyboard, and mouse",
+            DateTime.UtcNow,
+            itemCount,
+            quotedItemCount,
+            estimatedTotal);
     }
 }
