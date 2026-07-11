@@ -1,0 +1,198 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.app-layout {
+  min-height: 100dvh;
+  display: flex;
+  background: var(--app-page-bg);
+  color: var(--app-text-color);
+}
+
+.app-layout > app-sidebar {
+  width: 16rem;
+  min-height: 100dvh;
+  flex: 0 0 16rem;
+  transition:
+    flex-basis var(--app-transition-base),
+    width var(--app-transition-base);
+}
+
+.app-layout > app-sidebar.sidebar-host-collapsed {
+  width: 4.75rem;
+  flex-basis: 4.75rem;
+}
+
+.app-layout-content {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.app-layout-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  min-height: var(--app-header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 var(--app-page-padding-x);
+  border-bottom: 1px solid var(--app-border-color);
+  background: var(--app-header-bg);
+  box-shadow: var(--app-shadow-sm);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+}
+
+.app-layout-header-start {
+  display: block;
+}
+
+.app-layout-header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-layout-icon-button {
+  width: var(--app-control-height-sm);
+  height: var(--app-control-height-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-radius-pill);
+  background: color-mix(in srgb, var(--app-surface-bg) 82%, transparent);
+  color: var(--app-text-muted);
+  transition:
+    border-color var(--app-transition-fast),
+    background-color var(--app-transition-fast),
+    color var(--app-transition-fast);
+}
+
+.app-layout-icon-button:hover {
+  border-color: color-mix(in srgb, var(--bs-primary) 48%, var(--app-border-color));
+  background: color-mix(in srgb, var(--bs-primary) 12%, var(--app-surface-bg));
+  color: var(--bs-primary);
+}
+
+.app-layout-icon-button i {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.app-layout-profile-menu {
+  position: relative;
+}
+
+.profile-menu-panel {
+  position: absolute;
+  top: calc(100% + 0.7rem);
+  right: 0;
+  z-index: 20;
+  width: min(19rem, calc(100vw - 2rem));
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-surface-elevated-bg);
+  box-shadow: var(--app-shadow-lg);
+}
+
+.profile-menu-user {
+  min-width: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.profile-menu-user strong {
+  color: var(--app-text-color);
+  overflow-wrap: anywhere;
+}
+
+.profile-menu-user span {
+  color: var(--app-text-muted);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
+.profile-menu-error {
+  margin: 0;
+  color: #dc3545;
+  font-size: 0.875rem;
+}
+
+.profile-menu-logout {
+  min-height: var(--app-control-height-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid var(--app-border-strong);
+  border-radius: var(--app-control-radius);
+  background: transparent;
+  color: var(--app-text-color);
+  font-weight: 600;
+}
+
+.profile-menu-logout:hover:not(:disabled) {
+  border-color: color-mix(in srgb, #dc3545 48%, var(--app-border-color));
+  background: color-mix(in srgb, #dc3545 10%, var(--app-surface-bg));
+  color: #dc3545;
+}
+
+.app-layout-main {
+  min-width: 0;
+  padding: var(--app-page-padding-y) var(--app-page-padding-x);
+}
+
+.app-layout-sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 959.98px) {
+  .app-layout > app-sidebar,
+  .app-layout > app-sidebar.sidebar-host-collapsed {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 30;
+    width: min(18rem, calc(100vw - 2.5rem));
+    min-height: 100dvh;
+    flex-basis: auto;
+    transform: translateX(-105%);
+    transition: transform var(--app-transition-base);
+  }
+
+  .app-layout > app-sidebar.sidebar-host-mobile-open {
+    transform: translateX(0);
+  }
+
+  .app-layout-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: block;
+    border: 0;
+    background: var(--app-overlay-bg);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .app-layout-header {
+    min-height: 4rem;
+    padding-inline: 1rem;
+  }
+
+  .app-layout-main {
+    padding: 1rem;
+  }
+}

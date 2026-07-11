@@ -134,8 +134,7 @@ export class App {
   protected readonly heroScene = computed(() => HERO_SCENE_STATES[this.selectedHeroStep()]);
   protected readonly currentTheme = this.themeService.theme;
   protected readonly isLoginRoute = computed(() => this.currentUrlState().startsWith('/login'));
-  protected readonly isAuthenticatedRoute = computed(() => this.currentUrlState().startsWith('/app'));
-  protected readonly isRoutedRoute = computed(() => this.isLoginRoute() || this.isAuthenticatedRoute());
+  protected readonly isAppRoute = computed(() => this.currentUrlState().startsWith('/app'));
   protected readonly themeButtonLabel = computed(() =>
     this.currentTheme() === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'
   );
@@ -160,6 +159,6 @@ export class App {
   }
 
   protected sectionHref(sectionId: string): string {
-    return this.isRoutedRoute() ? `/#${sectionId}` : `#${sectionId}`;
+    return this.isLoginRoute() ? `/#${sectionId}` : `#${sectionId}`;
   }
 }

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
-import { AuthenticatedHomePageComponent } from './pages/authenticated-home-page/authenticated-home-page.component';
-import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { LoginPageComponent } from './features/auth/pages/login-page/login-page.component';
+import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 
 export const routes: Routes = [
   {
@@ -10,7 +10,17 @@ export const routes: Routes = [
   },
   {
     path: 'app',
-    component: AuthenticatedHomePageComponent,
+    component: AppLayoutComponent,
     canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('./features/shopping-lists/pages/shopping-lists-page/shopping-lists-page.component').then(
+            ({ ShoppingListsPageComponent }) => ShoppingListsPageComponent,
+          ),
+      },
+    ],
   },
 ];
