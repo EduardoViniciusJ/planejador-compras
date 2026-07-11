@@ -8,6 +8,7 @@ using PlanejadorCompras.Domain.Repositories.ShoppingList;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Infrastructure.Persistence;
+using PlanejadorCompras.Infrastructure.Queries;
 using PlanejadorCompras.Infrastructure.Repositories;
 using PlanejadorCompras.Infrastructure.Services;
 
@@ -55,6 +56,7 @@ public static class DependencyInjectionExtensions
 
     private static void AddApplicationServices(IServiceCollection services)
     {
+        services.AddScoped<IShoppingListOverviewQuery, ShoppingListOverviewQuery>();
         services.AddScoped<IShoppingListAccessService, ShoppingListAccessService>();
     }
 
