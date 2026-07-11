@@ -1,0 +1,99 @@
+:host {
+  display: block;
+}
+
+.shopping-list-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.form-field label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--app-text-color);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.form-field label span {
+  color: var(--app-text-soft);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.form-control {
+  min-height: var(--app-control-height);
+  border-color: var(--app-border-color);
+  border-radius: var(--app-control-radius);
+  background: var(--app-surface-bg);
+  color: var(--app-text-color);
+}
+
+textarea.form-control {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.form-control::placeholder {
+  color: var(--app-text-soft);
+}
+
+.form-control[aria-invalid='true'] {
+  border-color: #dc3545;
+}
+
+.field-meta {
+  min-height: 1.15rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--app-text-soft);
+  font-size: 0.75rem;
+}
+
+.field-meta span:first-child {
+  color: #dc3545;
+}
+
+.form-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.75rem;
+  border: 1px solid color-mix(in srgb, #dc3545 38%, var(--app-border-color));
+  border-radius: var(--app-radius-sm);
+  background: color-mix(in srgb, #dc3545 9%, var(--app-surface-bg));
+  color: #dc3545;
+  font-size: 0.875rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding-top: 0.25rem;
+}
+
+.form-actions .btn {
+  min-height: var(--app-control-height);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--app-control-radius);
+  font-weight: 700;
+}
+
+@media (max-width: 575.98px) {
+  .form-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}

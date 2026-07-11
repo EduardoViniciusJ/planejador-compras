@@ -1,0 +1,82 @@
+<form class="shopping-list-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <div class="form-field">
+    <label for="shopping-list-name">Nome da lista</label>
+    <input
+      id="shopping-list-name"
+      class="form-control"
+      type="text"
+      formControlName="name"
+      maxlength="100"
+      autocomplete="off"
+      placeholder="Ex.: Compras do escritorio"
+      [attr.aria-invalid]="form.controls.name.invalid && form.controls.name.touched"
+      aria-describedby="shopping-list-name-help"
+    />
+    <div id="shopping-list-name-help" class="field-meta">
+      <span>
+        @if (form.controls.name.hasError('required') && form.controls.name.touched) {
+          Informe um nome para a lista.
+        } @else if (form.controls.name.hasError('maxlength') && form.controls.name.touched) {
+          O nome deve ter no maximo 100 caracteres.
+        }
+      </span>
+      <span>{{ form.controls.name.value.length }}/100</span>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <label for="shopping-list-description">
+      Descricao
+      <span>Opcional</span>
+    </label>
+    <textarea
+      id="shopping-list-description"
+      class="form-control"
+      formControlName="description"
+      maxlength="500"
+      rows="5"
+      placeholder="Adicione um contexto para esta compra"
+      [attr.aria-invalid]="form.controls.description.invalid && form.controls.description.touched"
+      aria-describedby="shopping-list-description-help"
+    ></textarea>
+    <div id="shopping-list-description-help" class="field-meta">
+      <span>
+        @if (form.controls.description.hasError('maxlength') && form.controls.description.touched) {
+          A descricao deve ter no maximo 500 caracteres.
+        }
+      </span>
+      <span>{{ form.controls.description.value.length }}/500</span>
+    </div>
+  </div>
+
+  @if (serverError()) {
+    <div class="form-error" role="alert">
+      <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+      {{ serverError() }}
+    </div>
+  }
+
+  <div class="form-actions">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      [disabled]="submitting()"
+      (click)="cancel()"
+    >
+      Cancelar
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="submitting()"
+      data-testid="shopping-list-form-submit"
+    >
+      @if (submitting()) {
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      } @else {
+        <i class="bi bi-check-lg" aria-hidden="true"></i>
+      }
+      {{ submitting() ? 'Salvando...' : mode() === 'create' ? 'Criar lista' : 'Salvar alteracoes' }}
+    </button>
+  </div>
+</form>
