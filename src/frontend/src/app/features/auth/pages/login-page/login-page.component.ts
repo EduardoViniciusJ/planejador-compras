@@ -2,9 +2,9 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
-import { environment } from '../../../environments/environment';
-import { AuthService } from '../../core/auth/auth.service';
-import { GoogleIdentityService } from '../../core/auth/google/google-identity.service';
+import { environment } from '../../../../../environments/environment';
+import { AuthService } from '../../../../core/auth/auth.service';
+import { GoogleIdentityService } from '../../../../core/auth/google/google-identity.service';
 
 const GOOGLE_LOGIN_ERROR_MESSAGE = 'Nao foi possivel iniciar o login com Google. Tente novamente.';
 
