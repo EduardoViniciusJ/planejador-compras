@@ -7,6 +7,7 @@ using PlanejadorCompras.Application.UseCases.ItemQuote;
 using PlanejadorCompras.Application.UseCases.ShoppingItem;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
 using PlanejadorCompras.Application.UseCases.Interfaces;
+using PlanejadorCompras.Application.UseCases.Supplier;
 
 namespace PlanejadorCompras.Application;
 
@@ -28,6 +29,7 @@ public static class DependencyInjectionExtensions
         // ShoppingList
         services.AddScoped<CreateShoppingListUseCase>();
         services.AddScoped<GetShoppingListByIdUseCase>();
+        services.AddScoped<GetShoppingListDetailUseCase>();
         services.AddScoped<GetShoppingListsByUserIdUseCase>();
         services.AddScoped<UpdateShoppingListUseCase>();
         services.AddScoped<DeleteShoppingListUseCase>();
@@ -45,7 +47,15 @@ public static class DependencyInjectionExtensions
         services.AddScoped<CreateItemQuoteUseCase>();
         services.AddScoped<GetItemQuoteByIdUseCase>();
         services.AddScoped<GetItemQuotesByShoppingItemIdUseCase>();
+        services.AddScoped<GetUserItemQuotesUseCase>();
         services.AddScoped<UpdateItemQuoteUseCase>();
         services.AddScoped<DeleteItemQuoteUseCase>();
+
+        // Supplier
+        services.AddScoped<CreateSupplierUseCase>();
+        services.AddScoped<GetSupplierByIdUseCase>();
+        services.AddScoped<GetSuppliersUseCase>();
+        services.AddScoped<UpdateSupplierUseCase>();
+        services.AddScoped<DeleteSupplierUseCase>();
     }
 }

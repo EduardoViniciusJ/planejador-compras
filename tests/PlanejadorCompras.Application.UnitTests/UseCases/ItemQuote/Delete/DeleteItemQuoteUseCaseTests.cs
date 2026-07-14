@@ -24,7 +24,7 @@ public sealed class DeleteItemQuoteUseCaseTests
     public async Task ExecuteAsync_ShouldDeleteItemQuote_WhenIdIsValid()
     {
         var itemQuoteId = DeleteItemQuoteTestHelper.DefaultItemQuoteId;
-        var itemQuote = ItemQuoteEntity.Create(DeleteItemQuoteTestHelper.CreateShoppingItemEntity().Id, "Supplier A", 199.90m);
+        var itemQuote = ItemQuoteEntity.Create(DeleteItemQuoteTestHelper.CreateShoppingItemEntity().Id, Guid.NewGuid(), 199.90m);
         var shoppingItem = DeleteItemQuoteTestHelper.CreateShoppingItemEntity();
         _helper.ItemQuoteRepositoryMock
             .Setup(x => x.GetByIdAsync(itemQuoteId, It.IsAny<CancellationToken>()))
@@ -48,7 +48,7 @@ public sealed class DeleteItemQuoteUseCaseTests
     {
         var itemQuoteId = DeleteItemQuoteTestHelper.DefaultItemQuoteId;
         var shoppingItem = DeleteItemQuoteTestHelper.CreateShoppingItemEntity();
-        var itemQuote = ItemQuoteEntity.Create(shoppingItem.Id, "Supplier A", 199.90m);
+        var itemQuote = ItemQuoteEntity.Create(shoppingItem.Id, Guid.NewGuid(), 199.90m);
         _helper.ItemQuoteRepositoryMock
             .Setup(x => x.GetByIdAsync(itemQuoteId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(itemQuote);
@@ -105,7 +105,7 @@ public sealed class DeleteItemQuoteUseCaseTests
     public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenListDoesNotBelongToUser()
     {
         var shoppingItem = DeleteItemQuoteTestHelper.CreateShoppingItemEntity();
-        var itemQuote = ItemQuoteEntity.Create(shoppingItem.Id, "Supplier A", 199.90m);
+        var itemQuote = ItemQuoteEntity.Create(shoppingItem.Id, Guid.NewGuid(), 199.90m);
         _helper.ItemQuoteRepositoryMock
             .Setup(x => x.GetByIdAsync(itemQuote.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(itemQuote);

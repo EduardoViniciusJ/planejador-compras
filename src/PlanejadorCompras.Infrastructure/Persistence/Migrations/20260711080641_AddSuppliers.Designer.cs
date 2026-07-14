@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlanejadorCompras.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using PlanejadorCompras.Infrastructure.Persistence;
 namespace PlanejadorCompras.Infrastructure.Migrations
 {
     [DbContext(typeof(PlanejadorComprasDbContext))]
-    partial class PlanejadorComprasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260711080641_AddSuppliers")]
+    partial class AddSuppliers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

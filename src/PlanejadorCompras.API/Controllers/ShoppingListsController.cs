@@ -15,6 +15,7 @@ public sealed class ShoppingListsController : ControllerBase
 {
     private readonly CreateShoppingListUseCase _createUseCase;
     private readonly GetShoppingListByIdUseCase _getByIdUseCase;
+    private readonly GetShoppingListDetailUseCase _getDetailUseCase;
     private readonly GetShoppingListsByUserIdUseCase _getByUserIdUseCase;
     private readonly UpdateShoppingListUseCase _updateUseCase;
     private readonly DeleteShoppingListUseCase _deleteUseCase;
@@ -24,6 +25,7 @@ public sealed class ShoppingListsController : ControllerBase
     public ShoppingListsController(
         CreateShoppingListUseCase createUseCase,
         GetShoppingListByIdUseCase getByIdUseCase,
+        GetShoppingListDetailUseCase getDetailUseCase,
         GetShoppingListsByUserIdUseCase getByUserIdUseCase,
         UpdateShoppingListUseCase updateUseCase,
         DeleteShoppingListUseCase deleteUseCase,
@@ -32,11 +34,23 @@ public sealed class ShoppingListsController : ControllerBase
     {
         _createUseCase = createUseCase;
         _getByIdUseCase = getByIdUseCase;
+        _getDetailUseCase = getDetailUseCase;
         _getByUserIdUseCase = getByUserIdUseCase;
         _updateUseCase = updateUseCase;
         _deleteUseCase = deleteUseCase;
         _calculateBestSupplierBudgetUseCase = calculateBestSupplierBudgetUseCase;
         _getShoppingListEqualizationUseCase = getShoppingListEqualizationUseCase;
+    }
+
+    [HttpGet("{id:guid}/detail")]
+    [ProducesResponseType(typeof(ShoppingListDetailResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetDetail(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var result = await _getDetailUseCase.ExecuteAsync(id, cancellationToken);
+        return Ok(result);
     }
 
     [HttpPost]

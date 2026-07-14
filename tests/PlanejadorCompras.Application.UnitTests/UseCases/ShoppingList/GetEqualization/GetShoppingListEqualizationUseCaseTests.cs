@@ -18,7 +18,8 @@ public sealed class GetShoppingListEqualizationUseCaseTests
         _handler = new GetShoppingListEqualizationUseCase(
             _helper.ShoppingListAccessServiceMock.Object,
             _helper.ShoppingItemRepositoryMock.Object,
-            _helper.ItemQuoteRepositoryMock.Object);
+            _helper.ItemQuoteRepositoryMock.Object,
+            _helper.SupplierRepositoryMock.Object);
     }
 
     [Fact]
@@ -95,6 +96,33 @@ public sealed class GetShoppingListEqualizationUseCaseTests
         Assert.Empty(result.Suppliers);
         Assert.Single(result.Items);
         Assert.Empty(result.Items.First().Quotes);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldUseLowestQuotePerSupplierAndItem()
+    {
+        var listId = Guid.NewGuid();
+        var item = GetShoppingListEqualizationTestHelper.CreateShoppingItem(listId, "Item", 3m);
+
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(GetShoppingListEqualizationTestHelper.CreateShoppingList());
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByShoppingListIdAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ShoppingItemEntity> { item });
+        _helper.ItemQuoteRepositoryMock
+            .Setup(x => x.GetByShoppingListIdAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ItemQuoteEntity>
+            {
+                GetShoppingListEqualizationTestHelper.CreateQuote(item.Id, "Supplier A", 12m),
+                GetShoppingListEqualizationTestHelper.CreateQuote(item.Id, "Supplier A", 10m)
+            });
+
+        var result = await _handler.ExecuteAsync(listId);
+        var quote = Assert.Single(Assert.Single(result.Items).Quotes);
+
+        Assert.Equal(10m, quote.UnitPrice);
+        Assert.Equal(30m, quote.TotalPrice);
     }
 
     [Fact]

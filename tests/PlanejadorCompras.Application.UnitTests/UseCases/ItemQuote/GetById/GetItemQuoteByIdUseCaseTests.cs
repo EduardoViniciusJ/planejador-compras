@@ -16,7 +16,8 @@ public sealed class GetItemQuoteByIdUseCaseTests
         _handler = new GetItemQuoteByIdUseCase(
             _helper.ItemQuoteRepositoryMock.Object,
             _helper.ShoppingItemRepositoryMock.Object,
-            _helper.ShoppingListAccessServiceMock.Object);
+            _helper.ShoppingListAccessServiceMock.Object,
+            _helper.SupplierAccessServiceMock.Object);
     }
 
     [Fact]
@@ -38,7 +39,8 @@ public sealed class GetItemQuoteByIdUseCaseTests
 
         Assert.Equal(itemQuote.Id, response!.Id);
         Assert.Equal(itemQuote.ShoppingItemId, response.ShoppingItemId);
-        Assert.Equal(itemQuote.SupplierName, response.SupplierName);
+        Assert.Equal(itemQuote.SupplierId, response.SupplierId);
+        Assert.Equal(GetItemQuoteByIdTestHelper.DefaultSupplier.Name, response.SupplierName);
         Assert.Equal(itemQuote.UnitPrice, response.UnitPrice);
         Assert.Equal(itemQuote.CreatedAt, response.CreatedAt);
     }

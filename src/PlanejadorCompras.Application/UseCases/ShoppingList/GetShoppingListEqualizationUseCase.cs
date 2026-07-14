@@ -4,6 +4,7 @@ using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 using PlanejadorCompras.Application.UseCases.Interfaces;
+using PlanejadorCompras.Domain.Repositories.Supplier;
 
 namespace PlanejadorCompras.Application.UseCases.ShoppingList;
 
@@ -12,15 +13,18 @@ public sealed class GetShoppingListEqualizationUseCase : IGetShoppingListEqualiz
     private readonly IShoppingListAccessService _shoppingListAccessService;
     private readonly IShoppingItemRepository _shoppingItemRepository;
     private readonly IItemQuoteRepository _itemQuoteRepository;
+    private readonly ISupplierRepository _supplierRepository;
 
     public GetShoppingListEqualizationUseCase(
         IShoppingListAccessService shoppingListAccessService,
         IShoppingItemRepository shoppingItemRepository,
-        IItemQuoteRepository itemQuoteRepository)
+        IItemQuoteRepository itemQuoteRepository,
+        ISupplierRepository supplierRepository)
     {
         _shoppingListAccessService = shoppingListAccessService;
         _shoppingItemRepository = shoppingItemRepository;
         _itemQuoteRepository = itemQuoteRepository;
+        _supplierRepository = supplierRepository;
     }
 
     public async Task<EqualizationResponseDto> ExecuteAsync(Guid shoppingListId, CancellationToken cancellationToken = default)
@@ -31,6 +35,10 @@ public sealed class GetShoppingListEqualizationUseCase : IGetShoppingListEqualiz
 
         var items = await _shoppingItemRepository.GetByShoppingListIdAsync(shoppingListId, cancellationToken);
         var quotes = await _itemQuoteRepository.GetByShoppingListIdAsync(shoppingListId, cancellationToken);
+        var supplierEntities = await _supplierRepository.GetByIdsAsync(
+            quotes.Select(quote => quote.SupplierId),
+            cancellationToken);
+        var supplierNames = supplierEntities.ToDictionary(supplier => supplier.Id, supplier => supplier.Name);
 
         if (!items.Any())
         {
@@ -59,20 +67,21 @@ public sealed class GetShoppingListEqualizationUseCase : IGetShoppingListEqualiz
         }
 
         var suppliers = quotes
-            .Select(q => q.SupplierName)
+            .Select(quote => supplierNames[quote.SupplierId])
             .Distinct()
-            .OrderBy(name => name)
+            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
         var itemRows = items.Select(item =>
         {
             var itemQuotes = quotes
                 .Where(q => q.ShoppingItemId == item.Id)
-                .Select(q => new EqualizationQuoteDto(
-                    q.SupplierName,
-                    q.UnitPrice,
-                    q.UnitPrice * item.Quantity
-                ));
+                .GroupBy(quote => quote.SupplierId)
+                .Select(group => group.MinBy(quote => quote.UnitPrice)!)
+                .Select(quote => new EqualizationQuoteDto(
+                    supplierNames[quote.SupplierId],
+                    quote.UnitPrice,
+                    quote.UnitPrice * item.Quantity));
 
             return new EqualizationItemRowDto(
                 item.Id,

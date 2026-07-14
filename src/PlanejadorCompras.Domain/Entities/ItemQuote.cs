@@ -5,13 +5,13 @@ public sealed class ItemQuote
     private ItemQuote(
         Guid id,
         Guid shoppingItemId,
-        string supplierName,
+        Guid supplierId,
         decimal unitPrice,
         DateTime createdAt)
     {
         Id = id;
         ShoppingItemId = shoppingItemId;
-        SupplierName = supplierName;
+        SupplierId = supplierId;
         UnitPrice = unitPrice;
         CreatedAt = createdAt;
     }
@@ -20,16 +20,16 @@ public sealed class ItemQuote
 
     public Guid ShoppingItemId { get; private set; }
 
-    public string SupplierName { get; private set; }
+    public Guid SupplierId { get; private set; }
 
     public decimal UnitPrice { get; private set; }
 
     public DateTime CreatedAt { get; private set; }
 
-    public static ItemQuote Create(Guid shoppingItemId, string supplierName, decimal unitPrice)
+    public static ItemQuote Create(Guid shoppingItemId, Guid supplierId, decimal unitPrice)
     {
         ArgumentOutOfRangeException.ThrowIfEqual(shoppingItemId, Guid.Empty);
-        ArgumentException.ThrowIfNullOrWhiteSpace(supplierName);
+        ArgumentOutOfRangeException.ThrowIfEqual(supplierId, Guid.Empty);
 
         if (unitPrice < 0)
         {
@@ -39,15 +39,15 @@ public sealed class ItemQuote
         return new ItemQuote(
             Guid.NewGuid(),
             shoppingItemId,
-            supplierName.Trim(),
+            supplierId,
             unitPrice,
             DateTime.UtcNow);
     }
 
-    public void Update(Guid shoppingItemId, string supplierName, decimal unitPrice)
+    public void Update(Guid shoppingItemId, Guid supplierId, decimal unitPrice)
     {
         ArgumentOutOfRangeException.ThrowIfEqual(shoppingItemId, Guid.Empty);
-        ArgumentException.ThrowIfNullOrWhiteSpace(supplierName);
+        ArgumentOutOfRangeException.ThrowIfEqual(supplierId, Guid.Empty);
 
         if (unitPrice < 0)
         {
@@ -55,7 +55,7 @@ public sealed class ItemQuote
         }
 
         ShoppingItemId = shoppingItemId;
-        SupplierName = supplierName.Trim();
+        SupplierId = supplierId;
         UnitPrice = unitPrice;
     }
 }

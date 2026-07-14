@@ -12,10 +12,6 @@ public sealed class ItemQuoteConfiguration : IEntityTypeConfiguration<ItemQuote>
 
         builder.HasKey(quote => quote.Id);
 
-        builder.Property(quote => quote.SupplierName)
-            .IsRequired()
-            .HasMaxLength(200);
-
         builder.Property(quote => quote.UnitPrice)
             .HasPrecision(18, 2);
 
@@ -26,5 +22,10 @@ public sealed class ItemQuoteConfiguration : IEntityTypeConfiguration<ItemQuote>
             .WithMany()
             .HasForeignKey(quote => quote.ShoppingItemId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne<Supplier>()
+            .WithMany()
+            .HasForeignKey(quote => quote.SupplierId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

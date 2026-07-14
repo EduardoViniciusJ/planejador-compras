@@ -11,15 +11,18 @@ public sealed class GetItemQuoteByIdUseCase
     private readonly IItemQuoteRepository _itemQuoteRepository;
     private readonly IShoppingItemRepository _shoppingItemRepository;
     private readonly IShoppingListAccessService _shoppingListAccessService;
+    private readonly ISupplierAccessService _supplierAccessService;
 
     public GetItemQuoteByIdUseCase(
         IItemQuoteRepository itemQuoteRepository,
         IShoppingItemRepository shoppingItemRepository,
-        IShoppingListAccessService shoppingListAccessService)
+        IShoppingListAccessService shoppingListAccessService,
+        ISupplierAccessService supplierAccessService)
     {
         _itemQuoteRepository = itemQuoteRepository;
         _shoppingItemRepository = shoppingItemRepository;
         _shoppingListAccessService = shoppingListAccessService;
+        _supplierAccessService = supplierAccessService;
     }
 
     public async Task<ItemQuoteResponseDto> ExecuteAsync(Guid id, CancellationToken cancellationToken = default)
@@ -39,11 +42,13 @@ public sealed class GetItemQuoteByIdUseCase
         }
 
         await _shoppingListAccessService.GetForCurrentUserAsync(shoppingItem.ShoppingListId, cancellationToken);
+        var supplier = await _supplierAccessService.GetForCurrentUserAsync(itemQuote.SupplierId, cancellationToken);
 
         return new ItemQuoteResponseDto(
             itemQuote.Id,
             itemQuote.ShoppingItemId,
-            itemQuote.SupplierName,
+            itemQuote.SupplierId,
+            supplier.Name,
             itemQuote.UnitPrice,
             itemQuote.CreatedAt);
     }

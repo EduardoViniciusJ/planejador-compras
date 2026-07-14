@@ -17,7 +17,8 @@ public sealed class CreateItemQuoteUseCaseTests
             _helper.ItemQuoteRepositoryMock.Object,
             _helper.ShoppingItemRepositoryMock.Object,
             _helper.UnitOfWorkMock.Object,
-            _helper.ShoppingListAccessServiceMock.Object);
+            _helper.ShoppingListAccessServiceMock.Object,
+            _helper.SupplierAccessServiceMock.Object);
     }
 
     [Fact]
@@ -25,7 +26,7 @@ public sealed class CreateItemQuoteUseCaseTests
     {
         var request = new ItemQuoteRequestDto(
             CreateItemQuoteTestHelper.DefaultShoppingItemId,
-            "Best Monitor Supplier",
+            CreateItemQuoteTestHelper.DefaultSupplier.Id,
             199.90m);
         var shoppingItem = CreateItemQuoteTestHelper.CreateShoppingItemEntity();
         _helper.ShoppingItemRepositoryMock
@@ -36,7 +37,8 @@ public sealed class CreateItemQuoteUseCaseTests
         var response = await _handler.ExecuteAsync(request);
 
         Assert.Equal(request.ShoppingItemId, response.ShoppingItemId);
-        Assert.Equal(request.SupplierName, response.SupplierName);
+        Assert.Equal(request.SupplierId, response.SupplierId);
+        Assert.Equal(CreateItemQuoteTestHelper.DefaultSupplier.Name, response.SupplierName);
         Assert.Equal(request.UnitPrice, response.UnitPrice);
         Assert.NotEqual(Guid.Empty, response.Id);
     }
@@ -57,7 +59,7 @@ public sealed class CreateItemQuoteUseCaseTests
             x => x.AddAsync(
                 It.Is<ItemQuoteEntity>(iq =>
                     iq.ShoppingItemId == request.ShoppingItemId &&
-                    iq.SupplierName == request.SupplierName &&
+                    iq.SupplierId == request.SupplierId &&
                     iq.UnitPrice == request.UnitPrice),
                 It.IsAny<CancellationToken>()),
             Times.Once);
@@ -87,11 +89,11 @@ public sealed class CreateItemQuoteUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ShouldTrimSupplierName()
+    public async Task ExecuteAsync_ShouldReturnRegisteredSupplierName()
     {
         var request = new ItemQuoteRequestDto(
             CreateItemQuoteTestHelper.DefaultShoppingItemId,
-            "  Best Monitor Supplier  ",
+            CreateItemQuoteTestHelper.DefaultSupplier.Id,
             199.90m);
         var shoppingItem = CreateItemQuoteTestHelper.CreateShoppingItemEntity();
         _helper.ShoppingItemRepositoryMock

@@ -14,17 +14,20 @@ public sealed class UpdateItemQuoteUseCase
     private readonly IShoppingItemRepository _shoppingItemRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IShoppingListAccessService _shoppingListAccessService;
+    private readonly ISupplierAccessService _supplierAccessService;
 
     public UpdateItemQuoteUseCase(
         IItemQuoteRepository itemQuoteRepository,
         IShoppingItemRepository shoppingItemRepository,
         IUnitOfWork unitOfWork,
-        IShoppingListAccessService shoppingListAccessService)
+        IShoppingListAccessService shoppingListAccessService,
+        ISupplierAccessService supplierAccessService)
     {
         _itemQuoteRepository = itemQuoteRepository;
         _shoppingItemRepository = shoppingItemRepository;
         _unitOfWork = unitOfWork;
         _shoppingListAccessService = shoppingListAccessService;
+        _supplierAccessService = supplierAccessService;
     }
 
     public async Task<ItemQuoteResponseDto> ExecuteAsync(
@@ -56,15 +59,17 @@ public sealed class UpdateItemQuoteUseCase
         }
 
         await _shoppingListAccessService.GetForCurrentUserAsync(targetShoppingItem.ShoppingListId, cancellationToken);
+        var supplier = await _supplierAccessService.GetForCurrentUserAsync(request.SupplierId, cancellationToken);
 
-        itemQuote.Update(request.ShoppingItemId, request.SupplierName, request.UnitPrice);
+        itemQuote.Update(request.ShoppingItemId, request.SupplierId, request.UnitPrice);
         await _itemQuoteRepository.UpdateAsync(itemQuote, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return new ItemQuoteResponseDto(
             itemQuote.Id,
             itemQuote.ShoppingItemId,
-            itemQuote.SupplierName,
+            itemQuote.SupplierId,
+            supplier.Name,
             itemQuote.UnitPrice,
             itemQuote.CreatedAt);
     }

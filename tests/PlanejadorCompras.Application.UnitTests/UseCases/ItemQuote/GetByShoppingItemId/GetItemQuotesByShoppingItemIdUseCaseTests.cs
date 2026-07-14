@@ -15,7 +15,8 @@ public sealed class GetItemQuotesByShoppingItemIdUseCaseTests
         _handler = new GetItemQuotesByShoppingItemIdUseCase(
             _helper.ItemQuoteRepositoryMock.Object,
             _helper.ShoppingItemRepositoryMock.Object,
-            _helper.ShoppingListAccessServiceMock.Object);
+            _helper.ShoppingListAccessServiceMock.Object,
+            _helper.SupplierRepositoryMock.Object);
     }
 
     [Fact]
@@ -25,8 +26,14 @@ public sealed class GetItemQuotesByShoppingItemIdUseCaseTests
         var shoppingItem = GetItemQuotesByShoppingItemIdTestHelper.CreateShoppingItemEntity();
         var itemQuotes = new List<ItemQuoteEntity>
         {
-            GetItemQuotesByShoppingItemIdTestHelper.CreateItemQuoteEntity(shoppingItemId, "Supplier A", 199.90m),
-            GetItemQuotesByShoppingItemIdTestHelper.CreateItemQuoteEntity(shoppingItemId, "Supplier B", 189.90m)
+            GetItemQuotesByShoppingItemIdTestHelper.CreateItemQuoteEntity(
+                shoppingItemId,
+                GetItemQuotesByShoppingItemIdTestHelper.SupplierA.Id,
+                199.90m),
+            GetItemQuotesByShoppingItemIdTestHelper.CreateItemQuoteEntity(
+                shoppingItemId,
+                GetItemQuotesByShoppingItemIdTestHelper.SupplierB.Id,
+                189.90m)
         };
         _helper.ShoppingItemRepositoryMock
             .Setup(x => x.GetByIdAsync(shoppingItemId, It.IsAny<CancellationToken>()))
@@ -43,9 +50,9 @@ public sealed class GetItemQuotesByShoppingItemIdUseCaseTests
 
         Assert.Equal(2, response.Count);
         Assert.Equal(itemQuotes[0].Id, response[0].Id);
-        Assert.Equal(itemQuotes[0].SupplierName, response[0].SupplierName);
+        Assert.Equal(GetItemQuotesByShoppingItemIdTestHelper.SupplierA.Name, response[0].SupplierName);
         Assert.Equal(itemQuotes[1].Id, response[1].Id);
-        Assert.Equal(itemQuotes[1].SupplierName, response[1].SupplierName);
+        Assert.Equal(GetItemQuotesByShoppingItemIdTestHelper.SupplierB.Name, response[1].SupplierName);
     }
 
     [Fact]

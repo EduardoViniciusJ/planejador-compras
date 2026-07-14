@@ -13,6 +13,8 @@ public sealed class PlanejadorComprasDbContext(DbContextOptions<PlanejadorCompra
 
     public DbSet<ItemQuote> ItemQuotes => Set<ItemQuote>();
 
+    public DbSet<Supplier> Suppliers => Set<Supplier>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PlanejadorComprasDbContext).Assembly);

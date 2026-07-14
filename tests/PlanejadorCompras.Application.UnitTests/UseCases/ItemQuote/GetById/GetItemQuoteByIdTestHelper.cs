@@ -14,22 +14,32 @@ public sealed class GetItemQuoteByIdTestHelper
         ItemQuoteRepositoryMock = new Mock<IItemQuoteRepository>();
         ShoppingItemRepositoryMock = new Mock<IShoppingItemRepository>();
         ShoppingListAccessServiceMock = new Mock<IShoppingListAccessService>();
+        SupplierAccessServiceMock = new Mock<ISupplierAccessService>();
+        SupplierAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(DefaultSupplier.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(DefaultSupplier);
     }
 
     public static Guid DefaultShoppingItemId => Guid.Parse("66666666-6666-6666-6666-666666666666");
+    public static PlanejadorCompras.Domain.Entities.Supplier DefaultSupplier { get; } =
+        PlanejadorCompras.Domain.Entities.Supplier.Create(Guid.NewGuid(), "Best Monitor Supplier");
 
     public Mock<IItemQuoteRepository> ItemQuoteRepositoryMock { get; }
 
     public Mock<IShoppingItemRepository> ShoppingItemRepositoryMock { get; }
 
     public Mock<IShoppingListAccessService> ShoppingListAccessServiceMock { get; }
+    public Mock<ISupplierAccessService> SupplierAccessServiceMock { get; }
 
     public static ItemQuoteEntity CreateItemQuoteEntity(
         Guid? shoppingItemId = null,
-        string supplierName = "Best Monitor Supplier",
+        Guid? supplierId = null,
         decimal unitPrice = 199.90m)
     {
-        return ItemQuoteEntity.Create(shoppingItemId ?? DefaultShoppingItemId, supplierName, unitPrice);
+        return ItemQuoteEntity.Create(
+            shoppingItemId ?? DefaultShoppingItemId,
+            supplierId ?? DefaultSupplier.Id,
+            unitPrice);
     }
 
     public static ShoppingItemEntity CreateShoppingItemEntity(

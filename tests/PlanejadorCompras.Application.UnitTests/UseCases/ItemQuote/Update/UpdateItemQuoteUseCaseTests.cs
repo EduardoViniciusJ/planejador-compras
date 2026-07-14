@@ -17,14 +17,15 @@ public sealed class UpdateItemQuoteUseCaseTests
             _helper.ItemQuoteRepositoryMock.Object,
             _helper.ShoppingItemRepositoryMock.Object,
             _helper.UnitOfWorkMock.Object,
-            _helper.ShoppingListAccessServiceMock.Object);
+            _helper.ShoppingListAccessServiceMock.Object,
+            _helper.SupplierAccessServiceMock.Object);
     }
 
     [Fact]
     public async Task ExecuteAsync_ShouldUpdateItemQuote_WhenRequestIsValid()
     {
-        var itemQuote = ItemQuoteEntity.Create(UpdateItemQuoteTestHelper.DefaultShoppingItemId, "Supplier A", 199.90m);
-        var request = UpdateItemQuoteTestHelper.CreateRequestDto(itemQuote.ShoppingItemId, "Updated Supplier", 175.50m);
+        var itemQuote = ItemQuoteEntity.Create(UpdateItemQuoteTestHelper.DefaultShoppingItemId, Guid.NewGuid(), 199.90m);
+        var request = UpdateItemQuoteTestHelper.CreateRequestDto(itemQuote.ShoppingItemId, UpdateItemQuoteTestHelper.DefaultSupplier.Id, 175.50m);
         var currentShoppingItem = UpdateItemQuoteTestHelper.CreateShoppingItemEntity();
         var targetShoppingItem = UpdateItemQuoteTestHelper.CreateShoppingItemEntity(itemQuote.ShoppingItemId);
 
@@ -49,15 +50,16 @@ public sealed class UpdateItemQuoteUseCaseTests
         Assert.NotNull(response);
         Assert.Equal(itemQuote.Id, response.Id);
         Assert.Equal(request.ShoppingItemId, response.ShoppingItemId);
-        Assert.Equal(request.SupplierName, response.SupplierName);
+        Assert.Equal(request.SupplierId, response.SupplierId);
+        Assert.Equal(UpdateItemQuoteTestHelper.DefaultSupplier.Name, response.SupplierName);
         Assert.Equal(request.UnitPrice, response.UnitPrice);
     }
 
     [Fact]
     public async Task ExecuteAsync_ShouldCallUpdateRepositoryWithCorrectData()
     {
-        var itemQuote = ItemQuoteEntity.Create(UpdateItemQuoteTestHelper.DefaultShoppingItemId, "Supplier A", 199.90m);
-        var request = UpdateItemQuoteTestHelper.CreateRequestDto(itemQuote.ShoppingItemId, "Updated Supplier", 175.50m);
+        var itemQuote = ItemQuoteEntity.Create(UpdateItemQuoteTestHelper.DefaultShoppingItemId, Guid.NewGuid(), 199.90m);
+        var request = UpdateItemQuoteTestHelper.CreateRequestDto(itemQuote.ShoppingItemId, UpdateItemQuoteTestHelper.DefaultSupplier.Id, 175.50m);
         var currentShoppingItem = UpdateItemQuoteTestHelper.CreateShoppingItemEntity();
         var targetShoppingItem = UpdateItemQuoteTestHelper.CreateShoppingItemEntity(itemQuote.ShoppingItemId);
 
@@ -84,7 +86,7 @@ public sealed class UpdateItemQuoteUseCaseTests
                 It.Is<ItemQuoteEntity>(iq =>
                     iq.Id == itemQuote.Id &&
                     iq.ShoppingItemId == request.ShoppingItemId &&
-                    iq.SupplierName == request.SupplierName &&
+                    iq.SupplierId == request.SupplierId &&
                     iq.UnitPrice == request.UnitPrice),
                 It.IsAny<CancellationToken>()),
             Times.Once);
@@ -93,7 +95,7 @@ public sealed class UpdateItemQuoteUseCaseTests
     [Fact]
     public async Task ExecuteAsync_ShouldCommitUnitOfWork_WhenUpdateSucceeds()
     {
-        var itemQuote = ItemQuoteEntity.Create(UpdateItemQuoteTestHelper.DefaultShoppingItemId, "Supplier A", 199.90m);
+        var itemQuote = ItemQuoteEntity.Create(UpdateItemQuoteTestHelper.DefaultShoppingItemId, Guid.NewGuid(), 199.90m);
         var request = UpdateItemQuoteTestHelper.CreateRequestDto(itemQuote.ShoppingItemId);
         var currentShoppingItem = UpdateItemQuoteTestHelper.CreateShoppingItemEntity();
         var targetShoppingItem = UpdateItemQuoteTestHelper.CreateShoppingItemEntity(itemQuote.ShoppingItemId);
@@ -172,7 +174,7 @@ public sealed class UpdateItemQuoteUseCaseTests
     [Fact]
     public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenTargetShoppingItemDoesNotBelongToUser()
     {
-        var itemQuote = ItemQuoteEntity.Create(UpdateItemQuoteTestHelper.DefaultShoppingItemId, "Supplier A", 199.90m);
+        var itemQuote = ItemQuoteEntity.Create(UpdateItemQuoteTestHelper.DefaultShoppingItemId, Guid.NewGuid(), 199.90m);
         var unauthorizedListId = Guid.NewGuid();
         var request = UpdateItemQuoteTestHelper.CreateRequestDto(unauthorizedListId);
         var currentShoppingItem = UpdateItemQuoteTestHelper.CreateShoppingItemEntity();

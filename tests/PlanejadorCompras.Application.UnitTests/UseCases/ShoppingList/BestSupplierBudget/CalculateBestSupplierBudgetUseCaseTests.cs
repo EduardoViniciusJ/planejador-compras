@@ -18,7 +18,8 @@ public sealed class CalculateBestSupplierBudgetUseCaseTests
         _handler = new CalculateBestSupplierBudgetUseCase(
             _helper.ShoppingListAccessServiceMock.Object,
             _helper.ShoppingItemRepositoryMock.Object,
-            _helper.ItemQuoteRepositoryMock.Object);
+            _helper.ItemQuoteRepositoryMock.Object,
+            _helper.SupplierRepositoryMock.Object);
     }
 
     [Fact]
@@ -85,6 +86,61 @@ public sealed class CalculateBestSupplierBudgetUseCaseTests
         Assert.Null(result.BestSupplierName);
         Assert.Equal(0m, result.TotalPrice);
         Assert.Empty(result.Items);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldReturnNoSupplier_WhenNoSupplierCoversEveryItem()
+    {
+        var listId = Guid.NewGuid();
+        var item1 = CalculateBestSupplierBudgetTestHelper.CreateShoppingItem(listId, "Item 1", 2m);
+        var item2 = CalculateBestSupplierBudgetTestHelper.CreateShoppingItem(listId, "Item 2", 1m);
+
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CalculateBestSupplierBudgetTestHelper.CreateShoppingList());
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByShoppingListIdAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ShoppingItemEntity> { item1, item2 });
+        _helper.ItemQuoteRepositoryMock
+            .Setup(x => x.GetByShoppingListIdAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ItemQuoteEntity>
+            {
+                CalculateBestSupplierBudgetTestHelper.CreateQuote(item1.Id, "Supplier A", 10m),
+                CalculateBestSupplierBudgetTestHelper.CreateQuote(item2.Id, "Supplier B", 5m)
+            });
+
+        var result = await _handler.ExecuteAsync(listId);
+
+        Assert.Null(result.BestSupplierName);
+        Assert.Equal(0m, result.TotalPrice);
+        Assert.Empty(result.Items);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldUseLowestQuote_WhenSupplierQuotedItemMoreThanOnce()
+    {
+        var listId = Guid.NewGuid();
+        var item = CalculateBestSupplierBudgetTestHelper.CreateShoppingItem(listId, "Item", 2m);
+
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CalculateBestSupplierBudgetTestHelper.CreateShoppingList());
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByShoppingListIdAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ShoppingItemEntity> { item });
+        _helper.ItemQuoteRepositoryMock
+            .Setup(x => x.GetByShoppingListIdAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ItemQuoteEntity>
+            {
+                CalculateBestSupplierBudgetTestHelper.CreateQuote(item.Id, "Supplier A", 10m),
+                CalculateBestSupplierBudgetTestHelper.CreateQuote(item.Id, "Supplier A", 8m)
+            });
+
+        var result = await _handler.ExecuteAsync(listId);
+
+        Assert.Equal("Supplier A", result.BestSupplierName);
+        Assert.Equal(16m, result.TotalPrice);
+        Assert.Equal(8m, Assert.Single(result.Items).UnitPrice);
     }
 
     [Fact]

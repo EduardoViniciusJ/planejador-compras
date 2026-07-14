@@ -6,9 +6,7 @@ public sealed record ItemQuoteRequestDto(
     [Required]
     Guid ShoppingItemId,
     [Required]
-    [MinLength(1)]
-    [MaxLength(100)]
-    string SupplierName,
+    Guid SupplierId,
     [Required]
     [Range(0, double.MaxValue)]
     decimal UnitPrice);

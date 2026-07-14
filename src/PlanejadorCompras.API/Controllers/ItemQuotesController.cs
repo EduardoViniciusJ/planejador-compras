@@ -15,6 +15,7 @@ public sealed class ItemQuotesController : ControllerBase
     private readonly CreateItemQuoteUseCase _createUseCase;
     private readonly GetItemQuoteByIdUseCase _getByIdUseCase;
     private readonly GetItemQuotesByShoppingItemIdUseCase _getByShoppingItemIdUseCase;
+    private readonly GetUserItemQuotesUseCase _getByUserUseCase;
     private readonly UpdateItemQuoteUseCase _updateUseCase;
     private readonly DeleteItemQuoteUseCase _deleteUseCase;
 
@@ -22,14 +23,24 @@ public sealed class ItemQuotesController : ControllerBase
         CreateItemQuoteUseCase createUseCase,
         GetItemQuoteByIdUseCase getByIdUseCase,
         GetItemQuotesByShoppingItemIdUseCase getByShoppingItemIdUseCase,
+        GetUserItemQuotesUseCase getByUserUseCase,
         UpdateItemQuoteUseCase updateUseCase,
         DeleteItemQuoteUseCase deleteUseCase)
     {
         _createUseCase = createUseCase;
         _getByIdUseCase = getByIdUseCase;
         _getByShoppingItemIdUseCase = getByShoppingItemIdUseCase;
+        _getByUserUseCase = getByUserUseCase;
         _updateUseCase = updateUseCase;
         _deleteUseCase = deleteUseCase;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(UserItemQuotesResponseDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetByUser(CancellationToken cancellationToken)
+    {
+        var result = await _getByUserUseCase.ExecuteAsync(cancellationToken);
+        return Ok(result);
     }
 
     [HttpPost]

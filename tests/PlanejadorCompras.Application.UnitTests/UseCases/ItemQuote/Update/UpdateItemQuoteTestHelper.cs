@@ -15,6 +15,10 @@ public sealed class UpdateItemQuoteTestHelper
         ItemQuoteRepositoryMock = new Mock<IItemQuoteRepository>();
         ShoppingItemRepositoryMock = new Mock<IShoppingItemRepository>();
         ShoppingListAccessServiceMock = new Mock<IShoppingListAccessService>();
+        SupplierAccessServiceMock = new Mock<ISupplierAccessService>();
+        SupplierAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(DefaultSupplier.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(DefaultSupplier);
         UnitOfWorkMock = new Mock<IUnitOfWork>();
         UnitOfWorkMock
             .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
@@ -22,21 +26,27 @@ public sealed class UpdateItemQuoteTestHelper
     }
 
     public static Guid DefaultShoppingItemId => Guid.Parse("66666666-6666-6666-6666-666666666666");
+    public static PlanejadorCompras.Domain.Entities.Supplier DefaultSupplier { get; } =
+        PlanejadorCompras.Domain.Entities.Supplier.Create(Guid.NewGuid(), "Updated Supplier");
 
     public Mock<IItemQuoteRepository> ItemQuoteRepositoryMock { get; }
 
     public Mock<IShoppingItemRepository> ShoppingItemRepositoryMock { get; }
 
     public Mock<IShoppingListAccessService> ShoppingListAccessServiceMock { get; }
+    public Mock<ISupplierAccessService> SupplierAccessServiceMock { get; }
 
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
 
     public static ItemQuoteRequestDto CreateRequestDto(
         Guid? shoppingItemId = null,
-        string supplierName = "Updated Supplier",
+        Guid? supplierId = null,
         decimal unitPrice = 175.50m)
     {
-        return new ItemQuoteRequestDto(shoppingItemId ?? DefaultShoppingItemId, supplierName, unitPrice);
+        return new ItemQuoteRequestDto(
+            shoppingItemId ?? DefaultShoppingItemId,
+            supplierId ?? DefaultSupplier.Id,
+            unitPrice);
     }
 
     public static ShoppingItemEntity CreateShoppingItemEntity(

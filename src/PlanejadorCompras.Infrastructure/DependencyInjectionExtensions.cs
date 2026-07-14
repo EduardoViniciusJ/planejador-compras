@@ -7,6 +7,7 @@ using PlanejadorCompras.Domain.Repositories.User;
 using PlanejadorCompras.Domain.Repositories.ShoppingList;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
+using PlanejadorCompras.Domain.Repositories.Supplier;
 using PlanejadorCompras.Infrastructure.Persistence;
 using PlanejadorCompras.Infrastructure.Queries;
 using PlanejadorCompras.Infrastructure.Repositories;
@@ -47,6 +48,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IShoppingListRepository, ShoppingListRepository>();
         services.AddScoped<IShoppingItemRepository, ShoppingItemRepository>();
         services.AddScoped<IItemQuoteRepository, ItemQuoteRepository>();
+        services.AddScoped<ISupplierRepository, SupplierRepository>();
     }
 
     private static void AddUnitOfWork(IServiceCollection services)
@@ -57,7 +59,10 @@ public static class DependencyInjectionExtensions
     private static void AddApplicationServices(IServiceCollection services)
     {
         services.AddScoped<IShoppingListOverviewQuery, ShoppingListOverviewQuery>();
+        services.AddScoped<IShoppingListDetailQuery, ShoppingListDetailQuery>();
+        services.AddScoped<IUserItemQuotesQuery, UserItemQuotesQuery>();
         services.AddScoped<IShoppingListAccessService, ShoppingListAccessService>();
+        services.AddScoped<ISupplierAccessService, SupplierAccessService>();
     }
 
     private static void AddExternalServices(IServiceCollection services)

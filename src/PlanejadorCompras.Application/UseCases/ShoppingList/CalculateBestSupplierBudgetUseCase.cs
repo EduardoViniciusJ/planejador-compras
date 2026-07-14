@@ -5,6 +5,7 @@ using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 
 using PlanejadorCompras.Application.UseCases.Interfaces;
+using PlanejadorCompras.Domain.Repositories.Supplier;
 
 namespace PlanejadorCompras.Application.UseCases.ShoppingList;
 
@@ -13,15 +14,18 @@ public sealed class CalculateBestSupplierBudgetUseCase : ICalculateBestSupplierB
     private readonly IShoppingListAccessService _shoppingListAccessService;
     private readonly IShoppingItemRepository _shoppingItemRepository;
     private readonly IItemQuoteRepository _itemQuoteRepository;
+    private readonly ISupplierRepository _supplierRepository;
 
     public CalculateBestSupplierBudgetUseCase(
         IShoppingListAccessService shoppingListAccessService,
         IShoppingItemRepository shoppingItemRepository,
-        IItemQuoteRepository itemQuoteRepository)
+        IItemQuoteRepository itemQuoteRepository,
+        ISupplierRepository supplierRepository)
     {
         _shoppingListAccessService = shoppingListAccessService;
         _shoppingItemRepository = shoppingItemRepository;
         _itemQuoteRepository = itemQuoteRepository;
+        _supplierRepository = supplierRepository;
     }
 
     public async Task<BestSupplierBudgetResponseDto> ExecuteAsync(Guid shoppingListId, CancellationToken cancellationToken = default)
@@ -32,8 +36,12 @@ public sealed class CalculateBestSupplierBudgetUseCase : ICalculateBestSupplierB
 
         var items = await _shoppingItemRepository.GetByShoppingListIdAsync(shoppingListId, cancellationToken);
         var quotes = await _itemQuoteRepository.GetByShoppingListIdAsync(shoppingListId, cancellationToken);
+        var suppliers = await _supplierRepository.GetByIdsAsync(
+            quotes.Select(quote => quote.SupplierId),
+            cancellationToken);
+        var supplierNames = suppliers.ToDictionary(supplier => supplier.Id, supplier => supplier.Name);
 
-        if (!quotes.Any())
+        if (items.Count == 0 || quotes.Count == 0)
         {
             return new BestSupplierBudgetResponseDto(
                 shoppingListId,
@@ -43,34 +51,41 @@ public sealed class CalculateBestSupplierBudgetUseCase : ICalculateBestSupplierB
             );
         }
 
+        var itemIds = items.Select(item => item.Id).ToHashSet();
+
         var bestSupplierData = quotes
-            .GroupBy(q => q.SupplierName)
+            .Where(quote => itemIds.Contains(quote.ShoppingItemId))
+            .GroupBy(quote => quote.SupplierId)
             .Select(supplierGroup =>
             {
-                decimal supplierTotal = 0m;
-                var supplierItems = new List<BestSupplierBudgetItemDto>();
+                var lowestQuotes = supplierGroup
+                    .GroupBy(quote => quote.ShoppingItemId)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.MinBy(quote => quote.UnitPrice)!);
 
-                foreach (var quote in supplierGroup)
-                {
-                    var item = items.FirstOrDefault(i => i.Id == quote.ShoppingItemId);
-                    if (item != null)
+                var supplierItems = items
+                    .Where(item => lowestQuotes.ContainsKey(item.Id))
+                    .Select(item =>
                     {
-                        var totalItemPrice = quote.UnitPrice * item.Quantity;
-                        supplierTotal += totalItemPrice;
-
-                        supplierItems.Add(new BestSupplierBudgetItemDto(
+                        var quote = lowestQuotes[item.Id];
+                        return new BestSupplierBudgetItemDto(
                             item.Id,
                             item.Name,
                             quote.UnitPrice,
                             item.Quantity,
-                            totalItemPrice
-                        ));
-                    }
-                }
+                            quote.UnitPrice * item.Quantity);
+                    })
+                    .ToList();
 
-                return new { SupplierName = supplierGroup.Key, Total = supplierTotal, Items = supplierItems };
+                return new
+                {
+                    SupplierName = supplierNames[supplierGroup.Key],
+                    Total = supplierItems.Sum(item => item.TotalItemPrice),
+                    Items = supplierItems
+                };
             })
-            .Where(x => x.Items.Any())
+            .Where(result => result.Items.Count == items.Count)
             .OrderBy(x => x.Total)
             .FirstOrDefault();
 
