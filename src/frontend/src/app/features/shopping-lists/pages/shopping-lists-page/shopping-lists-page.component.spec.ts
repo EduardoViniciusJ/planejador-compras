@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import { ShoppingListService } from '../../data-access/shopping-list.service';
@@ -57,7 +58,14 @@ describe('ShoppingListsPageComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [ShoppingListsPageComponent],
-      providers: [{ provide: ShoppingListService, useValue: service }],
+      providers: [
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { queryParamMap: { get: () => null } } },
+        },
+        { provide: ShoppingListService, useValue: service },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ShoppingListsPageComponent);
@@ -84,6 +92,15 @@ describe('ShoppingListsPageComponent', () => {
       description: null,
     });
     expect(service.getOverview).toHaveBeenCalledTimes(2);
+  });
+
+  it('should open the item form directly from the list action', () => {
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate');
+
+    clickElement(fixture, '[data-testid="add-item"]');
+
+    expect(navigate).toHaveBeenCalledWith(['/app/price-map', 'draft-list', 'items', 'new']);
   });
 
   it('should edit a shopping list with the same form', () => {

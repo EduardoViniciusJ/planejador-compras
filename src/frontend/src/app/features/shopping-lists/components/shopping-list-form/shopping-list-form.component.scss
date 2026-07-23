@@ -4,11 +4,13 @@
 
 .shopping-list-form {
   display: grid;
+  min-width: 0;
   gap: 1.25rem;
 }
 
 .form-field {
   display: grid;
+  min-width: 0;
   gap: 0.5rem;
 }
 
@@ -29,7 +31,10 @@
 }
 
 .form-control {
+  box-sizing: border-box;
   min-height: var(--app-control-height);
+  width: 100%;
+  min-width: 0;
   border-color: var(--app-border-color);
   border-radius: var(--app-control-radius);
   background: var(--app-surface-bg);
@@ -95,5 +100,11 @@ textarea.form-control {
   .form-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 419.98px) {
+  .form-actions {
+    grid-template-columns: 1fr;
   }
 }

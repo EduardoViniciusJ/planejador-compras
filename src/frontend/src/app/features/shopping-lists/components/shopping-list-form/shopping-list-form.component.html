@@ -67,7 +67,9 @@
     </button>
     <button
       type="submit"
-      class="btn btn-primary"
+      class="btn"
+      [class.btn-success]="mode() === 'create'"
+      [class.btn-warning]="mode() === 'edit'"
       [disabled]="submitting()"
       data-testid="shopping-list-form-submit"
     >

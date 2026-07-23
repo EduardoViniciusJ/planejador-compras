@@ -8,6 +8,9 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { ModalDialogComponent } from '../../../../shared/ui/modal-dialog/modal-dialog.component';
 
 import {
   ShoppingListFormComponent,
@@ -33,9 +36,9 @@ const EMPTY_SUMMARY: ShoppingListsSummary = {
 };
 
 const STATUS_LABELS: Record<ShoppingListStatus, string> = {
-  draft: 'Em elaboração',
-  'awaiting-quotes': 'Aguardando cotações',
-  'ready-for-equalization': 'Pronta para equalização',
+  draft: 'Adicionando itens',
+  'awaiting-quotes': 'Aguardando preços',
+  'ready-for-equalization': 'Pronta para comparar',
 };
 
 const currencyFormatter = new Intl.NumberFormat('pt-BR', {
@@ -51,13 +54,15 @@ const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
 
 @Component({
   selector: 'app-shopping-lists-page',
-  imports: [ShoppingListFormComponent],
+  imports: [ShoppingListFormComponent, ModalDialogComponent],
   templateUrl: './shopping-lists-page.component.html',
   styleUrl: './shopping-lists-page.component.scss',
 })
 export class ShoppingListsPageComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly shoppingListService = inject(ShoppingListService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   protected readonly lists = signal<readonly ShoppingList[]>([]);
   protected readonly summary = signal<ShoppingListsSummary>(EMPTY_SUMMARY);
@@ -88,7 +93,6 @@ export class ShoppingListsPageComponent implements OnInit {
   protected readonly formError = signal<string | null>(null);
   protected readonly isSaving = signal(false);
 
-  protected readonly viewedList = signal<ShoppingList | null>(null);
   protected readonly deletingList = signal<ShoppingList | null>(null);
   protected readonly deleteError = signal<string | null>(null);
   protected readonly isDeleting = signal(false);
@@ -96,6 +100,10 @@ export class ShoppingListsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOverview();
+
+    if (this.route.snapshot.queryParamMap?.get('newList') === 'true') {
+      this.openCreateForm();
+    }
   }
 
   @HostListener('document:keydown.escape')
@@ -113,8 +121,6 @@ export class ShoppingListsPageComponent implements OnInit {
       this.closeForm();
       return;
     }
-
-    this.closePreview();
   }
 
   protected retryLoad(): void {
@@ -150,7 +156,6 @@ export class ShoppingListsPageComponent implements OnInit {
   protected openEditForm(list: ShoppingList): void {
     this.feedbackMessage.set(null);
     this.formError.set(null);
-    this.viewedList.set(null);
     this.editingList.set(list);
     this.formMode.set('edit');
     this.isFormOpen.set(true);
@@ -196,13 +201,14 @@ export class ShoppingListsPageComponent implements OnInit {
     });
   }
 
-  protected openPreview(list: ShoppingList): void {
+  protected openPriceMap(list: ShoppingList): void {
     this.feedbackMessage.set(null);
-    this.viewedList.set(list);
+    void this.router.navigate(['/app/price-map', list.id]);
   }
 
-  protected closePreview(): void {
-    this.viewedList.set(null);
+  protected addItem(list: ShoppingList): void {
+    this.feedbackMessage.set(null);
+    void this.router.navigate(['/app/price-map', list.id, 'items', 'new']);
   }
 
   protected openDeleteConfirmation(list: ShoppingList): void {

@@ -1,13 +1,13 @@
 <section class="shopping-lists-page">
   <header class="page-heading">
     <div>
-      <h1>Minhas listas</h1>
-      <p>Organize e acompanhe as compras da sua operação.</p>
+      <h1>Minhas listas de compras</h1>
+      <p>Crie listas, adicione itens e acompanhe os preços recebidos.</p>
     </div>
 
     <button
       type="button"
-      class="btn btn-primary page-primary-action"
+      class="btn btn-success page-primary-action"
       data-testid="add-list"
       (click)="openCreateForm()"
     >
@@ -65,7 +65,7 @@
         ></span>
         <div>
           <strong>{{ summary().totalLists }}</strong>
-          <span>Listas no total</span>
+          <span>Listas de compras</span>
         </div>
       </article>
 
@@ -174,10 +174,10 @@
       <div class="page-state">
         <span class="page-state-icon"><i class="bi bi-card-checklist" aria-hidden="true"></i></span>
         <h2>Nenhuma lista criada</h2>
-        <p>Crie uma lista para começar a organizar seus itens e cotações.</p>
-        <button type="button" class="btn btn-primary" (click)="openCreateForm()">
+        <p>Crie uma lista de compras para começar a organizar seus itens.</p>
+        <button type="button" class="btn btn-success" (click)="openCreateForm()">
           <i class="bi bi-plus-lg" aria-hidden="true"></i>
-          Adicionar lista
+          Criar lista de compras
         </button>
       </div>
     } @else if (filteredLists().length === 0) {
@@ -208,7 +208,7 @@
               @for (list of filteredLists(); track list.id) {
                 <tr [attr.data-testid]="'shopping-list-row-' + list.id">
                   <td>
-                    <button type="button" class="list-name-button" (click)="openPreview(list)">
+                    <button type="button" class="list-name-button" (click)="openPriceMap(list)">
                       <strong>{{ list.name }}</strong>
                       @if (list.description) {
                         <span>{{ list.description }}</span>
@@ -234,14 +234,26 @@
                     <div class="row-actions">
                       <button
                         type="button"
-                        [attr.aria-label]="'Abrir ' + list.name"
-                        title="Abrir lista"
-                        (click)="openPreview(list)"
+                        class="add-item-action"
+                        [attr.aria-label]="'Adicionar item em ' + list.name"
+                        title="Adicionar item"
+                        data-testid="add-item"
+                        (click)="addItem(list)"
                       >
-                        <i class="bi bi-eye" aria-hidden="true"></i>
+                        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                        <span>Adicionar item</span>
                       </button>
                       <button
                         type="button"
+                        [attr.aria-label]="'Abrir mapa de preços de ' + list.name"
+                        title="Abrir mapa de preços"
+                        (click)="openPriceMap(list)"
+                      >
+                        <i class="bi bi-table" aria-hidden="true"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="edit-action"
                         [attr.aria-label]="'Editar ' + list.name"
                         title="Editar lista"
                         data-testid="edit-list"
@@ -275,114 +287,22 @@
   }
 </section>
 
-@if (viewedList(); as list) {
-  <button
-    type="button"
-    class="dialog-backdrop"
-    aria-label="Fechar detalhes da lista"
-    (click)="closePreview()"
-  ></button>
-  <aside
-    class="side-panel"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="list-preview-title"
-    data-testid="list-preview"
-  >
-    <header class="side-panel-header">
-      <div>
-        <span>Visão geral</span>
-        <h2 id="list-preview-title">{{ list.name }}</h2>
-      </div>
-      <button type="button" aria-label="Fechar detalhes" title="Fechar" (click)="closePreview()">
-        <i class="bi bi-x-lg" aria-hidden="true"></i>
-      </button>
-    </header>
-
-    <div class="side-panel-body list-preview-body">
-      @if (list.description) {
-        <p class="list-preview-description">{{ list.description }}</p>
-      }
-
-      <dl class="list-preview-grid">
-        <div>
-          <dt>Situação</dt>
-          <dd>{{ statusLabels[list.status] }}</dd>
-        </div>
-        <div>
-          <dt>Itens</dt>
-          <dd>{{ list.itemCount }}</dd>
-        </div>
-        <div>
-          <dt>Itens com cotação</dt>
-          <dd>{{ list.quotedItemCount }} de {{ list.itemCount }}</dd>
-        </div>
-        <div>
-          <dt>Criada em</dt>
-          <dd>{{ formatDate(list.createdAt) }}</dd>
-        </div>
-        <div class="list-preview-total">
-          <dt>Total estimado</dt>
-          <dd>{{ formatCurrency(list.estimatedTotal) }}</dd>
-        </div>
-      </dl>
-    </div>
-
-    <footer class="side-panel-footer">
-      <button type="button" class="btn btn-outline-secondary" (click)="closePreview()">
-        Fechar
-      </button>
-      <button type="button" class="btn btn-primary" (click)="openEditForm(list)">
-        <i class="bi bi-pencil" aria-hidden="true"></i>
-        Editar lista
-      </button>
-    </footer>
-  </aside>
-}
-
 @if (isFormOpen()) {
-  <button
-    type="button"
-    class="dialog-backdrop"
-    aria-label="Fechar formulário"
-    (click)="closeForm()"
-  ></button>
-  <aside
-    class="side-panel"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="shopping-list-form-title"
-    data-testid="shopping-list-form-panel"
+  <app-modal-dialog
+    [title]="formMode() === 'create' ? 'Adicionar lista' : (editingList()?.name ?? 'Editar lista')"
+    [eyebrow]="formMode() === 'create' ? 'Nova lista' : 'Editar lista'"
+    [closeDisabled]="isSaving()"
+    (closeRequested)="closeForm()"
   >
-    <header class="side-panel-header">
-      <div>
-        <span>{{ formMode() === 'create' ? 'Nova lista' : 'Editar lista' }}</span>
-        <h2 id="shopping-list-form-title">
-          {{ formMode() === 'create' ? 'Adicionar lista' : editingList()?.name }}
-        </h2>
-      </div>
-      <button
-        type="button"
-        aria-label="Fechar formulário"
-        title="Fechar"
-        [disabled]="isSaving()"
-        (click)="closeForm()"
-      >
-        <i class="bi bi-x-lg" aria-hidden="true"></i>
-      </button>
-    </header>
-
-    <div class="side-panel-body">
-      <app-shopping-list-form
-        [mode]="formMode()"
-        [shoppingList]="editingList()"
-        [submitting]="isSaving()"
-        [serverError]="formError()"
-        (saveRequested)="saveList($event)"
-        (cancelRequested)="closeForm()"
-      />
-    </div>
-  </aside>
+    <app-shopping-list-form
+      [mode]="formMode()"
+      [shoppingList]="editingList()"
+      [submitting]="isSaving()"
+      [serverError]="formError()"
+      (saveRequested)="saveList($event)"
+      (cancelRequested)="closeForm()"
+    />
+  </app-modal-dialog>
 }
 
 @if (deletingList(); as list) {
