@@ -1,0 +1,47 @@
+<form class="supplier-form" [formGroup]="form" (ngSubmit)="submit()">
+  <label>
+    <span>Nome do fornecedor</span>
+    <input
+      class="form-control"
+      type="text"
+      formControlName="name"
+      maxlength="100"
+      autocomplete="organization"
+      placeholder="Ex.: Papelaria Central"
+      [attr.aria-invalid]="form.controls.name.touched && form.controls.name.invalid"
+    />
+    @if (form.controls.name.touched && form.controls.name.invalid) {
+      <small>Informe um nome com ate 100 caracteres.</small>
+    }
+  </label>
+
+  @if (serverError()) {
+    <p class="form-error" role="alert">{{ serverError() }}</p>
+  }
+
+  <div class="form-actions">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      [disabled]="submitting()"
+      (click)="cancel()"
+    >
+      Cancelar
+    </button>
+    <button
+      type="submit"
+      class="btn"
+      [class.btn-success]="mode() === 'create'"
+      [class.btn-warning]="mode() === 'edit'"
+      [disabled]="submitting()"
+    >
+      {{
+        submitting()
+          ? 'Salvando...'
+          : mode() === 'create'
+            ? 'Adicionar fornecedor'
+            : 'Salvar alteracoes'
+      }}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,58 @@
+.feature-form {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+}
+label {
+  display: grid;
+  min-width: 0;
+  gap: 0.4rem;
+  color: var(--app-text-muted);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+input,
+select {
+  box-sizing: border-box;
+  min-height: var(--app-control-height);
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-control-radius);
+  background: var(--app-page-bg);
+  color: var(--app-text-color);
+  padding: 0 0.75rem;
+}
+input:focus,
+select:focus {
+  border-color: var(--app-border-strong);
+  box-shadow: none;
+  outline: 0;
+}
+small,
+.form-error {
+  margin: 0;
+  color: #dc3545;
+  font-size: 0.8rem;
+}
+.form-hint {
+  margin: -0.35rem 0 0;
+  color: var(--app-text-muted);
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding-top: 0.5rem;
+}
+@media (max-width: 520px) {
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+}

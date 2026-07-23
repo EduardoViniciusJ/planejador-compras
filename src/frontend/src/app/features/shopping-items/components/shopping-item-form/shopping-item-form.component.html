@@ -1,0 +1,71 @@
+<form class="feature-form" [formGroup]="form" (ngSubmit)="submit()">
+  @if (showShoppingListSelect()) {
+    <label>
+      <span>Lista de compras</span>
+      <select formControlName="shoppingListId">
+        <option value="">Selecione uma lista de compras</option>
+        @for (list of shoppingLists(); track list.id) {
+          <option [value]="list.id">{{ list.name }}</option>
+        }
+      </select>
+      @if (form.controls.shoppingListId.touched && form.controls.shoppingListId.invalid) {
+        <small>Selecione a lista deste item.</small>
+      }
+    </label>
+  }
+
+  <label>
+    <span>Nome do item</span>
+    <input type="text" formControlName="name" maxlength="100" autocomplete="off" />
+    @if (form.controls.name.touched && form.controls.name.hasError('required')) {
+      <small>Informe o nome do item.</small>
+    }
+  </label>
+
+  <div class="form-grid">
+    <label>
+      <span>Quantidade</span>
+      <input type="number" formControlName="quantity" min="0.01" step="0.01" />
+      @if (form.controls.quantity.touched && form.controls.quantity.invalid) {
+        <small>Use uma quantidade maior que zero.</small>
+      }
+    </label>
+    <label>
+      <span>Unidade</span>
+      <select formControlName="unit">
+        @for (option of unitOptions(); track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+      @if (form.controls.unit.touched && form.controls.unit.invalid) {
+        <small>Informe uma unidade valida.</small>
+      }
+    </label>
+  </div>
+
+  @if (serverError()) {
+    <p class="form-error" role="alert">{{ serverError() }}</p>
+  }
+
+  <div class="form-actions">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      [disabled]="submitting()"
+      (click)="cancel()"
+    >
+      Cancelar
+    </button>
+    <button
+      type="submit"
+      class="btn"
+      [class.btn-success]="mode() === 'create'"
+      [class.btn-warning]="mode() === 'edit'"
+      [disabled]="submitting()"
+    >
+      {{
+        submitting() ? 'Salvando...' : mode() === 'create' ? 'Adicionar item' : 'Salvar alteracoes'
+      }}
+    </button>
+  </div>
+</form>

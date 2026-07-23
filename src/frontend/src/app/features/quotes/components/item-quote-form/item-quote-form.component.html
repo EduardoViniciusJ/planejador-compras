@@ -1,0 +1,46 @@
+<form class="feature-form" [formGroup]="form" (ngSubmit)="submit()">
+  <label>
+    <span>Fornecedor</span>
+    <select class="form-select" formControlName="supplierId">
+      <option value="">Selecione um fornecedor</option>
+      @for (supplier of suppliers(); track supplier.id) {
+        <option [value]="supplier.id">{{ supplier.name }}</option>
+      }
+    </select>
+    @if (form.controls.supplierId.touched && form.controls.supplierId.invalid) {
+      <small>Selecione um fornecedor cadastrado.</small>
+    }
+  </label>
+  <label>
+    <span>Preco unitario (R$)</span>
+    <input type="number" formControlName="unitPrice" min="0" step="0.01" />
+    @if (form.controls.unitPrice.touched && form.controls.unitPrice.invalid) {
+      <small>Use um preco maior ou igual a zero.</small>
+    }
+  </label>
+  <p class="form-hint">O preço total será calculado automaticamente pela quantidade do item.</p>
+  @if (serverError()) {
+    <p class="form-error" role="alert">{{ serverError() }}</p>
+  }
+  <div class="form-actions">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      [disabled]="submitting()"
+      (click)="cancel()"
+    >
+      Cancelar
+    </button>
+    <button
+      type="submit"
+      class="btn"
+      [class.btn-success]="mode() === 'create'"
+      [class.btn-warning]="mode() === 'edit'"
+      [disabled]="submitting()"
+    >
+      {{
+        submitting() ? 'Salvando...' : mode() === 'create' ? 'Adicionar preço' : 'Salvar alteracoes'
+      }}
+    </button>
+  </div>
+</form>

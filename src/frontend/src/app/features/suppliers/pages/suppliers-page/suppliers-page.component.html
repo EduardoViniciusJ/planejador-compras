@@ -1,0 +1,147 @@
+<section class="suppliers-page">
+  <header class="page-heading">
+    <div>
+      <h1>Fornecedores</h1>
+      <p>Cadastre as empresas que oferecem preços para suas compras.</p>
+    </div>
+    <button class="btn btn-success" type="button" (click)="openCreate()">
+      <i class="bi bi-plus-lg"></i> Adicionar fornecedor
+    </button>
+  </header>
+
+  @if (feedback()) {
+    <p class="feedback" role="status"><i class="bi bi-check-circle"></i> {{ feedback() }}</p>
+  }
+
+  @if (isLoading()) {
+    <div class="page-state">
+      <span class="spinner-border"></span>
+      <p>Carregando fornecedores...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="page-state" role="alert">
+      <i class="bi bi-exclamation-triangle"></i>
+      <h2>Nao foi possivel carregar</h2>
+      <p>{{ loadError() }}</p>
+      <button class="btn btn-outline-primary" (click)="retry()">Tentar novamente</button>
+    </div>
+  } @else {
+    <label class="search-control">
+      <i class="bi bi-search"></i><span class="visually-hidden">Buscar fornecedor</span>
+      <input
+        type="search"
+        placeholder="Buscar por nome"
+        [value]="searchTerm()"
+        (input)="updateSearch($event)"
+      />
+    </label>
+
+    <div class="suppliers-surface">
+      @if (filteredSuppliers().length === 0) {
+        <div class="page-state">
+          <i class="bi bi-buildings"></i>
+          <h2>
+            {{ searchTerm() ? 'Nenhum fornecedor encontrado' : 'Nenhum fornecedor cadastrado' }}
+          </h2>
+          <p>
+            {{
+              searchTerm()
+                ? 'Tente buscar por outro nome.'
+                : 'Cadastre um fornecedor para informar preços aos itens.'
+            }}
+          </p>
+          @if (!searchTerm()) {
+            <button class="btn btn-success" (click)="openCreate()">Adicionar fornecedor</button>
+          }
+        </div>
+      } @else {
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Fornecedor</th>
+                <th>Cadastrado em</th>
+                <th><span class="visually-hidden">Acoes</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (supplier of filteredSuppliers(); track supplier.id) {
+                <tr>
+                  <td>
+                    <strong>{{ supplier.name }}</strong>
+                  </td>
+                  <td>{{ supplier.createdAt.toLocaleDateString('pt-BR') }}</td>
+                  <td class="row-actions">
+                    <button
+                      class="edit-action"
+                      type="button"
+                      title="Editar"
+                      aria-label="Editar fornecedor"
+                      (click)="openEdit(supplier)"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button
+                      class="danger-action"
+                      type="button"
+                      title="Excluir"
+                      aria-label="Excluir fornecedor"
+                      (click)="openDelete(supplier)"
+                    >
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+</section>
+
+@if (isFormOpen()) {
+  <app-modal-dialog
+    [title]="editingSupplier()?.name ?? 'Adicionar fornecedor'"
+    [eyebrow]="formMode() === 'create' ? 'Novo fornecedor' : 'Editar fornecedor'"
+    [closeDisabled]="isSaving()"
+    (closeRequested)="closeForm()"
+  >
+    <app-supplier-form
+      [mode]="formMode()"
+      [supplier]="editingSupplier()"
+      [submitting]="isSaving()"
+      [serverError]="formError()"
+      (saveRequested)="saveSupplier($event)"
+      (cancelRequested)="closeForm()"
+    />
+  </app-modal-dialog>
+}
+
+@if (deletingSupplier(); as supplier) {
+  <button class="dialog-backdrop" aria-label="Cancelar exclusao" (click)="closeDelete()"></button>
+  <section class="confirm-dialog" role="alertdialog" aria-modal="true">
+    <i class="bi bi-trash3"></i>
+    <h2>Excluir fornecedor?</h2>
+    <p>
+      O fornecedor <strong>{{ supplier.name }}</strong> sera excluido.
+    </p>
+    @if (deleteError()) {
+      <p class="dialog-error">{{ deleteError() }}</p>
+    }
+    <div>
+      <button class="btn btn-outline-secondary" [disabled]="isDeleting()" (click)="closeDelete()">
+        Cancelar</button
+      ><button
+        class="btn btn-danger"
+        [disabled]="isDeleting() || !!deleteError()"
+        (click)="confirmDelete()"
+      >
+        {{
+          isDeleting() ? 'Excluindo...' : deleteError() ? 'Fornecedor em uso' : 'Excluir fornecedor'
+        }}
+      </button>
+    </div>
+  </section>
+}
