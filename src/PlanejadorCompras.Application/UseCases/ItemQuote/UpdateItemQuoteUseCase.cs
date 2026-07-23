@@ -5,6 +5,7 @@ using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 using PlanejadorCompras.Domain.Repositories;
+using PlanejadorCompras.Domain.Repositories.ShoppingListSupplier;
 
 namespace PlanejadorCompras.Application.UseCases.ItemQuote;
 
@@ -15,19 +16,22 @@ public sealed class UpdateItemQuoteUseCase
     private readonly IUnitOfWork _unitOfWork;
     private readonly IShoppingListAccessService _shoppingListAccessService;
     private readonly ISupplierAccessService _supplierAccessService;
+    private readonly IShoppingListSupplierRepository _shoppingListSupplierRepository;
 
     public UpdateItemQuoteUseCase(
         IItemQuoteRepository itemQuoteRepository,
         IShoppingItemRepository shoppingItemRepository,
         IUnitOfWork unitOfWork,
         IShoppingListAccessService shoppingListAccessService,
-        ISupplierAccessService supplierAccessService)
+        ISupplierAccessService supplierAccessService,
+        IShoppingListSupplierRepository shoppingListSupplierRepository)
     {
         _itemQuoteRepository = itemQuoteRepository;
         _shoppingItemRepository = shoppingItemRepository;
         _unitOfWork = unitOfWork;
         _shoppingListAccessService = shoppingListAccessService;
         _supplierAccessService = supplierAccessService;
+        _shoppingListSupplierRepository = shoppingListSupplierRepository;
     }
 
     public async Task<ItemQuoteResponseDto> ExecuteAsync(
@@ -60,6 +64,15 @@ public sealed class UpdateItemQuoteUseCase
 
         await _shoppingListAccessService.GetForCurrentUserAsync(targetShoppingItem.ShoppingListId, cancellationToken);
         var supplier = await _supplierAccessService.GetForCurrentUserAsync(request.SupplierId, cancellationToken);
+        if (!await _shoppingListSupplierRepository.ExistsAsync(
+                targetShoppingItem.ShoppingListId,
+                request.SupplierId,
+                cancellationToken))
+        {
+            throw new NotFoundException(
+                "Supplier is not assigned to this shopping list.",
+                "shopping_list_supplier_not_found");
+        }
 
         itemQuote.Update(request.ShoppingItemId, request.SupplierId, request.UnitPrice);
         await _itemQuoteRepository.UpdateAsync(itemQuote, cancellationToken);

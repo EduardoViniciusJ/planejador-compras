@@ -35,6 +35,9 @@ public static class DependencyInjectionExtensions
         services.AddScoped<DeleteShoppingListUseCase>();
         services.AddScoped<ICalculateBestSupplierBudgetUseCase, CalculateBestSupplierBudgetUseCase>();
         services.AddScoped<IGetShoppingListEqualizationUseCase, GetShoppingListEqualizationUseCase>();
+        services.AddScoped<GetShoppingListSuppliersUseCase>();
+        services.AddScoped<AddSupplierToShoppingListUseCase>();
+        services.AddScoped<RemoveSupplierFromShoppingListUseCase>();
 
         // ShoppingItem
         services.AddScoped<CreateShoppingItemUseCase>();

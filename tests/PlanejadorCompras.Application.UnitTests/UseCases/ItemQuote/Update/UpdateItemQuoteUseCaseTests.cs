@@ -18,7 +18,8 @@ public sealed class UpdateItemQuoteUseCaseTests
             _helper.ShoppingItemRepositoryMock.Object,
             _helper.UnitOfWorkMock.Object,
             _helper.ShoppingListAccessServiceMock.Object,
-            _helper.SupplierAccessServiceMock.Object);
+            _helper.SupplierAccessServiceMock.Object,
+            _helper.ShoppingListSupplierRepositoryMock.Object);
     }
 
     [Fact]

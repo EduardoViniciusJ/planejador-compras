@@ -4,6 +4,7 @@ using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
+using PlanejadorCompras.Domain.Repositories.ShoppingListSupplier;
 using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ItemQuote.Update;
@@ -16,6 +17,13 @@ public sealed class UpdateItemQuoteTestHelper
         ShoppingItemRepositoryMock = new Mock<IShoppingItemRepository>();
         ShoppingListAccessServiceMock = new Mock<IShoppingListAccessService>();
         SupplierAccessServiceMock = new Mock<ISupplierAccessService>();
+        ShoppingListSupplierRepositoryMock = new Mock<IShoppingListSupplierRepository>();
+        ShoppingListSupplierRepositoryMock
+            .Setup(x => x.ExistsAsync(
+                It.IsAny<Guid>(),
+                It.IsAny<Guid>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
         SupplierAccessServiceMock
             .Setup(x => x.GetForCurrentUserAsync(DefaultSupplier.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(DefaultSupplier);
@@ -35,6 +43,7 @@ public sealed class UpdateItemQuoteTestHelper
 
     public Mock<IShoppingListAccessService> ShoppingListAccessServiceMock { get; }
     public Mock<ISupplierAccessService> SupplierAccessServiceMock { get; }
+    public Mock<IShoppingListSupplierRepository> ShoppingListSupplierRepositoryMock { get; }
 
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
 

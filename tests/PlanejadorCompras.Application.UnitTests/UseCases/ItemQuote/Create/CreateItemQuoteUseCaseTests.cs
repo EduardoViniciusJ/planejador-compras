@@ -1,5 +1,6 @@
 using Moq;
 using PlanejadorCompras.Application.Common.Dtos.Requests;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ItemQuote.Create;
 using ItemQuoteEntity = PlanejadorCompras.Domain.Entities.ItemQuote;
 
@@ -18,7 +19,8 @@ public sealed class CreateItemQuoteUseCaseTests
             _helper.ShoppingItemRepositoryMock.Object,
             _helper.UnitOfWorkMock.Object,
             _helper.ShoppingListAccessServiceMock.Object,
-            _helper.SupplierAccessServiceMock.Object);
+            _helper.SupplierAccessServiceMock.Object,
+            _helper.ShoppingListSupplierRepositoryMock.Object);
     }
 
     [Fact]
@@ -104,5 +106,30 @@ public sealed class CreateItemQuoteUseCaseTests
         var response = await _handler.ExecuteAsync(request);
 
         Assert.Equal("Best Monitor Supplier", response.SupplierName);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldRejectSupplierThatIsNotAssignedToTheList()
+    {
+        var request = CreateItemQuoteTestHelper.CreateRequestDto();
+        var shoppingItem = CreateItemQuoteTestHelper.CreateShoppingItemEntity();
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(request.ShoppingItemId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(shoppingItem);
+        _helper.SetupShoppingListAccess(shoppingItem.ShoppingListId);
+        _helper.ShoppingListSupplierRepositoryMock
+            .Setup(x => x.ExistsAsync(
+                shoppingItem.ShoppingListId,
+                request.SupplierId,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.ExecuteAsync(request));
+
+        _helper.ItemQuoteRepositoryMock.Verify(
+            repository => repository.AddAsync(
+                It.IsAny<ItemQuoteEntity>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 }
