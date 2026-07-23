@@ -1,0 +1,40 @@
+<div class="app-modal-layer">
+  <button
+    type="button"
+    class="app-modal-backdrop"
+    aria-label="Fechar janela"
+    [disabled]="closeDisabled()"
+    (click)="requestClose()"
+  ></button>
+
+  <section
+    class="app-modal-dialog"
+    [class]="'app-modal-dialog app-modal-dialog-' + width()"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="app-modal-title"
+  >
+    <header class="app-modal-header">
+      <div>
+        @if (eyebrow()) {
+          <span>{{ eyebrow() }}</span>
+        }
+        <h2 id="app-modal-title">{{ title() }}</h2>
+      </div>
+      <button
+        type="button"
+        class="app-modal-close"
+        aria-label="Fechar janela"
+        title="Fechar"
+        [disabled]="closeDisabled()"
+        (click)="requestClose()"
+      >
+        <i class="bi bi-x-lg" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    <div class="app-modal-body">
+      <ng-content />
+    </div>
+  </section>
+</div>
