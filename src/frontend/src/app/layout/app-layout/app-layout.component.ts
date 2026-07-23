@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, HostListener, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 
@@ -15,7 +15,6 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 export class AppLayoutComponent {
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly elementRef = inject(ElementRef<HTMLElement>);
   private readonly router = inject(Router);
   private readonly themeService = inject(ThemeService);
 
@@ -27,29 +26,9 @@ export class AppLayoutComponent {
   protected readonly isSidebarOpen = signal(false);
   protected readonly isMobileViewport = signal(false);
   protected readonly logoutErrorMessage = signal<string | null>(null);
-  protected readonly navigationButtonExpanded = computed(() =>
-    this.isMobileViewport() ? this.isSidebarOpen() : !this.isSidebarCollapsed(),
-  );
-  protected readonly navigationButtonLabel = computed(() => {
-    if (this.isMobileViewport()) {
-      return this.isSidebarOpen() ? 'Fechar menu de navegacao' : 'Abrir menu de navegacao';
-    }
-
-    return this.isSidebarCollapsed() ? 'Expandir menu' : 'Recolher menu';
-  });
-  protected readonly themeButtonLabel = computed(() =>
-    this.currentTheme() === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro',
-  );
 
   constructor() {
     this.updateViewportState();
-  }
-
-  @HostListener('document:click', ['$event'])
-  protected handleDocumentClick(event: MouseEvent): void {
-    if (!this.elementRef.nativeElement.contains(event.target as Node)) {
-      this.isProfileMenuOpen.set(false);
-    }
   }
 
   @HostListener('document:keydown.escape')
@@ -70,6 +49,10 @@ export class AppLayoutComponent {
   protected toggleProfileMenu(): void {
     this.logoutErrorMessage.set(null);
     this.isProfileMenuOpen.update((isOpen) => !isOpen);
+  }
+
+  protected closeProfileMenu(): void {
+    this.isProfileMenuOpen.set(false);
   }
 
   protected toggleSidebar(): void {

@@ -1,9 +1,19 @@
-<div class="app-layout">
+<div class="app-layout" [class.sidebar-collapsed-layout]="isSidebarCollapsed()">
   <app-sidebar
     [class.sidebar-host-collapsed]="isSidebarCollapsed()"
     [class.sidebar-host-mobile-open]="isSidebarOpen()"
-    [collapsed]="isSidebarCollapsed()"
+    [collapsed]="isSidebarCollapsed() || (isMobileViewport() && !isSidebarOpen())"
+    [currentTheme]="currentTheme()"
+    [currentUser]="currentUser()"
+    [isLoggingOut]="isLoggingOut()"
+    [isProfileMenuOpen]="isProfileMenuOpen()"
+    [logoutErrorMessage]="logoutErrorMessage()"
     (navigationRequested)="closeMobileSidebar()"
+    (collapseRequested)="toggleNavigation()"
+    (themeRequested)="toggleTheme()"
+    (profileRequested)="toggleProfileMenu()"
+    (profileDismissRequested)="closeProfileMenu()"
+    (logoutRequested)="logout()"
   />
 
   @if (isSidebarOpen()) {
@@ -16,83 +26,6 @@
   }
 
   <div class="app-layout-content">
-    <header class="app-layout-header">
-      <div class="app-layout-header-start">
-        <button
-          type="button"
-          class="app-layout-icon-button"
-          aria-controls="app-sidebar"
-          [attr.aria-expanded]="navigationButtonExpanded()"
-          [attr.aria-label]="navigationButtonLabel()"
-          [attr.title]="navigationButtonLabel()"
-          (click)="toggleNavigation()"
-        >
-          <i class="bi bi-list" aria-hidden="true"></i>
-        </button>
-      </div>
-
-      <div class="app-layout-header-actions">
-        <button
-          type="button"
-          class="app-layout-icon-button"
-          [attr.aria-label]="themeButtonLabel()"
-          [attr.aria-pressed]="currentTheme() === 'dark'"
-          [attr.title]="themeButtonLabel()"
-          (click)="toggleTheme()"
-        >
-          <i
-            class="bi"
-            [class.bi-moon-stars-fill]="currentTheme() === 'light'"
-            [class.bi-brightness-high-fill]="currentTheme() === 'dark'"
-            aria-hidden="true"
-          ></i>
-        </button>
-
-        <div class="app-layout-profile-menu">
-          <button
-            type="button"
-            class="app-layout-icon-button"
-            aria-controls="profile-menu"
-            [attr.aria-expanded]="isProfileMenuOpen()"
-            aria-label="Abrir menu do perfil"
-            title="Perfil"
-            (click)="toggleProfileMenu()"
-          >
-            <i class="bi bi-person-circle" aria-hidden="true"></i>
-          </button>
-
-          @if (isProfileMenuOpen()) {
-            <section id="profile-menu" class="profile-menu-panel" aria-label="Menu do perfil">
-              @if (currentUser(); as user) {
-                <div class="profile-menu-user">
-                  <strong>{{ user.name || user.email }}</strong>
-                  <span>{{ user.email }}</span>
-                </div>
-              } @else {
-                <div class="profile-menu-user">
-                  <strong>Conta</strong>
-                </div>
-              }
-
-              @if (logoutErrorMessage()) {
-                <p class="profile-menu-error" role="alert">{{ logoutErrorMessage() }}</p>
-              }
-
-              <button
-                type="button"
-                class="profile-menu-logout"
-                [disabled]="isLoggingOut()"
-                (click)="logout()"
-              >
-                <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
-                {{ isLoggingOut() ? 'Saindo...' : 'Sair' }}
-              </button>
-            </section>
-          }
-        </div>
-      </div>
-    </header>
-
     <main class="app-layout-main">
       <router-outlet />
     </main>
