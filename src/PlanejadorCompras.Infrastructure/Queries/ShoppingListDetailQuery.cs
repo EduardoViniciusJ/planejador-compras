@@ -50,9 +50,17 @@ public sealed class ShoppingListDetailQuery : IShoppingListDetailQuery
                 item.Quantity,
                 item.Unit,
                 item.CreatedAt,
-                _context.ItemQuotes.Count(quote => quote.ShoppingItemId == item.Id),
+                _context.ItemQuotes.Count(quote =>
+                    quote.ShoppingItemId == item.Id &&
+                    _context.ShoppingListSuppliers.Any(link =>
+                        link.ShoppingListId == shoppingListId &&
+                        link.SupplierId == quote.SupplierId)),
                 _context.ItemQuotes
-                    .Where(quote => quote.ShoppingItemId == item.Id)
+                    .Where(quote =>
+                        quote.ShoppingItemId == item.Id &&
+                        _context.ShoppingListSuppliers.Any(link =>
+                            link.ShoppingListId == shoppingListId &&
+                            link.SupplierId == quote.SupplierId))
                     .Select(quote => (decimal?)quote.UnitPrice)
                     .Min()))
             .ToListAsync(cancellationToken);

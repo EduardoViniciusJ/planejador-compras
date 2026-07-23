@@ -8,6 +8,7 @@ using PlanejadorCompras.Domain.Repositories.ShoppingList;
 using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Domain.Repositories.Supplier;
+using PlanejadorCompras.Domain.Repositories.ShoppingListSupplier;
 using PlanejadorCompras.Infrastructure.Persistence;
 using PlanejadorCompras.Infrastructure.Queries;
 using PlanejadorCompras.Infrastructure.Repositories;
@@ -49,6 +50,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IShoppingItemRepository, ShoppingItemRepository>();
         services.AddScoped<IItemQuoteRepository, ItemQuoteRepository>();
         services.AddScoped<ISupplierRepository, SupplierRepository>();
+        services.AddScoped<IShoppingListSupplierRepository, ShoppingListSupplierRepository>();
     }
 
     private static void AddUnitOfWork(IServiceCollection services)

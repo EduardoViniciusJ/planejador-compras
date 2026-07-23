@@ -40,7 +40,11 @@ public sealed class ShoppingListOverviewQuery : IShoppingListOverviewQuery
                 item.ShoppingListId,
                 item.Quantity,
                 MinimumUnitPrice = _context.ItemQuotes
-                    .Where(quote => quote.ShoppingItemId == item.Id)
+                    .Where(quote =>
+                        quote.ShoppingItemId == item.Id &&
+                        _context.ShoppingListSuppliers.Any(link =>
+                            link.ShoppingListId == item.ShoppingListId &&
+                            link.SupplierId == quote.SupplierId))
                     .Select(quote => (decimal?)quote.UnitPrice)
                     .Min()
             })

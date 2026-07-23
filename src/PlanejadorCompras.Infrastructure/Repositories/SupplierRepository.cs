@@ -56,6 +56,10 @@ public sealed class SupplierRepository(PlanejadorComprasDbContext context) : ISu
         var supplier = await GetByIdAsync(id, cancellationToken);
         if (supplier is null) return false;
 
+        var shoppingListLinks = await context.ShoppingListSuppliers
+            .Where(link => link.SupplierId == id)
+            .ToListAsync(cancellationToken);
+        context.ShoppingListSuppliers.RemoveRange(shoppingListLinks);
         context.Suppliers.Remove(supplier);
         return true;
     }

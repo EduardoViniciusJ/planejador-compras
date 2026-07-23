@@ -15,6 +15,8 @@ public sealed class PlanejadorComprasDbContext(DbContextOptions<PlanejadorCompra
 
     public DbSet<Supplier> Suppliers => Set<Supplier>();
 
+    public DbSet<ShoppingListSupplier> ShoppingListSuppliers => Set<ShoppingListSupplier>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PlanejadorComprasDbContext).Assembly);

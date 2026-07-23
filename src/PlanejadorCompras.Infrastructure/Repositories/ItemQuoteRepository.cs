@@ -22,7 +22,13 @@ public sealed class ItemQuoteRepository : IItemQuoteRepository
     public async Task<List<ItemQuote>> GetByShoppingItemIdAsync(Guid shoppingItemId, CancellationToken cancellationToken = default)
     {
         return await _context.ItemQuotes
-            .Where(x => x.ShoppingItemId == shoppingItemId)
+            .Where(quote =>
+                quote.ShoppingItemId == shoppingItemId &&
+                _context.ShoppingItems.Any(item =>
+                    item.Id == shoppingItemId &&
+                    _context.ShoppingListSuppliers.Any(link =>
+                        link.ShoppingListId == item.ShoppingListId &&
+                        link.SupplierId == quote.SupplierId)))
             .ToListAsync(cancellationToken);
     }
 
@@ -52,7 +58,13 @@ public sealed class ItemQuoteRepository : IItemQuoteRepository
     public async Task<List<ItemQuote>> GetByShoppingListIdAsync(Guid shoppingListId, CancellationToken cancellationToken = default)
     {
         return await _context.ItemQuotes
-            .Where(q => _context.ShoppingItems.Any(i => i.Id == q.ShoppingItemId && i.ShoppingListId == shoppingListId))
+            .Where(quote =>
+                _context.ShoppingItems.Any(item =>
+                    item.Id == quote.ShoppingItemId &&
+                    item.ShoppingListId == shoppingListId) &&
+                _context.ShoppingListSuppliers.Any(link =>
+                    link.ShoppingListId == shoppingListId &&
+                    link.SupplierId == quote.SupplierId))
             .ToListAsync(cancellationToken);
     }
 }
