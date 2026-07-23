@@ -1,27 +1,45 @@
 :root {
   color-scheme: light;
-  --bs-primary: #10b981;
-  --bs-primary-rgb: 16, 185, 129;
-  --bs-primary-text-emphasis: #047857;
-  --bs-primary-bg-subtle: #d1fae5;
-  --bs-primary-border-subtle: #6ee7b7;
+  --bs-primary: #1f3a5f;
+  --bs-primary-rgb: 31, 58, 95;
+  --bs-primary-text-emphasis: #172b46;
+  --bs-primary-bg-subtle: #e7eef7;
+  --bs-primary-border-subtle: #9db2cd;
   --bs-font-sans-serif: var(--app-font-family);
   --bs-body-font-family: var(--app-font-family);
   --bs-body-bg: #f9fafb;
   --bs-body-color: #111827;
   --bs-secondary-color: #4b5563;
   --bs-border-color: rgba(17, 24, 39, 0.12);
-  --bs-link-color: #047857;
-  --bs-link-color-rgb: 4, 120, 87;
-  --bs-link-hover-color: #065f46;
-  --bs-link-hover-color-rgb: 6, 95, 70;
+  --bs-link-color: #244d78;
+  --bs-link-color-rgb: 36, 77, 120;
+  --bs-link-hover-color: #172b46;
+  --bs-link-hover-color-rgb: 23, 43, 70;
   --app-brand-ink: #111827;
   --app-brand-muted: #374151;
-  --app-brand-accent: #10b981;
-  --app-brand-accent-strong: #059669;
-  --app-brand-accent-contrast: #04251c;
-  --app-brand-accent-soft: #d1fae5;
-  --app-font-family: 'Satoshi', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --app-brand-accent: #1f3a5f;
+  --app-brand-accent-strong: #172b46;
+  --app-brand-accent-contrast: #ffffff;
+  --app-brand-accent-soft: #e7eef7;
+  --app-success: #16803c;
+  --app-success-rgb: 22, 128, 60;
+  --app-success-strong: #116530;
+  --app-success-contrast: #ffffff;
+  --app-success-soft: #e8f5ec;
+  --app-warning: #d97706;
+  --app-warning-strong: #92400e;
+  --app-warning-soft: #fff3d6;
+  --app-danger: #dc2626;
+  --app-danger-strong: #b91c1c;
+  --app-danger-soft: #feecec;
+  --app-font-family:
+    'Satoshi', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --app-system-font-family:
+    'Inter Variable', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  --app-font-size-base: 14px;
+  --app-font-size-table: 13px;
+  --app-font-size-page-title: 22px;
   --app-page-bg: #f9fafb;
   --app-page-alt-bg: #f3f4f6;
   --app-surface-bg: #ffffff;
@@ -62,38 +80,49 @@
   --app-toolbar-height: 3.25rem;
   --app-transition-fast: 160ms ease;
   --app-transition-base: 220ms ease;
-  --app-focus-ring: 0 0 0 0.2rem rgba(16, 185, 129, 0.24);
+  --app-focus-ring: none;
 }
 
 [data-bs-theme='dark'] {
   color-scheme: dark;
-  --bs-primary: #34d399;
-  --bs-primary-rgb: 52, 211, 153;
-  --bs-primary-text-emphasis: #6ee7b7;
-  --bs-primary-bg-subtle: #064e3b;
-  --bs-primary-border-subtle: #047857;
-  --bs-body-bg: #080b10;
+  --bs-primary: #3f6f9f;
+  --bs-primary-rgb: 63, 111, 159;
+  --bs-primary-text-emphasis: #8fb3da;
+  --bs-primary-bg-subtle: #17243a;
+  --bs-primary-border-subtle: #294e78;
+  --bs-body-bg: #0d1017;
   --bs-body-color: #f9fafb;
   --bs-secondary-color: #d1d5db;
   --bs-border-color: rgba(156, 163, 175, 0.18);
-  --bs-link-color: #6ee7b7;
-  --bs-link-color-rgb: 110, 231, 183;
-  --bs-link-hover-color: #a7f3d0;
-  --bs-link-hover-color-rgb: 167, 243, 208;
+  --bs-link-color: #8fb3da;
+  --bs-link-color-rgb: 143, 179, 218;
+  --bs-link-hover-color: #bcd3ea;
+  --bs-link-hover-color-rgb: 188, 211, 234;
   --app-brand-ink: #f9fafb;
   --app-brand-muted: #d1d5db;
-  --app-brand-accent: #34d399;
-  --app-brand-accent-strong: #6ee7b7;
-  --app-brand-accent-contrast: #04251c;
-  --app-brand-accent-soft: rgba(52, 211, 153, 0.14);
-  --app-page-bg: #080b10;
-  --app-page-alt-bg: #0d1117;
-  --app-surface-bg: #111827;
-  --app-surface-alt-bg: #0b1018;
-  --app-surface-elevated-bg: rgba(17, 24, 39, 0.9);
-  --app-surface-inset-bg: #1f2937;
-  --app-header-bg: rgba(8, 11, 16, 0.72);
-  --app-sidebar-bg: rgba(8, 11, 16, 0.98);
+  --app-brand-accent: #3f6f9f;
+  --app-brand-accent-strong: #5687b8;
+  --app-brand-accent-contrast: #ffffff;
+  --app-brand-accent-soft: rgba(63, 111, 159, 0.18);
+  --app-success: #34d399;
+  --app-success-rgb: 52, 211, 153;
+  --app-success-strong: #6ee7b7;
+  --app-success-contrast: #071a12;
+  --app-success-soft: rgba(52, 211, 153, 0.14);
+  --app-warning: #fbbf24;
+  --app-warning-strong: #fcd34d;
+  --app-warning-soft: rgba(251, 191, 36, 0.14);
+  --app-danger: #f87171;
+  --app-danger-strong: #fca5a5;
+  --app-danger-soft: rgba(248, 113, 113, 0.14);
+  --app-page-bg: #0d1017;
+  --app-page-alt-bg: #11141c;
+  --app-surface-bg: #11141c;
+  --app-surface-alt-bg: #0f141e;
+  --app-surface-elevated-bg: rgba(17, 20, 28, 0.92);
+  --app-surface-inset-bg: #1b2738;
+  --app-header-bg: rgba(13, 16, 23, 0.78);
+  --app-sidebar-bg: rgba(13, 16, 23, 0.98);
   --app-overlay-bg: rgba(0, 0, 0, 0.64);
   --app-text-color: #f9fafb;
   --app-text-muted: #d1d5db;
@@ -103,12 +132,23 @@
   --app-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --app-shadow-md: 0 12px 32px rgba(0, 0, 0, 0.35);
   --app-shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.45);
-  --app-focus-ring: 0 0 0 0.2rem rgba(52, 211, 153, 0.22);
+  --app-focus-ring: none;
 }
 
 html,
 body {
   min-height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.app-layout {
+  font-family: var(--app-system-font-family);
+  font-size: var(--app-font-size-base);
+}
+
+.app-layout .app-layout-main table :where(th, td) {
+  font-size: var(--app-font-size-table);
 }
 
 body {
@@ -134,7 +174,14 @@ button,
 input,
 select,
 textarea {
+  min-width: 0;
+  max-width: 100%;
   font: inherit;
+}
+
+img,
+svg {
+  max-width: 100%;
 }
 
 .btn-primary {
@@ -165,18 +212,77 @@ textarea {
   --bs-btn-active-border-color: var(--app-brand-accent);
 }
 
+.btn-success {
+  --bs-btn-color: var(--app-success-contrast);
+  --bs-btn-bg: var(--app-success);
+  --bs-btn-border-color: var(--app-success);
+  --bs-btn-hover-color: var(--app-success-contrast);
+  --bs-btn-hover-bg: var(--app-success-strong);
+  --bs-btn-hover-border-color: var(--app-success-strong);
+  --bs-btn-focus-shadow-rgb: var(--app-success-rgb);
+  --bs-btn-active-color: var(--app-success-contrast);
+  --bs-btn-active-bg: var(--app-success-strong);
+  --bs-btn-active-border-color: var(--app-success-strong);
+}
+
+.btn-outline-success {
+  --bs-btn-color: var(--app-success-strong);
+  --bs-btn-border-color: var(--app-success);
+  --bs-btn-hover-color: var(--app-success-contrast);
+  --bs-btn-hover-bg: var(--app-success);
+  --bs-btn-hover-border-color: var(--app-success);
+  --bs-btn-focus-shadow-rgb: var(--app-success-rgb);
+  --bs-btn-active-color: var(--app-success-contrast);
+  --bs-btn-active-bg: var(--app-success);
+  --bs-btn-active-border-color: var(--app-success);
+}
+
 .form-control:focus,
 .form-select:focus {
-  border-color: var(--app-brand-accent);
-  box-shadow: var(--app-focus-ring);
+  border-color: var(--app-border-strong);
+  box-shadow: none;
 }
 
 ::selection {
-  background: rgba(16, 185, 129, 0.24);
+  background: color-mix(in srgb, var(--app-brand-accent) 28%, transparent);
 }
 
-:focus-visible {
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
   outline: none;
-  box-shadow: var(--app-focus-ring);
-  border-radius: var(--app-radius-sm);
+  box-shadow: none;
+}
+
+button:focus-visible,
+a:focus-visible,
+[role='button']:focus-visible {
+  outline: 2px solid var(--app-border-strong);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.btn:focus,
+.btn:focus-visible {
+  box-shadow: none;
+}
+
+.confirm-dialog,
+.confirmation-dialog {
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+}
+
+@media (max-width: 479.98px) {
+  .confirm-dialog > div,
+  .confirmation-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+  }
+
+  .confirm-dialog .btn,
+  .confirmation-actions .btn {
+    width: 100%;
+    white-space: normal;
+  }
 }
