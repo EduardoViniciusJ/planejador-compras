@@ -71,6 +71,11 @@ describe('ShoppingListService', () => {
     expect(createRequest.request.body).toEqual(payload);
     createRequest.flush(response);
 
+    service.createWithId(payload).subscribe((id) => expect(id).toBe('list-1'));
+    const createWithIdRequest = httpTesting.expectOne(buildApiUrl('/api/shopping-lists'));
+    expect(createWithIdRequest.request.method).toBe('POST');
+    createWithIdRequest.flush(response);
+
     service.update('list-1', payload).subscribe();
     const updateRequest = httpTesting.expectOne(buildApiUrl('/api/shopping-lists/list-1'));
     expect(updateRequest.request.method).toBe('PUT');

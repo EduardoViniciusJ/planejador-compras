@@ -1,0 +1,111 @@
+<section class="matrix-page">
+  @if (isLoading()) {
+    <div class="page-state">
+      <span class="spinner-border"></span>
+      <p>Preparando comparação...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="page-state" role="alert">
+      <i class="bi bi-exclamation-triangle"></i>
+      <h1>Nao foi possivel calcular</h1>
+      <p>{{ loadError() }}</p>
+      <button class="btn btn-outline-primary" (click)="retry()">Tentar novamente</button>
+    </div>
+  } @else if (detail(); as list) {
+    @if (equalization(); as matrix) {
+      <header>
+        <div>
+          <a class="back-link" [routerLink]="['/app/price-map', list.id]"
+            ><i class="bi bi-arrow-left"></i> Voltar para o mapa de preços</a
+          ><span>Lista: {{ list.name }}</span>
+          <h1>Comparação de preços</h1>
+        </div>
+        <div class="metrics">
+          <div>
+            <span>Menores preços por item</span
+            ><strong>{{ formatCurrency(matrix.bestChoiceTotal) }}</strong>
+          </div>
+          <div>
+            <span>Melhor total em um fornecedor</span
+            ><strong>{{
+              bestSupplier()?.hasCompleteCoverage ? formatCurrency(bestSupplier()!.totalPrice) : '-'
+            }}</strong>
+          </div>
+          <div class="metric-saving">
+            <span>Economia estimada</span><strong>{{ formatCurrency(economy()) }}</strong>
+          </div>
+        </div>
+      </header>
+      @if (matrix.rows.length === 0 || matrix.suppliers.length === 0) {
+        <div class="page-state table-surface">
+          <i class="bi bi-grid-3x3-gap"></i>
+          <h2>Ainda não há preços para comparar</h2>
+          <p>Informe preços para os itens desta lista e volte para ver a comparação.</p>
+          <a class="btn btn-success" [routerLink]="['/app/price-map', list.id]"
+            >Voltar ao mapa de preços</a
+          >
+        </div>
+      } @else {
+        @if (!bestSupplier()?.hasCompleteCoverage) {
+          <p class="coverage-notice">
+            <i class="bi bi-info-circle"></i> Nenhum fornecedor cotou todos os itens. O comparativo
+            ainda destaca a melhor escolha por item.
+          </p>
+        }
+        <div class="table-surface table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qtd.</th>
+                @for (supplier of matrix.suppliers; track supplier) {
+                  <th>{{ supplier }}</th>
+                }
+                <th>Melhor fornecedor</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of matrix.rows; track row.shoppingItemId) {
+                <tr>
+                  <td>
+                    <strong>{{ row.itemName }}</strong>
+                  </td>
+                  <td>{{ row.quantity }} {{ row.unit }}</td>
+                  @for (supplier of matrix.suppliers; track supplier) {
+                    <td class="quote-cell" [class.best-cell]="cell(row.cells, supplier)?.isLowest">
+                      @if (cell(row.cells, supplier); as quote) {
+                        <strong class="quote-unit-price">{{
+                          formatCurrency(quote.unitPrice)
+                        }}</strong>
+                        <span class="quote-total-price"
+                          >Total: {{ formatCurrency(quote.totalPrice) }}</span
+                        >
+                      } @else {
+                        <span>-</span>
+                      }
+                    </td>
+                  }
+                  <td class="winner">{{ row.lowestSupplierName ?? '-' }}</td>
+                </tr>
+              }
+              <tr class="totals-row">
+                <td [attr.colspan]="2">Total por fornecedor</td>
+                @for (supplier of matrix.suppliers; track supplier) {
+                  <td>
+                    {{
+                      supplierTotal(supplier) === null
+                        ? 'Incompleto'
+                        : formatCurrency(supplierTotal(supplier)!)
+                    }}
+                  </td>
+                }
+                <td>{{ formatCurrency(matrix.bestChoiceTotal) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="legend"><span></span> Menor preco por item</p>
+      }
+    }
+  }
+</section>

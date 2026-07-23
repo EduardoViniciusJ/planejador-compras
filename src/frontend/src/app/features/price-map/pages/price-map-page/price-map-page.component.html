@@ -1,0 +1,760 @@
+<section class="price-map-page">
+  <header class="map-toolbar" aria-label="Seleção da lista de compras">
+    <div class="map-list-controls">
+      <div class="map-list-selector">
+        <label for="price-map-list">Listas</label>
+        <select id="price-map-list" [value]="listId()" (change)="changeList($event)">
+          <option value="">Selecione sua lista</option>
+          @for (list of lists(); track list.id) {
+            <option [value]="list.id">{{ list.name }}</option>
+          }
+        </select>
+      </div>
+      <button type="button" class="btn btn-success" (click)="openCreateList()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i> Nova lista
+      </button>
+    </div>
+  </header>
+
+  @if (feedback()) {
+    <p class="feedback" role="status"><i class="bi bi-check-circle"></i> {{ feedback() }}</p>
+  }
+
+  @if (isLoading()) {
+    <div class="page-state">
+      <span class="spinner-border" aria-hidden="true"></span>
+      <p>Preparando o mapa de preços...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="page-state" role="alert">
+      <i class="bi bi-exclamation-triangle"></i>
+      <h2>Não foi possível abrir o mapa</h2>
+      <p>{{ loadError() }}</p>
+      <button class="btn btn-outline-primary" type="button" (click)="retry()">
+        Tentar novamente
+      </button>
+    </div>
+  } @else if (!listId()) {
+    <div class="page-state welcome-state">
+      <i class="bi bi-table"></i>
+      <h2>Escolha uma lista de compras</h2>
+      <p>Depois disso você poderá adicionar itens, fornecedores e preços no mesmo lugar.</p>
+      @if (lists().length === 0) {
+        <button class="btn btn-success" type="button" (click)="openCreateList()">
+          Criar primeira lista
+        </button>
+      }
+    </div>
+  } @else if (detail(); as list) {
+    <div class="workspace-toolbar">
+      <div class="workspace-title">
+        <h2>{{ list.name }}</h2>
+        <p>
+          {{ list.totalItems }} {{ list.totalItems === 1 ? 'item' : 'itens' }} ·
+          {{ suppliers().length }}
+          {{ suppliers().length === 1 ? 'fornecedor' : 'fornecedores' }} ·
+          {{ list.quotedItems }} com preços
+        </p>
+      </div>
+      <div class="workspace-actions">
+        @if (list.totalItems > 0 && list.quotedItems > 0) {
+          <a class="btn btn-primary" [routerLink]="['/app/lists', list.id, 'equalization']">
+            <i class="bi bi-grid-3x3-gap"></i> Ver equalização
+          </a>
+        }
+        <button type="button" class="btn btn-outline-success" (click)="openSupplierPicker()">
+          <i class="bi bi-building-add"></i> Adicionar fornecedor
+        </button>
+      </div>
+    </div>
+
+    @if (list.items.length === 0) {
+      <div class="page-state workspace-empty">
+        <i class="bi bi-basket"></i>
+        <h2>Adicione o primeiro item</h2>
+        <p>O item aparecerá como uma linha do mapa e poderá receber preços dos fornecedores.</p>
+        <button class="btn btn-success" type="button" (click)="openCreateItem()">
+          Adicionar item
+        </button>
+      </div>
+    } @else if (suppliers().length === 0) {
+      <div class="page-state workspace-empty">
+        <i class="bi bi-buildings"></i>
+        <h2>Adicione um fornecedor à lista</h2>
+        <p>Escolha um fornecedor já cadastrado ou cadastre um novo para esta lista.</p>
+        <button class="btn btn-success" type="button" (click)="openSupplierPicker()">
+          Adicionar fornecedor
+        </button>
+      </div>
+    } @else {
+      <div class="matrix-controls desktop-matrix-controls" aria-label="Controles da tabela">
+        <div class="column-visibility-controls">
+          <span>Colunas</span>
+          <button
+            type="button"
+            [class.control-active]="isColumnVisible('item')"
+            [attr.aria-pressed]="isColumnVisible('item')"
+            (click)="toggleColumnVisibility('item')"
+          >
+            <i
+              class="bi"
+              [class.bi-eye]="isColumnVisible('item')"
+              [class.bi-eye-slash]="!isColumnVisible('item')"
+            ></i>
+            Item
+          </button>
+          <button
+            type="button"
+            [class.control-active]="isColumnVisible('quantity')"
+            [attr.aria-pressed]="isColumnVisible('quantity')"
+            (click)="toggleColumnVisibility('quantity')"
+          >
+            <i
+              class="bi"
+              [class.bi-eye]="isColumnVisible('quantity')"
+              [class.bi-eye-slash]="!isColumnVisible('quantity')"
+            ></i>
+            Quantidade
+          </button>
+          <button
+            type="button"
+            [class.control-active]="isColumnVisible('unit')"
+            [attr.aria-pressed]="isColumnVisible('unit')"
+            (click)="toggleColumnVisibility('unit')"
+          >
+            <i
+              class="bi"
+              [class.bi-eye]="isColumnVisible('unit')"
+              [class.bi-eye-slash]="!isColumnVisible('unit')"
+            ></i>
+            Unidade
+          </button>
+        </div>
+      </div>
+
+      @if (hiddenSuppliers().length > 0) {
+        <div class="hidden-suppliers desktop-matrix-controls">
+          <span>Fornecedores minimizados:</span>
+          @for (supplier of hiddenSuppliers(); track supplier.id) {
+            <button type="button" (click)="restoreSupplier(supplier.id)">
+              <i class="bi bi-arrows-expand"></i> {{ supplier.name }}
+            </button>
+          }
+        </div>
+      }
+
+      <div class="matrix-surface desktop-matrix">
+        <div class="matrix-scroll">
+          <table [style.min-width.px]="tableMinimumWidth()">
+            <colgroup>
+              @if (isColumnVisible('item')) {
+                <col class="item-column-definition" />
+              }
+              @if (isColumnVisible('quantity')) {
+                <col class="quantity-column-definition" />
+              }
+              @if (isColumnVisible('unit')) {
+                <col class="unit-column-definition" />
+              }
+              @for (supplier of visibleSuppliers(); track supplier.id) {
+                <col class="supplier-price-column-definition" />
+                <col class="supplier-price-column-definition" />
+              }
+              <col class="result-column-definition" />
+            </colgroup>
+            <thead>
+              <tr class="supplier-heading-row">
+                @if (isColumnVisible('item')) {
+                  <th
+                    class="item-column base-column-heading"
+                    [class.pinned-column]="isColumnPinned('item')"
+                    [style.left.px]="stickyLeft('item')"
+                    rowspan="2"
+                  >
+                    <span>Item</span>
+                    <span class="column-heading-actions">
+                      <button
+                        type="button"
+                        [class.action-active]="isColumnPinned('item')"
+                        [attr.aria-label]="
+                          isColumnPinned('item') ? 'Desafixar coluna Item' : 'Fixar coluna Item'
+                        "
+                        [title]="isColumnPinned('item') ? 'Desafixar coluna' : 'Fixar coluna'"
+                        (click)="toggleColumnPin('item')"
+                      >
+                        <i
+                          class="bi"
+                          [class.bi-pin-angle-fill]="isColumnPinned('item')"
+                          [class.bi-pin-angle]="!isColumnPinned('item')"
+                        ></i>
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Minimizar coluna Item"
+                        title="Minimizar coluna"
+                        (click)="toggleColumnVisibility('item')"
+                      >
+                        <i class="bi bi-dash-lg"></i>
+                      </button>
+                    </span>
+                  </th>
+                }
+                @if (isColumnVisible('quantity')) {
+                  <th
+                    class="quantity-column base-column-heading"
+                    [class.pinned-column]="isColumnPinned('quantity')"
+                    [style.left.px]="stickyLeft('quantity')"
+                    rowspan="2"
+                  >
+                    <span>Quantidade</span>
+                    <span class="column-heading-actions">
+                      <button
+                        type="button"
+                        [class.action-active]="isColumnPinned('quantity')"
+                        [attr.aria-label]="
+                          isColumnPinned('quantity')
+                            ? 'Desafixar coluna Quantidade'
+                            : 'Fixar coluna Quantidade'
+                        "
+                        [title]="isColumnPinned('quantity') ? 'Desafixar coluna' : 'Fixar coluna'"
+                        (click)="toggleColumnPin('quantity')"
+                      >
+                        <i
+                          class="bi"
+                          [class.bi-pin-angle-fill]="isColumnPinned('quantity')"
+                          [class.bi-pin-angle]="!isColumnPinned('quantity')"
+                        ></i>
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Minimizar coluna Quantidade"
+                        title="Minimizar coluna"
+                        (click)="toggleColumnVisibility('quantity')"
+                      >
+                        <i class="bi bi-dash-lg"></i>
+                      </button>
+                    </span>
+                  </th>
+                }
+                @if (isColumnVisible('unit')) {
+                  <th
+                    class="unit-column base-column-heading"
+                    [class.pinned-column]="isColumnPinned('unit')"
+                    [style.left.px]="stickyLeft('unit')"
+                    rowspan="2"
+                  >
+                    <span>Unidade</span>
+                    <span class="column-heading-actions">
+                      <button
+                        type="button"
+                        [class.action-active]="isColumnPinned('unit')"
+                        [attr.aria-label]="
+                          isColumnPinned('unit')
+                            ? 'Desafixar coluna Unidade'
+                            : 'Fixar coluna Unidade'
+                        "
+                        [title]="isColumnPinned('unit') ? 'Desafixar coluna' : 'Fixar coluna'"
+                        (click)="toggleColumnPin('unit')"
+                      >
+                        <i
+                          class="bi"
+                          [class.bi-pin-angle-fill]="isColumnPinned('unit')"
+                          [class.bi-pin-angle]="!isColumnPinned('unit')"
+                        ></i>
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Minimizar coluna Unidade"
+                        title="Minimizar coluna"
+                        (click)="toggleColumnVisibility('unit')"
+                      >
+                        <i class="bi bi-dash-lg"></i>
+                      </button>
+                    </span>
+                  </th>
+                }
+                @for (supplier of visibleSuppliers(); track supplier.id) {
+                  <th class="supplier-column" colspan="2">
+                    <span>{{ supplier.name }}</span>
+                    <span class="supplier-heading-actions">
+                      <button
+                        type="button"
+                        title="Minimizar fornecedor"
+                        [attr.aria-label]="'Minimizar ' + supplier.name"
+                        (click)="minimizeSupplier(supplier.id)"
+                      >
+                        <i class="bi bi-dash-lg"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="danger-action"
+                        title="Remover fornecedor da lista"
+                        [attr.aria-label]="'Remover ' + supplier.name + ' da lista'"
+                        (click)="openRemoveSupplier(supplier)"
+                      >
+                        <i class="bi bi-x-lg"></i>
+                      </button>
+                    </span>
+                  </th>
+                }
+                <th class="result-column" rowspan="2">Melhor opção</th>
+              </tr>
+              <tr class="price-heading-row">
+                @for (supplier of visibleSuppliers(); track supplier.id) {
+                  <th>Preço unitário</th>
+                  <th>Preço total</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of list.items; track item.id) {
+                <tr>
+                  @if (isColumnVisible('item')) {
+                    <th
+                      class="item-column"
+                      [class.pinned-column]="isColumnPinned('item')"
+                      [style.left.px]="stickyLeft('item')"
+                      scope="row"
+                    >
+                      <div class="item-heading">
+                        <div>
+                          <span class="item-name">{{ item.name }}</span>
+                        </div>
+                        <div class="item-actions">
+                          <button
+                            class="edit-action"
+                            type="button"
+                            title="Editar item"
+                            [attr.aria-label]="'Editar ' + item.name"
+                            (click)="openEditItem(item)"
+                          >
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button
+                            class="danger-action"
+                            type="button"
+                            title="Excluir item"
+                            [attr.aria-label]="'Excluir ' + item.name"
+                            (click)="openDeleteItem(item)"
+                          >
+                            <i class="bi bi-trash3"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </th>
+                  }
+                  @if (isColumnVisible('quantity')) {
+                    <td
+                      class="quantity-cell base-data-cell"
+                      [class.pinned-column]="isColumnPinned('quantity')"
+                      [style.left.px]="stickyLeft('quantity')"
+                    >
+                      <span>{{ item.quantity }}</span>
+                      <button
+                        class="edit-action"
+                        type="button"
+                        title="Editar quantidade"
+                        [attr.aria-label]="'Editar quantidade de ' + item.name"
+                        (click)="openEditItem(item)"
+                      >
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </td>
+                  }
+                  @if (isColumnVisible('unit')) {
+                    <td
+                      class="unit-cell base-data-cell"
+                      [class.pinned-column]="isColumnPinned('unit')"
+                      [style.left.px]="stickyLeft('unit')"
+                    >
+                      <span>{{ item.unit }}</span>
+                      <button
+                        class="edit-action"
+                        type="button"
+                        title="Editar unidade"
+                        [attr.aria-label]="'Editar unidade de ' + item.name"
+                        (click)="openEditItem(item)"
+                      >
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </td>
+                  }
+                  @for (supplier of visibleSuppliers(); track supplier.id) {
+                    <td
+                      class="unit-price-cell"
+                      [class.best-price-cell]="
+                        quoteFor(item.id, supplier.id) &&
+                        isLowest(item.id, quoteFor(item.id, supplier.id)!)
+                      "
+                    >
+                      @if (quoteFor(item.id, supplier.id); as quote) {
+                        <div class="price-cell-content">
+                          <button
+                            type="button"
+                            class="price-button"
+                            (click)="openQuote(item, supplier)"
+                          >
+                            <strong>{{ formatCurrency(quote.unitPrice) }}</strong>
+                          </button>
+                          <button
+                            type="button"
+                            class="remove-price danger-action"
+                            title="Excluir preço"
+                            [attr.aria-label]="'Excluir preço de ' + supplier.name"
+                            (click)="openDeleteQuote(quote, $event)"
+                          >
+                            <i class="bi bi-trash3"></i>
+                          </button>
+                        </div>
+                      } @else {
+                        <button
+                          type="button"
+                          class="empty-price-button"
+                          (click)="openQuote(item, supplier)"
+                        >
+                          <i class="bi bi-plus-lg"></i> Informar preço
+                        </button>
+                      }
+                    </td>
+                    <td
+                      class="total-price-cell"
+                      [class.best-price-cell]="
+                        quoteFor(item.id, supplier.id) &&
+                        isLowest(item.id, quoteFor(item.id, supplier.id)!)
+                      "
+                    >
+                      @if (quoteFor(item.id, supplier.id); as quote) {
+                        <strong>{{ formatCurrency(quote.unitPrice * item.quantity) }}</strong>
+                      } @else {
+                        <span>-</span>
+                      }
+                    </td>
+                  }
+                  <td class="result-cell">
+                    <strong>{{ lowestSupplier(item.id) }}</strong>
+                    @if (lowestPrices().get(item.id) !== undefined) {
+                      <span>{{ formatCurrency(lowestPrices().get(item.id)!) }}</span>
+                    }
+                  </td>
+                </tr>
+              }
+              <tr class="totals-row">
+                <th class="totals-label" scope="row" [attr.colspan]="visibleBaseColumnCount()">
+                  <button
+                    class="add-item-row-action"
+                    type="button"
+                    title="Adicionar item"
+                    aria-label="Adicionar item"
+                    (click)="openCreateItem()"
+                  >
+                    <i class="bi bi-plus-lg"></i><span>Adicionar item</span>
+                  </button>
+                </th>
+                @for (supplier of visibleSuppliers(); track supplier.id) {
+                  <td class="totals-unit-label">Total</td>
+                  <td class="totals-value">
+                    @if (supplierTotal(supplier.id) !== null) {
+                      <strong>{{ formatCurrency(supplierTotal(supplier.id)!) }}</strong>
+                    } @else {
+                      <span>Faltam preços</span>
+                    }
+                  </td>
+                }
+                <td class="result-cell">
+                  <strong>{{ formatCurrency(bestChoiceTotal()) }}</strong
+                  ><span>melhor combinação</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mobile-items">
+        @for (item of list.items; track item.id) {
+          <article class="item-card">
+            <header>
+              <div>
+                <h3>{{ item.name }}</h3>
+                <div class="item-card-meta">
+                  <span
+                    >Quantidade <strong>{{ item.quantity }}</strong></span
+                  >
+                  <span
+                    >Unidade <strong>{{ item.unit }}</strong></span
+                  >
+                </div>
+              </div>
+              <div class="item-actions">
+                <button
+                  class="edit-action"
+                  type="button"
+                  title="Editar item"
+                  [attr.aria-label]="'Editar ' + item.name"
+                  (click)="openEditItem(item)"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
+                  class="danger-action"
+                  type="button"
+                  title="Excluir item"
+                  [attr.aria-label]="'Excluir ' + item.name"
+                  (click)="openDeleteItem(item)"
+                >
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </header>
+            <div class="mobile-supplier-list">
+              @for (supplier of visibleSuppliers(); track supplier.id) {
+                @if (quoteFor(item.id, supplier.id); as quote) {
+                  <div class="mobile-price" [class.mobile-best-price]="isLowest(item.id, quote)">
+                    <button type="button" (click)="openQuote(item, supplier)">
+                      <span>{{ supplier.name }}</span>
+                      <span class="mobile-price-values">
+                        <strong>{{ formatCurrency(quote.unitPrice) }}</strong>
+                        <small>Total: {{ formatCurrency(quote.unitPrice * item.quantity) }}</small>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="remove-price danger-action"
+                      title="Excluir preço"
+                      [attr.aria-label]="'Excluir preço de ' + supplier.name"
+                      (click)="openDeleteQuote(quote, $event)"
+                    >
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </div>
+                } @else {
+                  <button
+                    type="button"
+                    class="mobile-empty-price"
+                    (click)="openQuote(item, supplier)"
+                  >
+                    <span>{{ supplier.name }}</span
+                    ><strong><i class="bi bi-plus-lg"></i> Informar</strong>
+                  </button>
+                }
+              }
+            </div>
+            <footer>
+              <span>Melhor opção</span><strong>{{ lowestSupplier(item.id) }}</strong>
+            </footer>
+          </article>
+        }
+      </div>
+    }
+  }
+</section>
+
+@if (activeDialog() === 'list') {
+  <app-modal-dialog
+    title="Criar lista de compras"
+    eyebrow="Nova lista"
+    [closeDisabled]="isSaving()"
+    (closeRequested)="closeDialog()"
+  >
+    <app-shopping-list-form
+      mode="create"
+      [shoppingList]="null"
+      [submitting]="isSaving()"
+      [serverError]="formError()"
+      (saveRequested)="saveList($event)"
+      (cancelRequested)="closeDialog()"
+    />
+  </app-modal-dialog>
+}
+
+@if (activeDialog() === 'item') {
+  <app-modal-dialog
+    [title]="editingItem()?.name ?? 'Adicionar item'"
+    [eyebrow]="editingItem() ? 'Editar item' : 'Novo item'"
+    [closeDisabled]="isSaving()"
+    (closeRequested)="closeDialog()"
+  >
+    <app-shopping-item-form
+      [mode]="editingItem() ? 'edit' : 'create'"
+      [shoppingListId]="listId()"
+      [item]="editingItem()"
+      [submitting]="isSaving()"
+      [serverError]="formError()"
+      (saveRequested)="saveItem($event)"
+      (cancelRequested)="closeDialog()"
+    />
+  </app-modal-dialog>
+}
+
+@if (activeDialog() === 'supplier-picker') {
+  <app-modal-dialog
+    title="Adicionar fornecedores à lista"
+    eyebrow="Fornecedores cadastrados"
+    [closeDisabled]="isSaving()"
+    (closeRequested)="closeDialog()"
+  >
+    <div class="supplier-picker">
+      <p>Escolha somente os fornecedores que participarão desta lista.</p>
+      @if (formError()) {
+        <p class="dialog-error" role="alert">{{ formError() }}</p>
+      }
+      @if (availableSuppliers().length > 0) {
+        <div class="supplier-picker-list">
+          @for (supplier of availableSuppliers(); track supplier.id) {
+            <button type="button" [disabled]="isSaving()" (click)="addSupplierToList(supplier)">
+              <span><i class="bi bi-building"></i> {{ supplier.name }}</span>
+              <i class="bi bi-plus-lg"></i>
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="supplier-picker-empty">
+          <i class="bi bi-check2-circle"></i>
+          <span>Todos os fornecedores cadastrados já estão nesta lista.</span>
+        </div>
+      }
+      <div class="supplier-picker-actions">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [disabled]="isSaving()"
+          (click)="closeDialog()"
+        >
+          Fechar
+        </button>
+        <button
+          type="button"
+          class="btn btn-success"
+          [disabled]="isSaving()"
+          (click)="openCreateSupplier()"
+        >
+          <i class="bi bi-plus-lg"></i> Cadastrar novo
+        </button>
+      </div>
+    </div>
+  </app-modal-dialog>
+}
+
+@if (activeDialog() === 'supplier-create') {
+  <app-modal-dialog
+    title="Cadastrar e adicionar fornecedor"
+    eyebrow="Novo fornecedor"
+    [closeDisabled]="isSaving()"
+    (closeRequested)="closeDialog()"
+  >
+    <app-supplier-form
+      mode="create"
+      [supplier]="null"
+      [submitting]="isSaving()"
+      [serverError]="formError()"
+      (saveRequested)="saveSupplier($event)"
+      (cancelRequested)="closeDialog()"
+    />
+  </app-modal-dialog>
+}
+
+@if (activeDialog() === 'quote' && quoteContext(); as context) {
+  <app-modal-dialog
+    [title]="context.item.name"
+    [eyebrow]="context.supplier.name"
+    [closeDisabled]="isSaving()"
+    (closeRequested)="closeDialog()"
+  >
+    <app-item-quote-form
+      [mode]="context.quote ? 'edit' : 'create'"
+      [shoppingItemId]="context.item.id"
+      [quote]="context.quote"
+      [suppliers]="suppliers()"
+      [selectedSupplierId]="context.supplier.id"
+      [lockSupplier]="true"
+      [submitting]="isSaving()"
+      [serverError]="formError()"
+      (saveRequested)="saveQuote($event)"
+      (cancelRequested)="closeDialog()"
+    />
+  </app-modal-dialog>
+}
+
+@if (deletingItem(); as item) {
+  <app-modal-dialog
+    title="Excluir item?"
+    eyebrow="Confirmação"
+    width="small"
+    [closeDisabled]="isDeleting()"
+    (closeRequested)="closeDelete()"
+  >
+    <div class="delete-content">
+      <i class="bi bi-trash3"></i>
+      <p>
+        O item <strong>{{ item.name }}</strong> e todos os seus preços serão excluídos
+        permanentemente.
+      </p>
+      @if (deleteError()) {
+        <p class="dialog-error" role="alert">{{ deleteError() }}</p>
+      }
+      <div>
+        <button class="btn btn-outline-secondary" [disabled]="isDeleting()" (click)="closeDelete()">
+          Cancelar</button
+        ><button class="btn btn-danger" [disabled]="isDeleting()" (click)="confirmDeleteItem()">
+          {{ isDeleting() ? 'Excluindo...' : 'Excluir item' }}
+        </button>
+      </div>
+    </div>
+  </app-modal-dialog>
+}
+
+@if (deletingQuote(); as quote) {
+  <app-modal-dialog
+    title="Excluir preço?"
+    eyebrow="Confirmação"
+    width="small"
+    [closeDisabled]="isDeleting()"
+    (closeRequested)="closeDelete()"
+  >
+    <div class="delete-content">
+      <i class="bi bi-trash3"></i>
+      <p>
+        O preço informado por <strong>{{ quote.supplierName }}</strong> será excluído.
+      </p>
+      @if (deleteError()) {
+        <p class="dialog-error" role="alert">{{ deleteError() }}</p>
+      }
+      <div>
+        <button class="btn btn-outline-secondary" [disabled]="isDeleting()" (click)="closeDelete()">
+          Cancelar</button
+        ><button class="btn btn-danger" [disabled]="isDeleting()" (click)="confirmDeleteQuote()">
+          {{ isDeleting() ? 'Excluindo...' : 'Excluir preço' }}
+        </button>
+      </div>
+    </div>
+  </app-modal-dialog>
+}
+
+@if (deletingSupplier(); as supplier) {
+  <app-modal-dialog
+    title="Remover fornecedor da lista?"
+    eyebrow="Apenas desta lista"
+    width="small"
+    [closeDisabled]="isDeleting()"
+    (closeRequested)="closeDelete()"
+  >
+    <div class="delete-content">
+      <i class="bi bi-building-dash"></i>
+      <p>
+        <strong>{{ supplier.name }}</strong> deixará de aparecer neste mapa. O cadastro do
+        fornecedor e os preços já informados serão preservados.
+      </p>
+      @if (deleteError()) {
+        <p class="dialog-error" role="alert">{{ deleteError() }}</p>
+      }
+      <div>
+        <button class="btn btn-outline-secondary" [disabled]="isDeleting()" (click)="closeDelete()">
+          Cancelar
+        </button>
+        <button class="btn btn-danger" [disabled]="isDeleting()" (click)="confirmRemoveSupplier()">
+          {{ isDeleting() ? 'Removendo...' : 'Remover da lista' }}
+        </button>
+      </div>
+    </div>
+  </app-modal-dialog>
+}

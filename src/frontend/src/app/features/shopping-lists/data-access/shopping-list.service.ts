@@ -27,6 +27,12 @@ export class ShoppingListService {
       .pipe(map(() => undefined));
   }
 
+  createWithId(request: ShoppingListRequestDto): Observable<string> {
+    return this.http
+      .post<ShoppingListResponseDto>(buildApiUrl('/api/shopping-lists'), request)
+      .pipe(map((response) => response.id));
+  }
+
   update(id: string, request: ShoppingListRequestDto): Observable<void> {
     return this.http
       .put<ShoppingListResponseDto>(buildApiUrl(`/api/shopping-lists/${id}`), request)

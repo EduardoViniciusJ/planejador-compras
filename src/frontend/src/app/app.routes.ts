@@ -21,6 +21,55 @@ export const routes: Routes = [
             ({ ShoppingListsPageComponent }) => ShoppingListsPageComponent,
           ),
       },
+      {
+        path: 'price-map/:listId/items/new',
+        loadComponent: () =>
+          import('./features/price-map/pages/price-map-page/price-map-page.component').then(
+            ({ PriceMapPageComponent }) => PriceMapPageComponent,
+          ),
+      },
+      {
+        path: 'price-map/:listId',
+        loadComponent: () =>
+          import('./features/price-map/pages/price-map-page/price-map-page.component').then(
+            ({ PriceMapPageComponent }) => PriceMapPageComponent,
+          ),
+      },
+      {
+        path: 'price-map',
+        loadComponent: () =>
+          import('./features/price-map/pages/price-map-page/price-map-page.component').then(
+            ({ PriceMapPageComponent }) => PriceMapPageComponent,
+          ),
+      },
+      { path: 'items/new/:listId', redirectTo: 'price-map/:listId/items/new', pathMatch: 'full' },
+      { path: 'items', redirectTo: 'price-map', pathMatch: 'full' },
+      { path: 'quotes', redirectTo: 'price-map', pathMatch: 'full' },
+      {
+        path: 'suppliers',
+        loadComponent: () =>
+          import('./features/suppliers/pages/suppliers-page/suppliers-page.component').then(
+            ({ SuppliersPageComponent }) => SuppliersPageComponent,
+          ),
+      },
+      { path: 'equalization', redirectTo: 'price-map', pathMatch: 'full' },
+      {
+        path: 'lists/:listId/equalization',
+        loadComponent: () =>
+          import('./features/equalization/pages/equalization-page/equalization-page.component').then(
+            ({ EqualizationPageComponent }) => EqualizationPageComponent,
+          ),
+      },
+      {
+        path: 'lists/:listId/items/:itemId/quotes',
+        redirectTo: 'price-map/:listId',
+        pathMatch: 'full',
+      },
+      {
+        path: 'lists/:listId',
+        redirectTo: 'price-map/:listId',
+        pathMatch: 'full',
+      },
     ],
   },
 ];
