@@ -21,6 +21,9 @@ public sealed class ShoppingListsController : ControllerBase
     private readonly DeleteShoppingListUseCase _deleteUseCase;
     private readonly ICalculateBestSupplierBudgetUseCase _calculateBestSupplierBudgetUseCase;
     private readonly IGetShoppingListEqualizationUseCase _getShoppingListEqualizationUseCase;
+    private readonly GetShoppingListSuppliersUseCase _getSuppliersUseCase;
+    private readonly AddSupplierToShoppingListUseCase _addSupplierUseCase;
+    private readonly RemoveSupplierFromShoppingListUseCase _removeSupplierUseCase;
 
     public ShoppingListsController(
         CreateShoppingListUseCase createUseCase,
@@ -30,7 +33,10 @@ public sealed class ShoppingListsController : ControllerBase
         UpdateShoppingListUseCase updateUseCase,
         DeleteShoppingListUseCase deleteUseCase,
         ICalculateBestSupplierBudgetUseCase calculateBestSupplierBudgetUseCase,
-        IGetShoppingListEqualizationUseCase getShoppingListEqualizationUseCase)
+        IGetShoppingListEqualizationUseCase getShoppingListEqualizationUseCase,
+        GetShoppingListSuppliersUseCase getSuppliersUseCase,
+        AddSupplierToShoppingListUseCase addSupplierUseCase,
+        RemoveSupplierFromShoppingListUseCase removeSupplierUseCase)
     {
         _createUseCase = createUseCase;
         _getByIdUseCase = getByIdUseCase;
@@ -40,6 +46,9 @@ public sealed class ShoppingListsController : ControllerBase
         _deleteUseCase = deleteUseCase;
         _calculateBestSupplierBudgetUseCase = calculateBestSupplierBudgetUseCase;
         _getShoppingListEqualizationUseCase = getShoppingListEqualizationUseCase;
+        _getSuppliersUseCase = getSuppliersUseCase;
+        _addSupplierUseCase = addSupplierUseCase;
+        _removeSupplierUseCase = removeSupplierUseCase;
     }
 
     [HttpGet("{id:guid}/detail")]
@@ -128,5 +137,40 @@ public sealed class ShoppingListsController : ControllerBase
     {
         var result = await _getShoppingListEqualizationUseCase.ExecuteAsync(id, cancellationToken);
         return Ok(result);
+    }
+
+    [HttpGet("{id:guid}/suppliers")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<SupplierResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetSuppliers(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var result = await _getSuppliersUseCase.ExecuteAsync(id, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpPost("{id:guid}/suppliers/{supplierId:guid}")]
+    [ProducesResponseType(typeof(SupplierResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddSupplier(
+        Guid id,
+        Guid supplierId,
+        CancellationToken cancellationToken)
+    {
+        var result = await _addSupplierUseCase.ExecuteAsync(id, supplierId, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:guid}/suppliers/{supplierId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveSupplier(
+        Guid id,
+        Guid supplierId,
+        CancellationToken cancellationToken)
+    {
+        await _removeSupplierUseCase.ExecuteAsync(id, supplierId, cancellationToken);
+        return NoContent();
     }
 }
