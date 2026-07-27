@@ -145,6 +145,12 @@ describe('PriceMapPageComponent', () => {
     expect(host().querySelector('a[href="/app/lists/list-1/equalization"]')).toBeTruthy();
   });
 
+  it('should highlight the lowest available price', () => {
+    const bestUnitPriceCell = host().querySelector('.unit-price-cell.best-price-cell');
+
+    expect(bestUnitPriceCell?.textContent).toContain('R$ 10,00');
+  });
+
   it('should keep the price map actions simple and without a duplicated add-item action', () => {
     const toolbar = host().querySelector('.map-toolbar');
     const workspaceActions = host().querySelector('.workspace-actions');
@@ -208,6 +214,42 @@ describe('PriceMapPageComponent', () => {
     expect(itemService.create).toHaveBeenCalledWith(
       expect.objectContaining({ shoppingListId: 'list-1', name: 'Keyboard', unit: 'un' }),
     );
+  });
+
+  it('should edit and delete an item from the price map', () => {
+    click('button[title="Editar item"]');
+    setInput('input[formControlName="name"]', 'Paper updated');
+    submit('.feature-form');
+
+    expect(itemService.update).toHaveBeenCalledWith(
+      'item-1',
+      expect.objectContaining({
+        shoppingListId: 'list-1',
+        name: 'Paper updated',
+      }),
+    );
+
+    click('button[title="Excluir item"]');
+    click('.delete-content .btn-danger');
+
+    expect(itemService.delete).toHaveBeenCalledWith('item-1');
+  });
+
+  it('should edit and delete a price from the price map', () => {
+    click('.price-button');
+    setInput('input[formControlName="unitPrice"]', '9');
+    submit('.feature-form');
+
+    expect(quoteService.update).toHaveBeenCalledWith('quote-1', {
+      shoppingItemId: 'item-1',
+      supplierId: 'supplier-a',
+      unitPrice: 9,
+    });
+
+    click('button[title="Excluir preço"]');
+    click('.delete-content .btn-danger');
+
+    expect(quoteService.delete).toHaveBeenCalledWith('quote-1');
   });
 
   it('should add a catalog supplier only after the user chooses it', () => {
