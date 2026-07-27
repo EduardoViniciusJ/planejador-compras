@@ -1,5 +1,6 @@
 using Moq;
 using PlanejadorCompras.Application.Exceptions;
+using PlanejadorCompras.Application.Services;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
 using Xunit;
 using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
@@ -19,7 +20,8 @@ public sealed class GetShoppingListEqualizationUseCaseTests
             _helper.ShoppingListAccessServiceMock.Object,
             _helper.ShoppingItemRepositoryMock.Object,
             _helper.ItemQuoteRepositoryMock.Object,
-            _helper.SupplierRepositoryMock.Object);
+            _helper.SupplierRepositoryMock.Object,
+            new ShoppingListComparisonCalculator());
     }
 
     [Fact]

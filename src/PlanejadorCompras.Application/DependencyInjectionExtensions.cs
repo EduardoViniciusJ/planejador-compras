@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using PlanejadorCompras.Application.Services;
 using PlanejadorCompras.Application.UseCases.Auth;
 using PlanejadorCompras.Application.UseCases.ItemQuote.Create;
 using PlanejadorCompras.Application.UseCases.ShoppingItem.Create;
@@ -15,6 +16,7 @@ public static class DependencyInjectionExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        services.AddSingleton<ShoppingListComparisonCalculator>();
         AddUseCases(services);
 
         return services;
@@ -38,7 +40,6 @@ public static class DependencyInjectionExtensions
         services.AddScoped<GetShoppingListSuppliersUseCase>();
         services.AddScoped<AddSupplierToShoppingListUseCase>();
         services.AddScoped<RemoveSupplierFromShoppingListUseCase>();
-
         // ShoppingItem
         services.AddScoped<CreateShoppingItemUseCase>();
         services.AddScoped<GetShoppingItemByIdUseCase>();
