@@ -11,6 +11,8 @@ using PlanejadorCompras.Domain.Repositories.Supplier;
 using PlanejadorCompras.Domain.Repositories.ShoppingListSupplier;
 using PlanejadorCompras.Infrastructure.Persistence;
 using PlanejadorCompras.Infrastructure.Queries;
+using PlanejadorCompras.Infrastructure.Reports.Excel;
+using PlanejadorCompras.Infrastructure.Reports.Pdf;
 using PlanejadorCompras.Infrastructure.Repositories;
 using PlanejadorCompras.Infrastructure.Services;
 
@@ -24,6 +26,7 @@ public static class DependencyInjectionExtensions
         AddRepositories(services);
         AddUnitOfWork(services);
         AddApplicationServices(services);
+        AddReportExporters(services);
         AddExternalServices(services);
 
         return services;
@@ -65,6 +68,14 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IUserItemQuotesQuery, UserItemQuotesQuery>();
         services.AddScoped<IShoppingListAccessService, ShoppingListAccessService>();
         services.AddScoped<ISupplierAccessService, SupplierAccessService>();
+    }
+
+    private static void AddReportExporters(IServiceCollection services)
+    {
+        EmbeddedPdfFontResolver.EnsureRegistered();
+        services.AddSingleton<ShoppingListPdfDocumentBuilder>();
+        services.AddSingleton<IShoppingListExcelExporter, ClosedXmlShoppingListReportExporter>();
+        services.AddSingleton<IShoppingListPdfExporter, PdfSharpShoppingListReportExporter>();
     }
 
     private static void AddExternalServices(IServiceCollection services)
