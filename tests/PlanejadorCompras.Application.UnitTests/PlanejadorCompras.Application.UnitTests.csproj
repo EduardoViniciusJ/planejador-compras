@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\PlanejadorCompras.API\PlanejadorCompras.API.csproj" />
     <ProjectReference Include="..\..\src\PlanejadorCompras.Application\PlanejadorCompras.Application.csproj" />
     <ProjectReference Include="..\..\src\PlanejadorCompras.Domain\PlanejadorCompras.Domain.csproj" />
     <ProjectReference Include="..\..\src\PlanejadorCompras.Infrastructure\PlanejadorCompras.Infrastructure.csproj" />
