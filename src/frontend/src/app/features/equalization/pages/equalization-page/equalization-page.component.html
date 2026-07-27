@@ -14,11 +14,63 @@
   } @else if (detail(); as list) {
     @if (equalization(); as matrix) {
       <header>
-        <div>
-          <a class="back-link" [routerLink]="['/app/price-map', list.id]"
-            ><i class="bi bi-arrow-left"></i> Voltar para o mapa de preços</a
-          ><span>Lista: {{ list.name }}</span>
-          <h1>Comparação de preços</h1>
+        <div class="heading-section">
+          <div class="page-title">
+            <a class="back-link" [routerLink]="['/app/price-map', list.id]"
+              ><i class="bi bi-arrow-left"></i> Voltar para o mapa de preços</a
+            ><span>Lista: {{ list.name }}</span>
+            <h1>Comparação de preços</h1>
+          </div>
+          <div class="export-control" (keydown.escape)="closeExportMenu()">
+            <button
+              class="btn btn-outline-primary export-button"
+              type="button"
+              aria-haspopup="true"
+              aria-controls="report-export-options"
+              aria-label="Exportar relatório da equalização"
+              [attr.aria-expanded]="exportMenuOpen()"
+              [disabled]="!listId"
+              (click)="toggleExportMenu()"
+            >
+              <i class="bi bi-download" aria-hidden="true"></i>
+              Exportar
+              <i class="bi bi-chevron-down export-chevron" aria-hidden="true"></i>
+            </button>
+            @if (exportMenuOpen()) {
+              <div
+                id="report-export-options"
+                class="export-options"
+                aria-label="Formatos de exportação"
+              >
+                <button
+                  type="button"
+                  [disabled]="isDownloadingPdf()"
+                  (click)="downloadReport('pdf')"
+                >
+                  @if (isDownloadingPdf()) {
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <span>Gerando PDF...</span>
+                  } @else {
+                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                    <span>Baixar PDF</span>
+                  }
+                </button>
+                <button
+                  type="button"
+                  [disabled]="isDownloadingExcel()"
+                  (click)="downloadReport('excel')"
+                >
+                  @if (isDownloadingExcel()) {
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <span>Gerando Excel...</span>
+                  } @else {
+                    <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i>
+                    <span>Baixar Excel</span>
+                  }
+                </button>
+              </div>
+            }
+          </div>
         </div>
         <div class="metrics">
           <div>
@@ -36,6 +88,17 @@
           </div>
         </div>
       </header>
+      @if (downloadError()) {
+        <p class="export-message export-error" role="alert">
+          <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+          {{ downloadError() }}
+        </p>
+      } @else if (downloadFeedback()) {
+        <p class="export-message export-success" role="status" aria-live="polite">
+          <i class="bi bi-check-circle" aria-hidden="true"></i>
+          {{ downloadFeedback() }}
+        </p>
+      }
       @if (matrix.rows.length === 0 || matrix.suppliers.length === 0) {
         <div class="page-state table-surface">
           <i class="bi bi-grid-3x3-gap"></i>

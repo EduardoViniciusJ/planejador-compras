@@ -13,6 +13,11 @@
   justify-content: space-between;
   gap: 1rem;
 }
+.heading-section {
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+}
 .back-link {
   display: flex;
   gap: 0.4rem;
@@ -22,13 +27,77 @@
   text-decoration: none;
   margin-bottom: 0.45rem;
 }
-.matrix-page header > div > span {
+.page-title > span {
   color: var(--app-text-soft);
   font-size: 0.78rem;
 }
 .matrix-page h1 {
   margin: 0.15rem 0 0;
   font-size: var(--app-font-size-page-title);
+}
+.export-control {
+  position: relative;
+}
+.export-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+.export-chevron {
+  margin-left: 0.15rem;
+  font-size: 0.7rem;
+}
+.export-options {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 20;
+  min-width: 12rem;
+  padding: 0.35rem;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-surface-bg);
+  box-shadow: var(--bs-box-shadow);
+}
+.export-options button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.7rem;
+  border: 0;
+  border-radius: calc(var(--app-radius-sm) - 0.15rem);
+  background: transparent;
+  color: var(--bs-body-color);
+  text-align: left;
+}
+.export-options button:hover:not(:disabled),
+.export-options button:focus-visible {
+  background: var(--app-surface-alt-bg);
+}
+.export-options button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+.export-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid;
+  border-radius: var(--app-radius-sm);
+}
+.export-error {
+  border-color: color-mix(in srgb, var(--bs-danger) 40%, var(--app-border-color));
+  background: color-mix(in srgb, var(--bs-danger) 8%, var(--app-surface-bg));
+  color: var(--bs-danger-text-emphasis);
+}
+.export-success {
+  border-color: color-mix(in srgb, var(--app-success) 40%, var(--app-border-color));
+  background: var(--app-success-soft);
+  color: var(--app-success-strong);
 }
 .metrics {
   display: grid;
@@ -163,11 +232,27 @@ td:first-child {
     align-items: stretch;
     flex-direction: column;
   }
+  .heading-section {
+    justify-content: space-between;
+  }
   .metrics {
     width: 100%;
   }
 }
 @media (max-width: 650px) {
+  .heading-section {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .export-button {
+    width: 100%;
+    justify-content: center;
+  }
+  .export-options {
+    right: auto;
+    left: 0;
+    width: 100%;
+  }
   .metrics {
     grid-template-columns: 1fr;
   }
