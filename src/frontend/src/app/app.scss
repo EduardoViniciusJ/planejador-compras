@@ -40,6 +40,7 @@
   width: 2rem;
   height: 2rem;
   flex: 0 0 auto;
+  object-fit: contain;
 }
 
 .landing-nav a {
@@ -80,7 +81,34 @@
 }
 
 .header-login-btn {
+  position: relative;
   padding-inline: 1rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .header-login-btn::after {
+    content: '';
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0.35rem;
+    z-index: 22;
+    width: 3.5rem;
+    aspect-ratio: 0.89;
+    background: url('/images/mascotes/mascote-principal.png') center / contain no-repeat;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-0.5rem) scale(0.88);
+    transform-origin: top right;
+    transition:
+      opacity var(--app-transition-base),
+      transform var(--app-transition-base);
+  }
+
+  .header-login-btn:hover::after,
+  .header-login-btn:focus-visible::after {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .landing-page {
@@ -186,6 +214,25 @@
     0 0 80px color-mix(in srgb, var(--bs-primary) 18%, transparent);
   overflow: hidden;
   animation: comboSceneFloat 7s ease-in-out infinite;
+}
+
+.hero-mascot {
+  position: absolute;
+  right: clamp(0.5rem, 2vw, 1rem);
+  bottom: -2.75rem;
+  z-index: 4;
+  width: clamp(5rem, 10vw, 7.25rem);
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 0.85rem 1rem color-mix(in srgb, var(--app-brand-ink) 18%, transparent));
+  transform: translateY(0.55rem) rotate(2deg);
+  transform-origin: bottom center;
+  transition: transform 260ms ease;
+  user-select: none;
+}
+
+.hero-combo-scene:hover .hero-mascot {
+  transform: translateY(0) rotate(0);
 }
 
 .combo-scene-grid {
@@ -1121,7 +1168,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .header-login-btn::after {
+    transition: none;
+  }
+
   .hero-combo-scene,
+  .hero-mascot,
   .combo-panel,
   .combo-flow-step,
   .combo-floating-chip,
@@ -1129,5 +1181,6 @@
   .combo-grid-row-best,
   .combo-flow-line {
     animation: none;
+    transition: none;
   }
 }
