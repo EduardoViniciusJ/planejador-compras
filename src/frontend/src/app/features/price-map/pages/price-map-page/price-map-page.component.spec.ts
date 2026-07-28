@@ -3,6 +3,8 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { of } from 'rxjs';
 
 import { ItemQuoteService } from '../../../quotes/data-access/item-quote.service';
+import { ShoppingListReportService } from '../../../reports/data-access/shopping-list-report.service';
+import { ReportFileDownloadService } from '../../../reports/services/report-file-download.service';
 import { ShoppingItemService } from '../../../shopping-items/data-access/shopping-item.service';
 import { ShoppingListDetailService } from '../../../shopping-lists/data-access/shopping-list-detail.service';
 import { ShoppingListService } from '../../../shopping-lists/data-access/shopping-list.service';
@@ -29,6 +31,13 @@ describe('PriceMapPageComponent', () => {
     addToShoppingList: ReturnType<typeof vi.fn>;
     removeFromShoppingList: ReturnType<typeof vi.fn>;
     create: ReturnType<typeof vi.fn>;
+  };
+  let reportService: {
+    downloadPdf: ReturnType<typeof vi.fn>;
+    downloadExcel: ReturnType<typeof vi.fn>;
+  };
+  let fileDownloadService: {
+    download: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
@@ -73,6 +82,21 @@ describe('PriceMapPageComponent', () => {
       removeFromShoppingList: vi.fn(() => of(undefined)),
       create: vi.fn(() => of(supplierC)),
     };
+    reportService = {
+      downloadPdf: vi.fn(() =>
+        of({
+          content: new Blob(['pdf'], { type: 'application/pdf' }),
+          fileName: 'office.pdf',
+        }),
+      ),
+      downloadExcel: vi.fn(() =>
+        of({
+          content: new Blob(['xlsx']),
+          fileName: 'office.xlsx',
+        }),
+      ),
+    };
+    fileDownloadService = { download: vi.fn() };
 
     const detail = createShoppingListDetail();
     await TestBed.configureTestingModule({
@@ -124,6 +148,8 @@ describe('PriceMapPageComponent', () => {
           provide: SupplierService,
           useValue: supplierService,
         },
+        { provide: ShoppingListReportService, useValue: reportService },
+        { provide: ReportFileDownloadService, useValue: fileDownloadService },
       ],
     }).compileComponents();
 
@@ -167,6 +193,38 @@ describe('PriceMapPageComponent', () => {
     expect(workspaceActions?.textContent).not.toContain('Adicionar item');
     expect(host().querySelector('.matrix-controls > .btn')).toBeNull();
     expect(host().querySelector('.totals-label')?.textContent).toContain('Adicionar item');
+  });
+
+  it('should export PDF and Excel directly from the selected price map', () => {
+    click('button[aria-label="Exportar mapa de preços"]');
+    clickButtonByText('Baixar PDF');
+
+    expect(reportService.downloadPdf).toHaveBeenCalledWith('list-1');
+    expect(fileDownloadService.download).toHaveBeenCalledOnce();
+
+    click('button[aria-label="Exportar mapa de preços"]');
+    clickButtonByText('Baixar Excel');
+
+    expect(reportService.downloadExcel).toHaveBeenCalledWith('list-1');
+    expect(fileDownloadService.download).toHaveBeenCalledTimes(2);
+  });
+
+  it('should hide export without a selected list and disable it while loading', () => {
+    const component = fixture.componentInstance as unknown as {
+      listId: { set: (value: string) => void };
+      isLoading: { set: (value: boolean) => void };
+    };
+
+    component.isLoading.set(true);
+    fixture.detectChanges();
+    expect(
+      host().querySelector<HTMLButtonElement>('button[aria-label="Exportar mapa de preços"]')
+        ?.disabled,
+    ).toBe(true);
+
+    component.listId.set('');
+    fixture.detectChanges();
+    expect(host().querySelector('app-shopping-list-report-export')).toBeNull();
   });
 
   it('should render item names with the standard table typography', () => {
@@ -273,6 +331,15 @@ describe('PriceMapPageComponent', () => {
     const element = host().querySelector<HTMLElement>(selector);
     expect(element).toBeTruthy();
     element?.click();
+    fixture.detectChanges();
+  }
+
+  function clickButtonByText(text: string): void {
+    const button = Array.from(host().querySelectorAll<HTMLButtonElement>('button')).find(
+      (candidate) => candidate.textContent?.includes(text),
+    );
+    expect(button).toBeTruthy();
+    button?.click();
     fixture.detectChanges();
   }
 

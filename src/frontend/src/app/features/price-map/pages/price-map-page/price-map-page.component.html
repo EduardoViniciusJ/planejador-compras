@@ -10,6 +10,13 @@
           }
         </select>
       </div>
+      @if (listId()) {
+        <app-shopping-list-report-export
+          [shoppingListId]="listId()"
+          [disabled]="isLoading()"
+          accessibleLabel="Exportar mapa de preços"
+        />
+      }
       <button type="button" class="btn btn-success" (click)="openCreateList()">
         <i class="bi bi-plus-lg" aria-hidden="true"></i> Nova lista
       </button>

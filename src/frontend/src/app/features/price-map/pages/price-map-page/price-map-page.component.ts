@@ -8,6 +8,7 @@ import { ItemQuoteFormComponent } from '../../../quotes/components/item-quote-fo
 import { ItemQuoteService } from '../../../quotes/data-access/item-quote.service';
 import { ItemQuoteRequestDto } from '../../../quotes/dtos/item-quote.dto';
 import { ItemQuote } from '../../../quotes/models/item-quote.model';
+import { ShoppingListReportExportComponent } from '../../../reports/components/shopping-list-report-export/shopping-list-report-export.component';
 import { ShoppingItemFormComponent } from '../../../shopping-items/components/shopping-item-form/shopping-item-form.component';
 import { ShoppingItemService } from '../../../shopping-items/data-access/shopping-item.service';
 import { ShoppingItemRequestDto } from '../../../shopping-items/dtos/shopping-item.dto';
@@ -48,6 +49,7 @@ const resultColumnWidth = 144;
   selector: 'app-price-map-page',
   imports: [
     RouterLink,
+    ShoppingListReportExportComponent,
     ModalDialogComponent,
     ShoppingListFormComponent,
     ShoppingItemFormComponent,
