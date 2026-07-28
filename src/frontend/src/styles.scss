@@ -1,26 +1,26 @@
 :root {
   color-scheme: light;
-  --bs-primary: #1f3a5f;
-  --bs-primary-rgb: 31, 58, 95;
-  --bs-primary-text-emphasis: #172b46;
-  --bs-primary-bg-subtle: #e7eef7;
-  --bs-primary-border-subtle: #9db2cd;
+  --bs-primary: #171717;
+  --bs-primary-rgb: 23, 23, 23;
+  --bs-primary-text-emphasis: #171717;
+  --bs-primary-bg-subtle: #fff8cc;
+  --bs-primary-border-subtle: #e6be00;
   --bs-font-sans-serif: var(--app-font-family);
   --bs-body-font-family: var(--app-font-family);
-  --bs-body-bg: #f9fafb;
-  --bs-body-color: #111827;
-  --bs-secondary-color: #4b5563;
-  --bs-border-color: rgba(17, 24, 39, 0.12);
-  --bs-link-color: #244d78;
-  --bs-link-color-rgb: 36, 77, 120;
-  --bs-link-hover-color: #172b46;
-  --bs-link-hover-color-rgb: 23, 43, 70;
-  --app-brand-ink: #111827;
-  --app-brand-muted: #374151;
-  --app-brand-accent: #1f3a5f;
-  --app-brand-accent-strong: #172b46;
-  --app-brand-accent-contrast: #ffffff;
-  --app-brand-accent-soft: #e7eef7;
+  --bs-body-bg: #f8f7f5;
+  --bs-body-color: #171717;
+  --bs-secondary-color: #444746;
+  --bs-border-color: #d4d4d4;
+  --bs-link-color: #171717;
+  --bs-link-color-rgb: 23, 23, 23;
+  --bs-link-hover-color: #000000;
+  --bs-link-hover-color-rgb: 0, 0, 0;
+  --app-brand-ink: #171717;
+  --app-brand-muted: #444746;
+  --app-brand-accent: #ffd400;
+  --app-brand-accent-strong: #f2c700;
+  --app-brand-accent-contrast: #171717;
+  --app-brand-accent-soft: #fff8cc;
   --app-success: #16803c;
   --app-success-rgb: 22, 128, 60;
   --app-success-strong: #116530;
@@ -33,30 +33,41 @@
   --app-danger-strong: #b91c1c;
   --app-danger-soft: #feecec;
   --app-font-family:
-    'Satoshi', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    'Inter Variable', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
   --app-system-font-family:
     'Inter Variable', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     sans-serif;
+  --app-font-size-caption: 12px;
   --app-font-size-base: 14px;
-  --app-font-size-table: 13px;
-  --app-font-size-page-title: 22px;
-  --app-page-bg: #f9fafb;
-  --app-page-alt-bg: #f3f4f6;
+  --app-font-size-table: 14px;
+  --app-font-size-body-lg: 16px;
+  --app-font-size-section-title: 20px;
+  --app-font-size-page-title: 24px;
+  --app-font-size-display: 32px;
+  --app-line-height-caption: 16px;
+  --app-line-height-body: 20px;
+  --app-line-height-body-lg: 24px;
+  --app-line-height-section-title: 28px;
+  --app-line-height-page-title: 32px;
+  --app-line-height-display: 40px;
+  --app-page-bg: #f8f7f5;
+  --app-page-alt-bg: #f2f0ec;
   --app-surface-bg: #ffffff;
-  --app-surface-alt-bg: #f3f4f6;
-  --app-surface-elevated-bg: rgba(255, 255, 255, 0.92);
-  --app-surface-inset-bg: #e5e7eb;
-  --app-header-bg: rgba(255, 255, 255, 0.72);
-  --app-sidebar-bg: rgba(255, 255, 255, 0.98);
-  --app-overlay-bg: rgba(17, 24, 39, 0.5);
-  --app-text-color: #111827;
-  --app-text-muted: #4b5563;
-  --app-text-soft: #6b7280;
-  --app-border-color: rgba(17, 24, 39, 0.12);
-  --app-border-strong: rgba(17, 24, 39, 0.2);
-  --app-shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.05);
-  --app-shadow-md: 0 8px 24px rgba(17, 24, 39, 0.08);
-  --app-shadow-lg: 0 18px 48px rgba(17, 24, 39, 0.12);
+  --app-surface-alt-bg: #f5f3ef;
+  --app-surface-elevated-bg: rgba(255, 255, 255, 0.94);
+  --app-surface-inset-bg: #ece9e3;
+  --app-header-bg: rgba(255, 255, 254, 0.9);
+  --app-sidebar-bg: rgba(255, 255, 254, 0.98);
+  --app-overlay-bg: rgba(23, 23, 23, 0.52);
+  --app-text-color: #171717;
+  --app-text-muted: #444746;
+  --app-text-soft: #6c6c6c;
+  --app-border-color: #d4d4d4;
+  --app-border-strong: #b8b8b6;
+  --app-shadow-sm: 0 1px 2px rgba(23, 23, 23, 0.05);
+  --app-shadow-md: 0 8px 24px rgba(23, 23, 23, 0.08);
+  --app-shadow-lg: 0 18px 48px rgba(23, 23, 23, 0.12);
   --app-radius-xs: 6px;
   --app-radius-sm: 8px;
   --app-radius-md: 12px;
@@ -85,25 +96,25 @@
 
 [data-bs-theme='dark'] {
   color-scheme: dark;
-  --bs-primary: #3f6f9f;
-  --bs-primary-rgb: 63, 111, 159;
-  --bs-primary-text-emphasis: #8fb3da;
-  --bs-primary-bg-subtle: #17243a;
-  --bs-primary-border-subtle: #294e78;
-  --bs-body-bg: #0d1017;
-  --bs-body-color: #f9fafb;
-  --bs-secondary-color: #d1d5db;
-  --bs-border-color: rgba(156, 163, 175, 0.18);
-  --bs-link-color: #8fb3da;
-  --bs-link-color-rgb: 143, 179, 218;
-  --bs-link-hover-color: #bcd3ea;
-  --bs-link-hover-color-rgb: 188, 211, 234;
-  --app-brand-ink: #f9fafb;
-  --app-brand-muted: #d1d5db;
-  --app-brand-accent: #3f6f9f;
-  --app-brand-accent-strong: #5687b8;
-  --app-brand-accent-contrast: #ffffff;
-  --app-brand-accent-soft: rgba(63, 111, 159, 0.18);
+  --bs-primary: #ffd400;
+  --bs-primary-rgb: 255, 212, 0;
+  --bs-primary-text-emphasis: #ffe45c;
+  --bs-primary-bg-subtle: #302a00;
+  --bs-primary-border-subtle: #8c7600;
+  --bs-body-bg: #171717;
+  --bs-body-color: #f8f7f5;
+  --bs-secondary-color: #d4d4d4;
+  --bs-border-color: rgba(212, 212, 212, 0.18);
+  --bs-link-color: #ffe45c;
+  --bs-link-color-rgb: 255, 228, 92;
+  --bs-link-hover-color: #fff0a3;
+  --bs-link-hover-color-rgb: 255, 240, 163;
+  --app-brand-ink: #f8f7f5;
+  --app-brand-muted: #d4d4d4;
+  --app-brand-accent: #ffd400;
+  --app-brand-accent-strong: #ffe45c;
+  --app-brand-accent-contrast: #171717;
+  --app-brand-accent-soft: rgba(255, 212, 0, 0.16);
   --app-success: #34d399;
   --app-success-rgb: 52, 211, 153;
   --app-success-strong: #6ee7b7;
@@ -115,20 +126,20 @@
   --app-danger: #f87171;
   --app-danger-strong: #fca5a5;
   --app-danger-soft: rgba(248, 113, 113, 0.14);
-  --app-page-bg: #0d1017;
-  --app-page-alt-bg: #11141c;
-  --app-surface-bg: #11141c;
-  --app-surface-alt-bg: #0f141e;
-  --app-surface-elevated-bg: rgba(17, 20, 28, 0.92);
-  --app-surface-inset-bg: #1b2738;
-  --app-header-bg: rgba(13, 16, 23, 0.78);
-  --app-sidebar-bg: rgba(13, 16, 23, 0.98);
+  --app-page-bg: #171717;
+  --app-page-alt-bg: #1d1d1d;
+  --app-surface-bg: #1f1f1f;
+  --app-surface-alt-bg: #252525;
+  --app-surface-elevated-bg: rgba(31, 31, 31, 0.94);
+  --app-surface-inset-bg: #2b2b2b;
+  --app-header-bg: rgba(23, 23, 23, 0.9);
+  --app-sidebar-bg: rgba(23, 23, 23, 0.98);
   --app-overlay-bg: rgba(0, 0, 0, 0.64);
-  --app-text-color: #f9fafb;
-  --app-text-muted: #d1d5db;
-  --app-text-soft: #9ca3af;
-  --app-border-color: rgba(156, 163, 175, 0.18);
-  --app-border-strong: rgba(156, 163, 175, 0.28);
+  --app-text-color: #f8f7f5;
+  --app-text-muted: #d4d4d4;
+  --app-text-soft: #a6a6a6;
+  --app-border-color: rgba(212, 212, 212, 0.18);
+  --app-border-strong: rgba(212, 212, 212, 0.3);
   --app-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --app-shadow-md: 0 12px 32px rgba(0, 0, 0, 0.35);
   --app-shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.45);
@@ -145,17 +156,57 @@ body {
 .app-layout {
   font-family: var(--app-system-font-family);
   font-size: var(--app-font-size-base);
+  line-height: var(--app-line-height-body);
 }
 
-.app-layout .app-layout-main table :where(th, td) {
+.app-layout .app-layout-main table td {
   font-size: var(--app-font-size-table);
+  line-height: var(--app-line-height-body);
+}
+
+.app-layout .app-layout-main table th {
+  font-size: var(--app-font-size-caption);
+  line-height: var(--app-line-height-caption);
 }
 
 body {
   margin: 0;
   font-family: var(--app-font-family);
+  font-size: var(--app-font-size-base);
+  line-height: var(--app-line-height-body);
+  font-optical-sizing: auto;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
   background: var(--app-page-bg, var(--bs-body-bg));
   color: var(--app-text-color, var(--bs-body-color));
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--app-font-size-page-title);
+  line-height: var(--app-line-height-page-title);
+}
+
+h2 {
+  font-size: var(--app-font-size-section-title);
+  line-height: var(--app-line-height-section-title);
+}
+
+p {
+  line-height: 1.5;
+}
+
+small {
+  font-size: var(--app-font-size-caption);
+  line-height: var(--app-line-height-caption);
 }
 
 *,
@@ -177,6 +228,7 @@ textarea {
   min-width: 0;
   max-width: 100%;
   font: inherit;
+  line-height: var(--app-line-height-body);
 }
 
 img,

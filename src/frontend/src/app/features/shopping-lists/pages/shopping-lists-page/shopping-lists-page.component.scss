@@ -13,8 +13,8 @@
 .shopping-lists-page .btn {
   min-height: 2.35rem;
   padding: 0.42rem 0.7rem;
-  font-size: 0.84rem;
-  line-height: 1.2;
+  font-size: var(--app-font-size-base);
+  line-height: var(--app-line-height-body);
 }
 
 .page-heading {
@@ -32,13 +32,14 @@
   margin: 0;
   color: var(--app-text-color);
   font-size: var(--app-font-size-page-title);
-  line-height: 1.2;
+  line-height: var(--app-line-height-page-title);
 }
 
 .page-heading p {
   margin: 0.2rem 0 0;
   color: var(--app-text-muted);
-  font-size: 0.72rem;
+  font-size: var(--app-font-size-caption);
+  line-height: var(--app-line-height-caption);
 }
 
 .page-primary-action,
@@ -132,8 +133,8 @@
 
 .summary-card span:last-child {
   color: var(--app-text-muted);
-  font-size: 0.72rem;
-  line-height: 1.35;
+  font-size: var(--app-font-size-caption);
+  line-height: var(--app-line-height-caption);
 }
 
 .summary-card-value strong {
@@ -151,8 +152,8 @@
 }
 
 .summary-icon-total {
-  background: color-mix(in srgb, #3b82f6 14%, var(--app-surface-bg));
-  color: #3b82f6;
+  background: var(--app-brand-accent-soft);
+  color: var(--bs-primary);
 }
 
 .summary-icon-draft {
@@ -234,7 +235,8 @@
   outline: 0;
   background: transparent;
   color: var(--app-text-color);
-  font-size: 0.8rem;
+  font-size: var(--app-font-size-base);
+  line-height: var(--app-line-height-body);
 }
 
 .search-control input:focus-visible,
@@ -266,7 +268,7 @@
   border-radius: var(--app-control-radius);
   background: transparent;
   color: var(--app-text-muted);
-  font-size: 0.8rem;
+  font-size: var(--app-font-size-base);
   font-weight: 700;
 }
 
@@ -296,7 +298,8 @@
   min-width: 58rem;
   border-collapse: collapse;
   color: var(--app-text-color);
-  font-size: 0.8rem;
+  font-size: var(--app-font-size-table);
+  line-height: var(--app-line-height-body);
 }
 
 .lists-table th,
@@ -310,7 +313,8 @@
 .lists-table th {
   background: var(--app-surface-alt-bg);
   color: var(--app-text-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-font-size-caption);
+  line-height: var(--app-line-height-caption);
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -383,8 +387,8 @@
 }
 
 .status-badge-draft {
-  border-color: color-mix(in srgb, #64748b 34%, transparent);
-  background: color-mix(in srgb, #64748b 10%, var(--app-surface-bg));
+  border-color: color-mix(in srgb, var(--app-text-soft) 34%, transparent);
+  background: color-mix(in srgb, var(--app-text-soft) 10%, var(--app-surface-bg));
   color: var(--app-text-muted);
 }
 

@@ -16,8 +16,8 @@
 .price-map-page .btn {
   min-height: 2.35rem;
   padding: 0.42rem 0.7rem;
-  font-size: 0.84rem;
-  line-height: 1.2;
+  font-size: var(--app-font-size-base);
+  line-height: var(--app-line-height-body);
 }
 
 .map-toolbar,
@@ -79,7 +79,8 @@
   padding: 0 0.65rem;
   border-right: 1px solid var(--app-border-color);
   color: var(--app-text-muted);
-  font-size: 0.7rem;
+  font-size: var(--app-font-size-caption);
+  line-height: var(--app-line-height-caption);
   font-weight: 700;
 }
 
@@ -92,7 +93,8 @@
   border-radius: 0;
   background: transparent;
   color: var(--app-text-color);
-  font-size: 0.8rem;
+  font-size: var(--app-font-size-base);
+  line-height: var(--app-line-height-body);
   cursor: pointer;
 }
 
