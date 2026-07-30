@@ -31,7 +31,7 @@
   max-height: min(90dvh, 48rem);
   overflow: hidden;
   border: 1px solid var(--app-border-color);
-  border-radius: 8px;
+  border-radius: var(--app-radius-md);
   background: var(--app-surface-bg);
   color: var(--app-text-color);
   box-shadow: 0 24px 64px rgb(0 0 0 / 30%);
@@ -108,7 +108,7 @@
     border-right: 0;
     border-bottom: 0;
     border-left: 0;
-    border-radius: 8px 8px 0 0;
+    border-radius: var(--app-radius-md) var(--app-radius-md) 0 0;
   }
 
   .app-modal-header,
