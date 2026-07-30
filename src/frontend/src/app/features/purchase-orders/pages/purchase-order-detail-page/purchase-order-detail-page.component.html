@@ -1,0 +1,198 @@
+<section class="management-page purchase-order-detail-page">
+  @if (isLoading()) {
+    <div class="detail-state">
+      <span class="spinner-border" aria-hidden="true"></span>
+      <p>Carregando pedido...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="detail-state" role="alert">
+      <app-icon name="alert-triangle" [size]="24" />
+      <h1>Não foi possível abrir o pedido</h1>
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn-outline-primary" (click)="retry()">
+        Tentar novamente
+      </button>
+    </div>
+  } @else if (order(); as purchaseOrder) {
+    <header class="management-page-header">
+      <div class="management-page-heading">
+        <a class="back-link" routerLink="/app/purchase-orders">
+          <app-icon name="arrow-left" [size]="18" />
+          Voltar para pedidos
+        </a>
+        <span class="management-eyebrow">Pedido de compra</span>
+        <div class="title-row">
+          <h1>{{ purchaseOrder.code }}</h1>
+          <span class="order-status" [attr.data-status]="purchaseOrder.status">
+            {{ statusLabels[purchaseOrder.status] }}
+          </span>
+        </div>
+        <p>Emitido em {{ formatDateTime(purchaseOrder.createdAtUtc) }}</p>
+      </div>
+
+      <div class="management-actions">
+        @if (purchaseOrder.equalizationId) {
+          <a
+            class="btn btn-outline-secondary"
+            [routerLink]="['/app/equalizations', purchaseOrder.equalizationId]"
+          >
+            <app-icon name="scale" [size]="18" />
+            Ver equalização de origem
+          </a>
+        }
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [disabled]="isDownloadingPdf()"
+          (click)="downloadPdf()"
+        >
+          @if (isDownloadingPdf()) {
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+          } @else {
+            <app-icon name="file-type-pdf" [size]="18" />
+          }
+          Baixar PDF
+        </button>
+        <button
+          type="button"
+          class="btn whatsapp-button"
+          [disabled]="isSharing()"
+          (click)="shareOnWhatsApp()"
+        >
+          @if (isSharing()) {
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+          } @else {
+            <app-icon name="brand-whatsapp" [size]="19" />
+          }
+          Enviar pelo WhatsApp
+        </button>
+      </div>
+    </header>
+
+    @if (feedback()) {
+      <div class="detail-feedback" role="status">
+        <app-icon name="circle-check" [size]="18" />
+        <span>{{ feedback() }}</span>
+        <button type="button" aria-label="Fechar mensagem" (click)="feedback.set(null)">
+          <app-icon name="x" [size]="17" />
+        </button>
+      </div>
+    }
+
+    @if (actionError()) {
+      <div class="detail-error" role="alert">{{ actionError() }}</div>
+    }
+
+    <div class="detail-grid">
+      <section class="management-surface detail-main">
+        <header class="management-surface-header">
+          <div>
+            <span class="management-eyebrow">Documento</span>
+            <h2>Informações do pedido</h2>
+            <p>Dados registrados no momento da emissão.</p>
+          </div>
+        </header>
+
+        <dl class="detail-information">
+          <div>
+            <dt>Fornecedor</dt>
+            <dd>{{ purchaseOrder.supplierName }}</dd>
+          </div>
+          <div>
+            <dt>Lista de origem</dt>
+            <dd>{{ purchaseOrder.shoppingListName }}</dd>
+          </div>
+          <div>
+            <dt>Responsável</dt>
+            <dd>{{ purchaseOrder.buyerName }}</dd>
+          </div>
+          <div>
+            <dt>E-mail</dt>
+            <dd>{{ purchaseOrder.buyerEmail || 'Não informado' }}</dd>
+          </div>
+          <div>
+            <dt>Previsão de entrega</dt>
+            <dd>{{ formatDate(purchaseOrder.expectedDeliveryDate) }}</dd>
+          </div>
+          <div>
+            <dt>Condição de pagamento</dt>
+            <dd>{{ purchaseOrder.paymentTerms || 'Não informada' }}</dd>
+          </div>
+        </dl>
+
+        <div class="detail-items-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Quantidade</th>
+                <th>Valor unitário</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of purchaseOrder.items; track item.sourceShoppingItemId) {
+                <tr>
+                  <td>
+                    <strong>{{ item.name }}</strong>
+                  </td>
+                  <td>{{ item.quantity }} {{ item.unit }}</td>
+                  <td>{{ formatCurrency(item.unitPrice) }}</td>
+                  <td>{{ formatCurrency(item.totalPrice) }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3">Total do pedido</td>
+                <td>{{ formatCurrency(purchaseOrder.totalPrice) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <aside class="detail-sidebar">
+        <section class="management-surface condition-card">
+          <header>
+            <app-icon name="map-pin" [size]="19" />
+            <h2>Local de entrega</h2>
+          </header>
+          <p>{{ purchaseOrder.deliveryAddress || 'Não informado' }}</p>
+        </section>
+
+        <section class="management-surface condition-card">
+          <header>
+            <app-icon name="notes" [size]="19" />
+            <h2>Observações</h2>
+          </header>
+          <p>{{ purchaseOrder.notes || 'Nenhuma observação registrada.' }}</p>
+        </section>
+
+        @if (purchaseOrder.status === 'issued') {
+          <section class="management-surface status-actions">
+            <h2>Atualizar situação</h2>
+            <p>Finalize quando a compra for concluída ou cancele este pedido.</p>
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="isUpdatingStatus()"
+              (click)="updateStatus('completed')"
+            >
+              <app-icon name="circle-check" [size]="18" />
+              Marcar como concluído
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              [disabled]="isUpdatingStatus()"
+              (click)="updateStatus('cancelled')"
+            >
+              Cancelar pedido
+            </button>
+          </section>
+        }
+      </aside>
+    </div>
+  }
+</section>

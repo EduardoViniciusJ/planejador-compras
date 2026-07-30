@@ -1,0 +1,139 @@
+<section class="management-page purchase-orders-page">
+  <header class="management-page-header">
+    <div class="management-page-heading">
+      <span class="management-eyebrow">Operação de compras</span>
+      <h1>Pedidos de compra</h1>
+      <p>Consulte os pedidos formalizados a partir das cotações selecionadas.</p>
+    </div>
+
+    <div class="management-actions">
+      <a class="btn btn-outline-secondary" routerLink="/app/equalizations">
+        <app-icon name="scale" [size]="18" />
+        Ver equalizações
+      </a>
+    </div>
+  </header>
+
+  <section class="orders-toolbar management-surface" aria-label="Filtros de pedidos">
+    <div>
+      <span class="management-eyebrow">Acompanhamento</span>
+      <h2>Pedidos emitidos</h2>
+      <p>Pesquise pelo pedido, fornecedor, lista ou responsável e filtre por situação.</p>
+    </div>
+
+    <div class="orders-filters">
+      <label class="order-search">
+        <app-icon name="search" [size]="18" />
+        <span class="visually-hidden">Buscar pedido</span>
+        <input
+          type="search"
+          placeholder="Buscar pedido"
+          autocomplete="off"
+          data-testid="purchase-order-search"
+          [value]="searchTerm()"
+          (input)="updateSearchTerm($event)"
+        />
+      </label>
+
+      <label class="status-filter">
+        <app-icon name="filter" [size]="18" />
+        <span class="visually-hidden">Filtrar pedidos por situação</span>
+        <select
+          data-testid="purchase-order-status-filter"
+          [value]="statusFilter()"
+          (change)="updateStatusFilter($event)"
+        >
+          <option value="all">Todas as situações</option>
+          <option value="issued">Emitidos</option>
+          <option value="completed">Concluídos</option>
+          <option value="cancelled">Cancelados</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  @if (isLoading()) {
+    <div class="orders-state" aria-label="Carregando pedidos">
+      <span class="spinner-border" aria-hidden="true"></span>
+      <p>Carregando pedidos...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="orders-state" role="alert">
+      <span class="state-icon"><app-icon name="alert-triangle" [size]="24" /></span>
+      <h2>Não foi possível carregar os pedidos</h2>
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn-outline-primary" (click)="retry()">
+        <app-icon name="refresh" [size]="18" />
+        Tentar novamente
+      </button>
+    </div>
+  } @else if (orders().length === 0) {
+    <div class="orders-state">
+      <app-mascot class="orders-state-mascot" variant="06" size="medium" />
+      <h2>Nenhum pedido emitido</h2>
+      <p>Faça a equalização de uma lista e formalize a compra com o fornecedor escolhido.</p>
+      <a class="btn btn-primary" routerLink="/app/equalizations">
+        <app-icon name="scale" [size]="18" />
+        Ver equalizações
+      </a>
+    </div>
+  } @else if (filteredOrders().length === 0) {
+    <div class="orders-state">
+      <span class="state-icon"><app-icon name="filter-off" [size]="24" /></span>
+      <h2>Nenhum pedido encontrado</h2>
+      <p>Revise a busca ou selecione outra situação para consultar os demais pedidos.</p>
+    </div>
+  } @else {
+    <div class="orders-grid">
+      @for (order of filteredOrders(); track order.id) {
+        <article class="purchase-order-card">
+          <header class="order-card-header">
+            <div>
+              <span class="order-code">{{ order.code }}</span>
+              <span class="order-date">Emitido em {{ formatDate(order.createdAtUtc) }}</span>
+            </div>
+            <span class="order-status" [attr.data-status]="order.status">
+              {{ statusLabels[order.status] }}
+            </span>
+          </header>
+
+          <div class="order-supplier">
+            <span>Fornecedor</span>
+            <strong>{{ order.supplierName }}</strong>
+            <small>Origem: {{ order.shoppingListName }}</small>
+          </div>
+
+          <dl class="order-information">
+            <div>
+              <dt>Responsável</dt>
+              <dd>{{ order.buyerName }}</dd>
+            </div>
+            <div>
+              <dt>Itens</dt>
+              <dd>{{ order.itemCount }}</dd>
+            </div>
+            <div>
+              <dt>Entrega prevista</dt>
+              <dd>{{ formatDeliveryDate(order.expectedDeliveryDate) }}</dd>
+            </div>
+          </dl>
+
+          <div class="order-total">
+            <span>Total do pedido</span>
+            <strong>{{ formatCurrency(order.totalPrice) }}</strong>
+          </div>
+
+          <footer>
+            <a
+              class="btn btn-outline-secondary mascot-hover-action"
+              [routerLink]="['/app/purchase-orders', order.id]"
+            >
+              <app-icon name="eye" [size]="18" />
+              Ver detalhes
+            </a>
+          </footer>
+        </article>
+      }
+    </div>
+  }
+</section>

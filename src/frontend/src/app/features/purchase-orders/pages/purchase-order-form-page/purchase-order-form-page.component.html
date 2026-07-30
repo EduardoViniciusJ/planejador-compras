@@ -1,0 +1,247 @@
+<section class="management-page purchase-order-form-page">
+  @if (isGuide) {
+    <header class="management-page-header">
+      <div class="management-page-heading">
+        <a class="back-link" routerLink="/app/purchase-orders">
+          <app-icon name="arrow-left" [size]="18" />
+          Voltar para pedidos
+        </a>
+        <span class="management-eyebrow">Origem do pedido</span>
+        <h1>Criar pedido a partir de uma lista</h1>
+        <p>
+          O pedido nasce de uma cotação já registrada, mantendo preços e quantidades consistentes.
+        </p>
+      </div>
+    </header>
+
+    <section class="creation-guide management-surface">
+      <ol>
+        <li>
+          <span>1</span>
+          <div>
+            <strong>Selecione a lista de compras</strong>
+            <p>Abra a lista que contém os itens que deseja adquirir.</p>
+          </div>
+        </li>
+        <li>
+          <span>2</span>
+          <div>
+            <strong>Revise as cotações</strong>
+            <p>No mapa de preços, abra a equalização para comparar os fornecedores.</p>
+          </div>
+        </li>
+        <li>
+          <span>3</span>
+          <div>
+            <strong>Emita para o fornecedor escolhido</strong>
+            <p>Use “Emitir pedido” e revise o formulário antes de confirmar.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="guide-actions">
+        <a class="btn btn-primary" routerLink="/app">
+          <app-icon name="list-check" [size]="18" />
+          Selecionar lista
+        </a>
+        <a class="btn btn-outline-secondary" routerLink="/app/equalizations"> Ver equalizações </a>
+      </div>
+    </section>
+  } @else if (isLoading()) {
+    <div class="form-state">
+      <span class="spinner-border" aria-hidden="true"></span>
+      <p>Preparando pedido...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="form-state" role="alert">
+      <app-icon name="alert-triangle" [size]="24" />
+      <h1>Não foi possível preparar o pedido</h1>
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn-outline-primary" (click)="retry()">
+        Tentar novamente
+      </button>
+    </div>
+  } @else if (draft(); as orderDraft) {
+    <header class="management-page-header">
+      <div class="management-page-heading">
+        <a
+          class="back-link"
+          [routerLink]="
+            equalizationId
+              ? ['/app/equalizations', equalizationId]
+              : ['/app/lists', orderDraft.shoppingListId, 'equalization']
+          "
+        >
+          <app-icon name="arrow-left" [size]="18" />
+          Voltar para a equalização
+        </a>
+        <span class="management-eyebrow">Revisão do pedido</span>
+        <h1>Emitir pedido de compra</h1>
+        <p>Confira os itens e informe as condições antes de formalizar o documento.</p>
+      </div>
+    </header>
+
+    @if (!orderDraft.hasCompleteCoverage) {
+      <aside class="coverage-warning" role="note">
+        <app-icon name="alert-triangle" [size]="19" />
+        <span>
+          Este fornecedor cotou {{ orderDraft.quotedItemCount }} de
+          {{ orderDraft.totalShoppingListItemCount }} itens. O pedido incluirá somente os itens
+          cotados.
+        </span>
+      </aside>
+    }
+
+    <form class="purchase-order-layout" [formGroup]="form" (ngSubmit)="submit()">
+      <section class="management-surface order-review">
+        <header class="management-surface-header">
+          <div>
+            <span class="management-eyebrow">Itens e valores</span>
+            <h2>{{ orderDraft.supplierName }}</h2>
+            <p>Lista de origem: {{ orderDraft.shoppingListName }}</p>
+          </div>
+        </header>
+
+        <div class="order-items-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Quantidade</th>
+                <th>Valor unitário</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of orderDraft.items; track item.sourceShoppingItemId) {
+                <tr>
+                  <td>
+                    <strong>{{ item.name }}</strong>
+                  </td>
+                  <td>{{ item.quantity }} {{ item.unit }}</td>
+                  <td>{{ formatCurrency(item.unitPrice) }}</td>
+                  <td>{{ formatCurrency(item.totalPrice) }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3">Total do pedido</td>
+                <td>{{ formatCurrency(orderDraft.totalPrice) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <section class="management-surface order-conditions">
+        <header class="management-surface-header">
+          <div>
+            <span class="management-eyebrow">Condições</span>
+            <h2>Informações do pedido</h2>
+            <p>Esses dados serão exibidos no detalhe e no PDF.</p>
+          </div>
+        </header>
+
+        <div class="form-fields">
+          <label>
+            <span>Responsável pela compra *</span>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="buyerName"
+              maxlength="150"
+              autocomplete="name"
+            />
+            @if (form.controls.buyerName.touched && form.controls.buyerName.invalid) {
+              <small>Informe o responsável pela compra.</small>
+            }
+          </label>
+
+          <label>
+            <span>E-mail do responsável</span>
+            <input
+              type="email"
+              class="form-control"
+              formControlName="buyerEmail"
+              maxlength="320"
+              autocomplete="email"
+            />
+            @if (form.controls.buyerEmail.touched && form.controls.buyerEmail.invalid) {
+              <small>Informe um e-mail válido.</small>
+            }
+          </label>
+
+          <label>
+            <span>Previsão de entrega</span>
+            <input
+              type="date"
+              class="form-control"
+              formControlName="expectedDeliveryDate"
+              [attr.min]="minimumDeliveryDate"
+            />
+          </label>
+
+          <label>
+            <span>Condição de pagamento</span>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="paymentTerms"
+              maxlength="200"
+              placeholder="Ex.: 30 dias após a entrega"
+            />
+          </label>
+
+          <label class="full-field">
+            <span>Local de entrega</span>
+            <textarea
+              class="form-control"
+              formControlName="deliveryAddress"
+              maxlength="500"
+              rows="3"
+              placeholder="Endereço ou instruções para recebimento"
+            ></textarea>
+          </label>
+
+          <label class="full-field">
+            <span>Observações</span>
+            <textarea
+              class="form-control"
+              formControlName="notes"
+              maxlength="1000"
+              rows="4"
+              placeholder="Informações adicionais para o fornecedor"
+            ></textarea>
+          </label>
+        </div>
+
+        @if (submitError()) {
+          <div class="form-error" role="alert">{{ submitError() }}</div>
+        }
+
+        <footer class="form-actions">
+          <a
+            class="btn btn-outline-secondary"
+            [routerLink]="
+              equalizationId
+                ? ['/app/equalizations', equalizationId]
+                : ['/app/lists', orderDraft.shoppingListId, 'equalization']
+            "
+          >
+            Cancelar
+          </a>
+          <button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              Emitindo...
+            } @else {
+              <app-icon name="file-check" [size]="18" />
+              Emitir pedido
+            }
+          </button>
+        </footer>
+      </section>
+    </form>
+  }
+</section>
