@@ -183,8 +183,8 @@ describe('PriceMapPageComponent', () => {
 
     expect(toolbar?.querySelector('.map-list-selector')).toBeTruthy();
     expect(toolbar?.querySelector('.map-title')).toBeNull();
-    expect(toolbar?.textContent).toContain('Listas');
-    expect(toolbar?.textContent).toContain('Selecione sua lista');
+    expect(toolbar?.textContent).toContain('Mapa de preços');
+    expect(toolbar?.textContent).toContain('Selecione uma lista');
     expect(toolbar?.querySelector('a')).toBeNull();
     expect(workspaceActions?.querySelector('.btn-primary')?.textContent).toContain(
       'Ver equalização',
@@ -311,7 +311,7 @@ describe('PriceMapPageComponent', () => {
   });
 
   it('should add a catalog supplier only after the user chooses it', () => {
-    click('.workspace-actions .btn-outline-success');
+    click('.workspace-actions .btn-outline-secondary');
     const option = [
       ...host().querySelectorAll<HTMLButtonElement>('.supplier-picker-list button'),
     ].find((button) => button.textContent?.includes('Fornecedor C'));

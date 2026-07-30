@@ -1,10 +1,17 @@
 <section class="price-map-page">
   <header class="map-toolbar" aria-label="Seleção da lista de compras">
+    <div class="map-toolbar-heading">
+      <span class="management-eyebrow">Comparação de fornecedores</span>
+      <h1>Mapa de preços</h1>
+    </div>
     <div class="map-list-controls">
       <div class="map-list-selector">
-        <label for="price-map-list">Listas</label>
+        <label for="price-map-list">
+          <app-icon name="checklist" [size]="18" />
+          <span>Lista</span>
+        </label>
         <select id="price-map-list" [value]="listId()" (change)="changeList($event)">
-          <option value="">Selecione sua lista</option>
+          <option value="">Selecione uma lista</option>
           @for (list of lists(); track list.id) {
             <option [value]="list.id">{{ list.name }}</option>
           }
@@ -17,14 +24,16 @@
           accessibleLabel="Exportar mapa de preços"
         />
       }
-      <button type="button" class="btn btn-success" (click)="openCreateList()">
-        <i class="bi bi-plus-lg" aria-hidden="true"></i> Nova lista
+      <button type="button" class="btn btn-primary" (click)="openCreateList()">
+        <app-icon name="plus" [size]="18" /> Nova lista
       </button>
     </div>
   </header>
 
   @if (feedback()) {
-    <p class="feedback" role="status"><i class="bi bi-check-circle"></i> {{ feedback() }}</p>
+    <p class="feedback" role="status">
+      <app-icon name="circle-check" [size]="18" /> {{ feedback() }}
+    </p>
   }
 
   @if (isLoading()) {
@@ -34,7 +43,7 @@
     </div>
   } @else if (loadError()) {
     <div class="page-state" role="alert">
-      <i class="bi bi-exclamation-triangle"></i>
+      <app-icon name="alert-triangle" [size]="24" />
       <h2>Não foi possível abrir o mapa</h2>
       <p>{{ loadError() }}</p>
       <button class="btn btn-outline-primary" type="button" (click)="retry()">
@@ -43,11 +52,11 @@
     </div>
   } @else if (!listId()) {
     <div class="page-state welcome-state">
-      <i class="bi bi-table"></i>
+      <app-mascot class="page-state-mascot" variant="10" size="medium" />
       <h2>Escolha uma lista de compras</h2>
       <p>Depois disso você poderá adicionar itens, fornecedores e preços no mesmo lugar.</p>
       @if (lists().length === 0) {
-        <button class="btn btn-success" type="button" (click)="openCreateList()">
+        <button class="btn btn-primary" type="button" (click)="openCreateList()">
           Criar primeira lista
         </button>
       }
@@ -55,41 +64,53 @@
   } @else if (detail(); as list) {
     <div class="workspace-toolbar">
       <div class="workspace-title">
+        <span class="workspace-eyebrow">Lista ativa</span>
         <h2>{{ list.name }}</h2>
-        <p>
-          {{ list.totalItems }} {{ list.totalItems === 1 ? 'item' : 'itens' }} ·
-          {{ suppliers().length }}
-          {{ suppliers().length === 1 ? 'fornecedor' : 'fornecedores' }} ·
-          {{ list.quotedItems }} com preços
-        </p>
+        <div class="workspace-metrics" aria-label="Resumo da lista">
+          <span>
+            <strong>{{ list.totalItems }}</strong>
+            {{ list.totalItems === 1 ? 'item' : 'itens' }}
+          </span>
+          <span>
+            <strong>{{ suppliers().length }}</strong>
+            {{ suppliers().length === 1 ? 'fornecedor' : 'fornecedores' }}
+          </span>
+          <span>
+            <strong>{{ list.quotedItems }}</strong>
+            com preços
+          </span>
+        </div>
       </div>
       <div class="workspace-actions">
         @if (list.totalItems > 0 && list.quotedItems > 0) {
-          <a class="btn btn-primary" [routerLink]="['/app/lists', list.id, 'equalization']">
-            <i class="bi bi-grid-3x3-gap"></i> Ver equalização
+          <a
+            class="btn btn-primary equalization-action mascot-hover-action"
+            [routerLink]="['/app/lists', list.id, 'equalization']"
+          >
+            <app-icon name="layout-grid" [size]="18" /> Ver equalização
           </a>
         }
-        <button type="button" class="btn btn-outline-success" (click)="openSupplierPicker()">
-          <i class="bi bi-building-add"></i> Adicionar fornecedor
+        <button type="button" class="btn btn-outline-secondary" (click)="openSupplierPicker()">
+          <app-icon name="building-plus" [size]="18" /> Adicionar fornecedor
         </button>
       </div>
     </div>
 
     @if (list.items.length === 0) {
       <div class="page-state workspace-empty">
-        <i class="bi bi-basket"></i>
+        <app-mascot class="page-state-mascot" variant="01" size="medium" />
         <h2>Adicione o primeiro item</h2>
         <p>O item aparecerá como uma linha do mapa e poderá receber preços dos fornecedores.</p>
-        <button class="btn btn-success" type="button" (click)="openCreateItem()">
+        <button class="btn btn-primary" type="button" (click)="openCreateItem()">
           Adicionar item
         </button>
       </div>
     } @else if (suppliers().length === 0) {
       <div class="page-state workspace-empty">
-        <i class="bi bi-buildings"></i>
+        <app-mascot class="page-state-mascot" variant="07" size="medium" />
         <h2>Adicione um fornecedor à lista</h2>
         <p>Escolha um fornecedor já cadastrado ou cadastre um novo para esta lista.</p>
-        <button class="btn btn-success" type="button" (click)="openSupplierPicker()">
+        <button class="btn btn-primary" type="button" (click)="openSupplierPicker()">
           Adicionar fornecedor
         </button>
       </div>
@@ -103,11 +124,7 @@
             [attr.aria-pressed]="isColumnVisible('item')"
             (click)="toggleColumnVisibility('item')"
           >
-            <i
-              class="bi"
-              [class.bi-eye]="isColumnVisible('item')"
-              [class.bi-eye-slash]="!isColumnVisible('item')"
-            ></i>
+            <app-icon [name]="isColumnVisible('item') ? 'eye' : 'eye-off'" [size]="17" />
             Item
           </button>
           <button
@@ -116,11 +133,7 @@
             [attr.aria-pressed]="isColumnVisible('quantity')"
             (click)="toggleColumnVisibility('quantity')"
           >
-            <i
-              class="bi"
-              [class.bi-eye]="isColumnVisible('quantity')"
-              [class.bi-eye-slash]="!isColumnVisible('quantity')"
-            ></i>
+            <app-icon [name]="isColumnVisible('quantity') ? 'eye' : 'eye-off'" [size]="17" />
             Quantidade
           </button>
           <button
@@ -129,11 +142,7 @@
             [attr.aria-pressed]="isColumnVisible('unit')"
             (click)="toggleColumnVisibility('unit')"
           >
-            <i
-              class="bi"
-              [class.bi-eye]="isColumnVisible('unit')"
-              [class.bi-eye-slash]="!isColumnVisible('unit')"
-            ></i>
+            <app-icon [name]="isColumnVisible('unit') ? 'eye' : 'eye-off'" [size]="17" />
             Unidade
           </button>
         </div>
@@ -144,7 +153,7 @@
           <span>Fornecedores minimizados:</span>
           @for (supplier of hiddenSuppliers(); track supplier.id) {
             <button type="button" (click)="restoreSupplier(supplier.id)">
-              <i class="bi bi-arrows-expand"></i> {{ supplier.name }}
+              <app-icon name="arrows-maximize" [size]="17" /> {{ supplier.name }}
             </button>
           }
         </div>
@@ -189,11 +198,10 @@
                         [title]="isColumnPinned('item') ? 'Desafixar coluna' : 'Fixar coluna'"
                         (click)="toggleColumnPin('item')"
                       >
-                        <i
-                          class="bi"
-                          [class.bi-pin-angle-fill]="isColumnPinned('item')"
-                          [class.bi-pin-angle]="!isColumnPinned('item')"
-                        ></i>
+                        <app-icon
+                          [name]="isColumnPinned('item') ? 'pin-filled' : 'pin'"
+                          [size]="17"
+                        />
                       </button>
                       <button
                         type="button"
@@ -201,7 +209,7 @@
                         title="Minimizar coluna"
                         (click)="toggleColumnVisibility('item')"
                       >
-                        <i class="bi bi-dash-lg"></i>
+                        <app-icon name="minus" [size]="17" />
                       </button>
                     </span>
                   </th>
@@ -226,11 +234,10 @@
                         [title]="isColumnPinned('quantity') ? 'Desafixar coluna' : 'Fixar coluna'"
                         (click)="toggleColumnPin('quantity')"
                       >
-                        <i
-                          class="bi"
-                          [class.bi-pin-angle-fill]="isColumnPinned('quantity')"
-                          [class.bi-pin-angle]="!isColumnPinned('quantity')"
-                        ></i>
+                        <app-icon
+                          [name]="isColumnPinned('quantity') ? 'pin-filled' : 'pin'"
+                          [size]="17"
+                        />
                       </button>
                       <button
                         type="button"
@@ -238,7 +245,7 @@
                         title="Minimizar coluna"
                         (click)="toggleColumnVisibility('quantity')"
                       >
-                        <i class="bi bi-dash-lg"></i>
+                        <app-icon name="minus" [size]="17" />
                       </button>
                     </span>
                   </th>
@@ -263,11 +270,10 @@
                         [title]="isColumnPinned('unit') ? 'Desafixar coluna' : 'Fixar coluna'"
                         (click)="toggleColumnPin('unit')"
                       >
-                        <i
-                          class="bi"
-                          [class.bi-pin-angle-fill]="isColumnPinned('unit')"
-                          [class.bi-pin-angle]="!isColumnPinned('unit')"
-                        ></i>
+                        <app-icon
+                          [name]="isColumnPinned('unit') ? 'pin-filled' : 'pin'"
+                          [size]="17"
+                        />
                       </button>
                       <button
                         type="button"
@@ -275,7 +281,7 @@
                         title="Minimizar coluna"
                         (click)="toggleColumnVisibility('unit')"
                       >
-                        <i class="bi bi-dash-lg"></i>
+                        <app-icon name="minus" [size]="17" />
                       </button>
                     </span>
                   </th>
@@ -290,7 +296,7 @@
                         [attr.aria-label]="'Minimizar ' + supplier.name"
                         (click)="minimizeSupplier(supplier.id)"
                       >
-                        <i class="bi bi-dash-lg"></i>
+                        <app-icon name="minus" [size]="17" />
                       </button>
                       <button
                         type="button"
@@ -299,7 +305,7 @@
                         [attr.aria-label]="'Remover ' + supplier.name + ' da lista'"
                         (click)="openRemoveSupplier(supplier)"
                       >
-                        <i class="bi bi-x-lg"></i>
+                        <app-icon name="x" [size]="17" />
                       </button>
                     </span>
                   </th>
@@ -335,7 +341,7 @@
                             [attr.aria-label]="'Editar ' + item.name"
                             (click)="openEditItem(item)"
                           >
-                            <i class="bi bi-pencil"></i>
+                            <app-icon name="pencil" [size]="17" />
                           </button>
                           <button
                             class="danger-action"
@@ -344,7 +350,7 @@
                             [attr.aria-label]="'Excluir ' + item.name"
                             (click)="openDeleteItem(item)"
                           >
-                            <i class="bi bi-trash3"></i>
+                            <app-icon name="trash" [size]="17" />
                           </button>
                         </div>
                       </div>
@@ -364,7 +370,7 @@
                         [attr.aria-label]="'Editar quantidade de ' + item.name"
                         (click)="openEditItem(item)"
                       >
-                        <i class="bi bi-pencil"></i>
+                        <app-icon name="pencil" [size]="17" />
                       </button>
                     </td>
                   }
@@ -382,7 +388,7 @@
                         [attr.aria-label]="'Editar unidade de ' + item.name"
                         (click)="openEditItem(item)"
                       >
-                        <i class="bi bi-pencil"></i>
+                        <app-icon name="pencil" [size]="17" />
                       </button>
                     </td>
                   }
@@ -410,7 +416,7 @@
                             [attr.aria-label]="'Excluir preço de ' + supplier.name"
                             (click)="openDeleteQuote(quote, $event)"
                           >
-                            <i class="bi bi-trash3"></i>
+                            <app-icon name="trash" [size]="17" />
                           </button>
                         </div>
                       } @else {
@@ -419,7 +425,7 @@
                           class="empty-price-button"
                           (click)="openQuote(item, supplier)"
                         >
-                          <i class="bi bi-plus-lg"></i> Informar preço
+                          <app-icon name="plus" [size]="17" /> Informar preço
                         </button>
                       }
                     </td>
@@ -454,7 +460,7 @@
                     aria-label="Adicionar item"
                     (click)="openCreateItem()"
                   >
-                    <i class="bi bi-plus-lg"></i><span>Adicionar item</span>
+                    <app-icon name="plus" [size]="17" /><span>Adicionar item</span>
                   </button>
                 </th>
                 @for (supplier of visibleSuppliers(); track supplier.id) {
@@ -500,7 +506,7 @@
                   [attr.aria-label]="'Editar ' + item.name"
                   (click)="openEditItem(item)"
                 >
-                  <i class="bi bi-pencil"></i>
+                  <app-icon name="pencil" [size]="18" />
                 </button>
                 <button
                   class="danger-action"
@@ -509,7 +515,7 @@
                   [attr.aria-label]="'Excluir ' + item.name"
                   (click)="openDeleteItem(item)"
                 >
-                  <i class="bi bi-trash3"></i>
+                  <app-icon name="trash" [size]="18" />
                 </button>
               </div>
             </header>
@@ -531,7 +537,7 @@
                       [attr.aria-label]="'Excluir preço de ' + supplier.name"
                       (click)="openDeleteQuote(quote, $event)"
                     >
-                      <i class="bi bi-trash3"></i>
+                      <app-icon name="trash" [size]="18" />
                     </button>
                   </div>
                 } @else {
@@ -541,7 +547,7 @@
                     (click)="openQuote(item, supplier)"
                   >
                     <span>{{ supplier.name }}</span
-                    ><strong><i class="bi bi-plus-lg"></i> Informar</strong>
+                    ><strong><app-icon name="plus" [size]="17" /> Informar</strong>
                   </button>
                 }
               }
@@ -609,14 +615,14 @@
         <div class="supplier-picker-list">
           @for (supplier of availableSuppliers(); track supplier.id) {
             <button type="button" [disabled]="isSaving()" (click)="addSupplierToList(supplier)">
-              <span><i class="bi bi-building"></i> {{ supplier.name }}</span>
-              <i class="bi bi-plus-lg"></i>
+              <span><app-icon name="building" [size]="18" /> {{ supplier.name }}</span>
+              <app-icon name="plus" [size]="18" />
             </button>
           }
         </div>
       } @else {
         <div class="supplier-picker-empty">
-          <i class="bi bi-check2-circle"></i>
+          <app-icon name="circle-check" [size]="22" />
           <span>Todos os fornecedores cadastrados já estão nesta lista.</span>
         </div>
       }
@@ -631,11 +637,11 @@
         </button>
         <button
           type="button"
-          class="btn btn-success"
+          class="btn btn-primary"
           [disabled]="isSaving()"
           (click)="openCreateSupplier()"
         >
-          <i class="bi bi-plus-lg"></i> Cadastrar novo
+          <app-icon name="plus" [size]="18" /> Cadastrar novo
         </button>
       </div>
     </div>
@@ -691,7 +697,7 @@
     (closeRequested)="closeDelete()"
   >
     <div class="delete-content">
-      <i class="bi bi-trash3"></i>
+      <app-icon name="trash" [size]="22" />
       <p>
         O item <strong>{{ item.name }}</strong> e todos os seus preços serão excluídos
         permanentemente.
@@ -719,7 +725,7 @@
     (closeRequested)="closeDelete()"
   >
     <div class="delete-content">
-      <i class="bi bi-trash3"></i>
+      <app-icon name="trash" [size]="22" />
       <p>
         O preço informado por <strong>{{ quote.supplierName }}</strong> será excluído.
       </p>
@@ -746,7 +752,7 @@
     (closeRequested)="closeDelete()"
   >
     <div class="delete-content">
-      <i class="bi bi-building-dash"></i>
+      <app-icon name="building-minus" [size]="22" />
       <p>
         <strong>{{ supplier.name }}</strong> deixará de aparecer neste mapa. O cadastro do
         fornecedor e os preços já informados serão preservados.

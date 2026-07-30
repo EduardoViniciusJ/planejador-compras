@@ -1,24 +1,25 @@
-<section class="shopping-lists-page">
-  <header class="page-heading">
-    <div>
-      <h1>Minhas listas de compras</h1>
-      <p>Crie listas, adicione itens e acompanhe os preços recebidos.</p>
+<section class="management-page shopping-lists-page">
+  <header class="management-page-header">
+    <div class="management-page-heading">
+      <span class="management-eyebrow">Carteira de compras</span>
+      <h1>Listas de compras</h1>
+      <p>Organize as demandas e acompanhe cada lista até a comparação de preços.</p>
     </div>
 
     <button
       type="button"
-      class="btn btn-success page-primary-action"
+      class="btn btn-primary page-primary-action mascot-hover-action"
       data-testid="add-list"
       (click)="openCreateForm()"
     >
-      <i class="bi bi-plus-lg" aria-hidden="true"></i>
+      <app-icon name="plus" [size]="18" />
       Adicionar lista
     </button>
   </header>
 
   @if (feedbackMessage()) {
     <div class="page-feedback" role="status">
-      <i class="bi bi-check-circle" aria-hidden="true"></i>
+      <app-icon name="circle-check" [size]="18" />
       <span>{{ feedbackMessage() }}</span>
       <button
         type="button"
@@ -26,262 +27,203 @@
         title="Fechar"
         (click)="feedbackMessage.set(null)"
       >
-        <i class="bi bi-x-lg" aria-hidden="true"></i>
+        <app-icon name="x" [size]="18" />
       </button>
     </div>
   }
 
   @if (isLoading()) {
-    <div class="summary-grid" aria-label="Carregando resumo">
-      @for (item of [1, 2, 3, 4, 5]; track item) {
-        <div class="summary-card summary-card-loading" aria-hidden="true">
-          <span></span>
-          <strong></strong>
-        </div>
-      }
-    </div>
-
-    <div class="table-loading" aria-label="Carregando listas">
+    <div class="page-state page-state-compact" aria-label="Carregando listas">
       <span class="spinner-border" aria-hidden="true"></span>
       <p>Carregando listas...</p>
     </div>
   } @else if (loadError()) {
     <div class="page-state" role="alert">
       <span class="page-state-icon page-state-icon-error">
-        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+        <app-icon name="alert-triangle" [size]="22" />
       </span>
       <h2>Não foi possível carregar suas listas</h2>
       <p>{{ loadError() }}</p>
       <button type="button" class="btn btn-outline-primary" (click)="retryLoad()">
-        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+        <app-icon name="refresh" [size]="18" />
         Tentar novamente
       </button>
     </div>
   } @else {
-    <div class="summary-grid" aria-label="Resumo das listas">
-      <article class="summary-card">
-        <span class="summary-icon summary-icon-total"
-          ><i class="bi bi-card-checklist" aria-hidden="true"></i
-        ></span>
-        <div>
-          <strong>{{ summary().totalLists }}</strong>
-          <span>Listas de compras</span>
-        </div>
-      </article>
-
-      <article class="summary-card">
-        <span class="summary-icon summary-icon-draft"
-          ><i class="bi bi-pencil-square" aria-hidden="true"></i
-        ></span>
-        <div>
-          <strong>{{ summary().draftLists }}</strong>
-          <span>Em elaboração</span>
-        </div>
-      </article>
-
-      <article class="summary-card">
-        <span class="summary-icon summary-icon-waiting"
-          ><i class="bi bi-hourglass-split" aria-hidden="true"></i
-        ></span>
-        <div>
-          <strong>{{ summary().awaitingQuotesLists }}</strong>
-          <span>Aguardando cotações</span>
-        </div>
-      </article>
-
-      <article class="summary-card">
-        <span class="summary-icon summary-icon-ready"
-          ><i class="bi bi-check2-circle" aria-hidden="true"></i
-        ></span>
-        <div>
-          <strong>{{ summary().readyForEqualizationLists }}</strong>
-          <span>Prontas para equalização</span>
-        </div>
-      </article>
-
-      <article class="summary-card summary-card-value">
-        <span class="summary-icon summary-icon-value"
-          ><i class="bi bi-cash-stack" aria-hidden="true"></i
-        ></span>
-        <div>
-          <strong>{{ formatCurrency(summary().totalEstimated) }}</strong>
-          <span>Total estimado</span>
-        </div>
-      </article>
-    </div>
-
-    <div class="filters-toolbar" aria-label="Filtros de listas">
-      <div class="search-control">
-        <i class="bi bi-search" aria-hidden="true"></i>
-        <label class="visually-hidden" for="shopping-list-search">Buscar por nome da lista</label>
-        <input
-          id="shopping-list-search"
-          type="search"
-          [value]="searchTerm()"
-          placeholder="Buscar por nome da lista"
-          autocomplete="off"
-          data-testid="list-search"
-          (input)="updateSearchTerm($event)"
-        />
+    <section class="lists-toolbar management-surface" aria-label="Acompanhamento e filtros">
+      <div class="lists-toolbar-copy">
+        <span class="management-eyebrow">Acompanhamento</span>
+        <h2>Listas em andamento</h2>
+        <p>Encontre uma lista e abra o mapa para gerenciar itens, fornecedores e preços.</p>
       </div>
 
-      <div class="select-control">
-        <i class="bi bi-funnel" aria-hidden="true"></i>
-        <label class="visually-hidden" for="shopping-list-status-filter"
-          >Filtrar por situação</label
-        >
-        <select
-          id="shopping-list-status-filter"
-          [value]="statusFilter()"
-          data-testid="status-filter"
-          (change)="updateStatusFilter($event)"
-        >
-          <option value="all">Todas as situações</option>
-          <option value="draft">Em elaboração</option>
-          <option value="awaiting-quotes">Aguardando cotações</option>
-          <option value="ready-for-equalization">Pronta para equalização</option>
-        </select>
-      </div>
+      <div class="lists-filters" aria-label="Filtros de listas">
+        <div class="search-control">
+          <app-icon name="search" [size]="18" />
+          <label class="visually-hidden" for="shopping-list-search">Buscar por nome da lista</label>
+          <input
+            id="shopping-list-search"
+            type="search"
+            [value]="searchTerm()"
+            placeholder="Buscar lista"
+            autocomplete="off"
+            data-testid="list-search"
+            (input)="updateSearchTerm($event)"
+          />
+        </div>
 
-      <div class="select-control">
-        <i class="bi bi-calendar3" aria-hidden="true"></i>
-        <label class="visually-hidden" for="shopping-list-period-filter">Filtrar por período</label>
-        <select
-          id="shopping-list-period-filter"
-          [value]="periodFilter()"
-          data-testid="period-filter"
-          (change)="updatePeriodFilter($event)"
-        >
-          <option value="all">Todo o período</option>
-          <option value="last-7-days">Últimos 7 dias</option>
-          <option value="last-30-days">Últimos 30 dias</option>
-          <option value="this-year">Este ano</option>
-        </select>
-      </div>
+        <div class="select-control">
+          <app-icon name="filter" [size]="18" />
+          <label class="visually-hidden" for="shopping-list-status-filter">
+            Filtrar por situação
+          </label>
+          <select
+            id="shopping-list-status-filter"
+            [value]="statusFilter()"
+            data-testid="status-filter"
+            (change)="updateStatusFilter($event)"
+          >
+            <option value="all">Todas as situações</option>
+            <option value="draft">Adicionando itens</option>
+            <option value="awaiting-quotes">Aguardando preços</option>
+            <option value="ready-for-equalization">Pronta para comparar</option>
+          </select>
+        </div>
 
-      <button
-        type="button"
-        class="clear-filters-button"
-        [disabled]="!hasActiveFilters()"
-        (click)="clearFilters()"
-      >
-        <i class="bi bi-x-circle" aria-hidden="true"></i>
-        Limpar
-      </button>
-    </div>
+        <div class="select-control">
+          <app-icon name="calendar" [size]="18" />
+          <label class="visually-hidden" for="shopping-list-period-filter">
+            Filtrar por período
+          </label>
+          <select
+            id="shopping-list-period-filter"
+            [value]="periodFilter()"
+            data-testid="period-filter"
+            (change)="updatePeriodFilter($event)"
+          >
+            <option value="all">Todo o período</option>
+            <option value="last-7-days">Últimos 7 dias</option>
+            <option value="last-30-days">Últimos 30 dias</option>
+            <option value="this-year">Este ano</option>
+          </select>
+        </div>
+
+        <button
+          type="button"
+          class="clear-filters-button"
+          [disabled]="!hasActiveFilters()"
+          (click)="clearFilters()"
+        >
+          <app-icon name="circle-x" [size]="18" />
+          Limpar
+        </button>
+      </div>
+    </section>
 
     @if (lists().length === 0) {
       <div class="page-state">
-        <span class="page-state-icon"><i class="bi bi-card-checklist" aria-hidden="true"></i></span>
+        <app-mascot class="page-state-mascot" variant="01" size="medium" />
         <h2>Nenhuma lista criada</h2>
         <p>Crie uma lista de compras para começar a organizar seus itens.</p>
-        <button type="button" class="btn btn-success" (click)="openCreateForm()">
-          <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        <button type="button" class="btn btn-primary" (click)="openCreateForm()">
+          <app-icon name="plus" [size]="18" />
           Criar lista de compras
         </button>
       </div>
     } @else if (filteredLists().length === 0) {
       <div class="page-state">
-        <span class="page-state-icon"><i class="bi bi-search" aria-hidden="true"></i></span>
+        <span class="page-state-icon"><app-icon name="search" [size]="24" /></span>
         <h2>Nenhuma lista encontrada</h2>
         <p>Revise a busca ou limpe os filtros aplicados.</p>
         <button type="button" class="btn btn-outline-primary" (click)="clearFilters()">
-          <i class="bi bi-x-circle" aria-hidden="true"></i>
+          <app-icon name="circle-x" [size]="18" />
           Limpar filtros
         </button>
       </div>
     } @else {
-      <div class="lists-table-shell">
-        <div class="lists-table-scroll">
-          <table class="lists-table">
-            <thead>
-              <tr>
-                <th scope="col">Nome da lista</th>
-                <th scope="col">Itens</th>
-                <th scope="col">Situação</th>
-                <th scope="col">Criada em</th>
-                <th scope="col">Total estimado</th>
-                <th scope="col"><span class="visually-hidden">Ações</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (list of filteredLists(); track list.id) {
-                <tr [attr.data-testid]="'shopping-list-row-' + list.id">
-                  <td>
-                    <button type="button" class="list-name-button" (click)="openPriceMap(list)">
-                      <strong>{{ list.name }}</strong>
-                      @if (list.description) {
-                        <span>{{ list.description }}</span>
-                      }
-                    </button>
-                  </td>
-                  <td>
-                    <span class="item-count">{{ list.itemCount }}</span>
-                  </td>
-                  <td>
-                    <span
-                      class="status-badge"
-                      [class.status-badge-draft]="list.status === 'draft'"
-                      [class.status-badge-waiting]="list.status === 'awaiting-quotes'"
-                      [class.status-badge-ready]="list.status === 'ready-for-equalization'"
-                    >
-                      {{ statusLabels[list.status] }}
-                    </span>
-                  </td>
-                  <td>{{ formatDate(list.createdAt) }}</td>
-                  <td class="estimated-total">{{ formatCurrency(list.estimatedTotal) }}</td>
-                  <td>
-                    <div class="row-actions">
-                      <button
-                        type="button"
-                        class="add-item-action"
-                        [attr.aria-label]="'Adicionar item em ' + list.name"
-                        title="Adicionar item"
-                        data-testid="add-item"
-                        (click)="addItem(list)"
-                      >
-                        <i class="bi bi-plus-lg" aria-hidden="true"></i>
-                        <span>Adicionar item</span>
-                      </button>
-                      <button
-                        type="button"
-                        [attr.aria-label]="'Abrir mapa de preços de ' + list.name"
-                        title="Abrir mapa de preços"
-                        (click)="openPriceMap(list)"
-                      >
-                        <i class="bi bi-table" aria-hidden="true"></i>
-                      </button>
-                      <button
-                        type="button"
-                        class="edit-action"
-                        [attr.aria-label]="'Editar ' + list.name"
-                        title="Editar lista"
-                        data-testid="edit-list"
-                        (click)="openEditForm(list)"
-                      >
-                        <i class="bi bi-pencil" aria-hidden="true"></i>
-                      </button>
-                      <button
-                        type="button"
-                        class="danger-action"
-                        [attr.aria-label]="'Excluir ' + list.name"
-                        title="Excluir lista"
-                        data-testid="delete-list"
-                        (click)="openDeleteConfirmation(list)"
-                      >
-                        <i class="bi bi-trash3" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
+      <div class="shopping-lists-grid">
+        @for (list of filteredLists(); track list.id) {
+          <article
+            class="shopping-list-card management-surface"
+            [attr.data-testid]="'shopping-list-card-' + list.id"
+          >
+            <header class="shopping-list-card-header">
+              <span class="created-at">Criada em {{ formatDate(list.createdAt) }}</span>
+              <span
+                class="status-badge"
+                [class.status-badge-draft]="list.status === 'draft'"
+                [class.status-badge-waiting]="list.status === 'awaiting-quotes'"
+                [class.status-badge-ready]="list.status === 'ready-for-equalization'"
+              >
+                {{ statusLabels[list.status] }}
+              </span>
+            </header>
 
-        <footer class="table-footer">
-          Mostrando {{ filteredLists().length }} de {{ lists().length }} listas
-        </footer>
+            <div class="shopping-list-card-content">
+              <span class="management-eyebrow">Lista de compras</span>
+              <button type="button" class="list-name-button" (click)="openPriceMap(list)">
+                {{ list.name }}
+              </button>
+              <p>{{ list.description || 'Sem descrição informada.' }}</p>
+            </div>
+
+            <dl class="shopping-list-details">
+              <div>
+                <dt>Itens</dt>
+                <dd>{{ list.itemCount }}</dd>
+              </div>
+              <div>
+                <dt>Com preços</dt>
+                <dd>{{ list.quotedItemCount }}</dd>
+              </div>
+              <div>
+                <dt>Total estimado</dt>
+                <dd>{{ formatCurrency(list.estimatedTotal) }}</dd>
+              </div>
+            </dl>
+
+            <footer class="shopping-list-card-actions">
+              <div class="secondary-actions">
+                <button
+                  type="button"
+                  class="icon-action"
+                  [attr.aria-label]="'Editar ' + list.name"
+                  title="Editar lista"
+                  data-testid="edit-list"
+                  (click)="openEditForm(list)"
+                >
+                  <app-icon name="pencil" [size]="18" />
+                </button>
+                <button
+                  type="button"
+                  class="icon-action danger-action"
+                  [attr.aria-label]="'Excluir ' + list.name"
+                  title="Excluir lista"
+                  data-testid="delete-list"
+                  (click)="openDeleteConfirmation(list)"
+                >
+                  <app-icon name="trash" [size]="18" />
+                </button>
+              </div>
+
+              <div class="primary-actions">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-testid="add-item"
+                  (click)="addItem(list)"
+                >
+                  <app-icon name="plus" [size]="17" />
+                  Adicionar item
+                </button>
+                <button type="button" class="btn btn-primary" (click)="openPriceMap(list)">
+                  <app-icon name="table" [size]="18" />
+                  Abrir mapa
+                </button>
+              </div>
+            </footer>
+          </article>
+        }
       </div>
     }
   }
@@ -320,7 +262,7 @@
     aria-describedby="delete-list-description"
     data-testid="delete-confirmation"
   >
-    <span class="confirmation-icon"><i class="bi bi-trash3" aria-hidden="true"></i></span>
+    <span class="confirmation-icon"><app-icon name="trash" [size]="22" /></span>
     <h2 id="delete-list-title">Excluir lista?</h2>
     <p id="delete-list-description">
       A lista <strong>{{ list.name }}</strong> e todos os seus itens e cotações serão excluídos
@@ -351,7 +293,7 @@
           <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
           Excluindo...
         } @else {
-          <i class="bi bi-trash3" aria-hidden="true"></i>
+          <app-icon name="trash" [size]="18" />
           Excluir lista
         }
       </button>

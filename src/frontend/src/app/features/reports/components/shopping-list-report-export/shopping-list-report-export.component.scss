@@ -8,6 +8,18 @@
 }
 
 .export-button {
+  --bs-btn-color: #ffffff;
+  --bs-btn-bg: #171717;
+  --bs-btn-border-color: #171717;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #2b2b2b;
+  --bs-btn-hover-border-color: #2b2b2b;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #303030;
+  --bs-btn-active-border-color: #303030;
+  --bs-btn-disabled-color: #ffffff;
+  --bs-btn-disabled-bg: #525252;
+  --bs-btn-disabled-border-color: #525252;
   min-height: 2.35rem;
   display: inline-flex;
   align-items: center;
@@ -17,6 +29,21 @@
   font-size: var(--app-font-size-base);
   line-height: var(--app-line-height-body);
   white-space: nowrap;
+}
+
+:host-context([data-bs-theme='dark']) .export-button {
+  --bs-btn-color: var(--app-text-color);
+  --bs-btn-bg: var(--app-surface-alt-bg);
+  --bs-btn-border-color: var(--app-border-strong);
+  --bs-btn-hover-color: var(--app-brand-accent);
+  --bs-btn-hover-bg: var(--app-surface-inset-bg);
+  --bs-btn-hover-border-color: var(--app-brand-accent);
+  --bs-btn-active-color: var(--app-brand-accent);
+  --bs-btn-active-bg: var(--app-surface-inset-bg);
+  --bs-btn-active-border-color: var(--app-brand-accent);
+  --bs-btn-disabled-color: var(--app-text-soft);
+  --bs-btn-disabled-bg: var(--app-surface-alt-bg);
+  --bs-btn-disabled-border-color: var(--app-border-color);
 }
 
 .export-chevron {

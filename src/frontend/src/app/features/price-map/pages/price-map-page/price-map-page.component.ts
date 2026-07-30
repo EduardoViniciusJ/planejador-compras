@@ -26,6 +26,8 @@ import { SupplierService } from '../../../suppliers/data-access/supplier.service
 import { SupplierRequestDto } from '../../../suppliers/dtos/supplier.dto';
 import { Supplier } from '../../../suppliers/models/supplier.model';
 import { ModalDialogComponent } from '../../../../shared/ui/modal-dialog/modal-dialog.component';
+import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
+import { MascotComponent } from '../../../../shared/ui/mascot/mascot.component';
 
 type PriceMapDialog = 'list' | 'item' | 'supplier-picker' | 'supplier-create' | 'quote' | null;
 type BaseColumn = 'item' | 'quantity' | 'unit';
@@ -55,6 +57,8 @@ const resultColumnWidth = 144;
     ShoppingItemFormComponent,
     SupplierFormComponent,
     ItemQuoteFormComponent,
+    AppIconComponent,
+    MascotComponent,
   ],
   templateUrl: './price-map-page.component.html',
   styleUrl: './price-map-page.component.scss',

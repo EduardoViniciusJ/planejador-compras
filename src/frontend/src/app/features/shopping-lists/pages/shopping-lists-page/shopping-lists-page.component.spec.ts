@@ -76,10 +76,18 @@ describe('ShoppingListsPageComponent', () => {
     setInputValue(fixture, '[data-testid="list-search"]', 'TI');
     setSelectValue(fixture, '[data-testid="status-filter"]', 'awaiting-quotes');
 
-    const rows = getHost(fixture).querySelectorAll('[data-testid^="shopping-list-row-"]');
+    const cards = getHost(fixture).querySelectorAll('[data-testid^="shopping-list-card-"]');
 
-    expect(rows).toHaveLength(1);
-    expect(rows[0].textContent).toContain('Equipamentos de TI');
+    expect(cards).toHaveLength(1);
+    expect(cards[0].textContent).toContain('Equipamentos de TI');
+  });
+
+  it('should render lists as cards without the former summary indicators', () => {
+    const host = getHost(fixture);
+
+    expect(host.querySelectorAll('.shopping-list-card')).toHaveLength(2);
+    expect(host.querySelector('.summary-grid')).toBeNull();
+    expect(host.querySelector('.lists-table')).toBeNull();
   });
 
   it('should create a shopping list with the reusable form', () => {

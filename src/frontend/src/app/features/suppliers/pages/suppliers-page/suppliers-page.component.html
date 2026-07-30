@@ -1,16 +1,19 @@
-<section class="suppliers-page">
-  <header class="page-heading">
-    <div>
+<section class="management-page suppliers-page">
+  <header class="management-page-header">
+    <div class="management-page-heading">
+      <span class="management-eyebrow">Base de fornecedores</span>
       <h1>Fornecedores</h1>
       <p>Cadastre as empresas que oferecem preços para suas compras.</p>
     </div>
-    <button class="btn btn-success" type="button" (click)="openCreate()">
-      <i class="bi bi-plus-lg"></i> Adicionar fornecedor
+    <button class="btn btn-primary mascot-hover-action" type="button" (click)="openCreate()">
+      <app-icon name="plus" [size]="18" /> Adicionar fornecedor
     </button>
   </header>
 
   @if (feedback()) {
-    <p class="feedback" role="status"><i class="bi bi-check-circle"></i> {{ feedback() }}</p>
+    <p class="feedback" role="status">
+      <app-icon name="circle-check" [size]="18" /> {{ feedback() }}
+    </p>
   }
 
   @if (isLoading()) {
@@ -20,26 +23,38 @@
     </div>
   } @else if (loadError()) {
     <div class="page-state" role="alert">
-      <i class="bi bi-exclamation-triangle"></i>
-      <h2>Nao foi possivel carregar</h2>
+      <app-icon name="alert-triangle" [size]="24" />
+      <h2>Não foi possível carregar</h2>
       <p>{{ loadError() }}</p>
       <button class="btn btn-outline-primary" (click)="retry()">Tentar novamente</button>
     </div>
   } @else {
-    <label class="search-control">
-      <i class="bi bi-search"></i><span class="visually-hidden">Buscar fornecedor</span>
-      <input
-        type="search"
-        placeholder="Buscar por nome"
-        [value]="searchTerm()"
-        (input)="updateSearch($event)"
-      />
-    </label>
+    <section class="suppliers-toolbar management-surface" aria-label="Busca de fornecedores">
+      <div>
+        <span class="management-eyebrow">Cadastro</span>
+        <h2>Fornecedores cadastrados</h2>
+        <p>Localize uma empresa pelo nome para consultar ou atualizar o cadastro.</p>
+      </div>
 
-    <div class="suppliers-surface">
+      <label class="search-control">
+        <app-icon name="search" [size]="18" /><span class="visually-hidden">Buscar fornecedor</span>
+        <input
+          type="search"
+          placeholder="Buscar por nome"
+          [value]="searchTerm()"
+          (input)="updateSearch($event)"
+        />
+      </label>
+    </section>
+
+    <div class="suppliers-surface management-surface">
       @if (filteredSuppliers().length === 0) {
         <div class="page-state">
-          <i class="bi bi-buildings"></i>
+          @if (!searchTerm()) {
+            <app-mascot class="page-state-mascot" variant="07" size="medium" />
+          } @else {
+            <app-icon class="page-state-icon" name="search" [size]="24" />
+          }
           <h2>
             {{ searchTerm() ? 'Nenhum fornecedor encontrado' : 'Nenhum fornecedor cadastrado' }}
           </h2>
@@ -51,7 +66,7 @@
             }}
           </p>
           @if (!searchTerm()) {
-            <button class="btn btn-success" (click)="openCreate()">Adicionar fornecedor</button>
+            <button class="btn btn-primary" (click)="openCreate()">Adicionar fornecedor</button>
           }
         </div>
       } @else {
@@ -61,7 +76,7 @@
               <tr>
                 <th>Fornecedor</th>
                 <th>Cadastrado em</th>
-                <th><span class="visually-hidden">Acoes</span></th>
+                <th><span class="visually-hidden">Ações</span></th>
               </tr>
             </thead>
             <tbody>
@@ -79,7 +94,7 @@
                       aria-label="Editar fornecedor"
                       (click)="openEdit(supplier)"
                     >
-                      <i class="bi bi-pencil"></i>
+                      <app-icon name="pencil" [size]="18" />
                     </button>
                     <button
                       class="danger-action"
@@ -88,7 +103,7 @@
                       aria-label="Excluir fornecedor"
                       (click)="openDelete(supplier)"
                     >
-                      <i class="bi bi-trash3"></i>
+                      <app-icon name="trash" [size]="18" />
                     </button>
                   </td>
                 </tr>
@@ -120,12 +135,12 @@
 }
 
 @if (deletingSupplier(); as supplier) {
-  <button class="dialog-backdrop" aria-label="Cancelar exclusao" (click)="closeDelete()"></button>
+  <button class="dialog-backdrop" aria-label="Cancelar exclusão" (click)="closeDelete()"></button>
   <section class="confirm-dialog" role="alertdialog" aria-modal="true">
-    <i class="bi bi-trash3"></i>
+    <app-icon name="trash" [size]="22" />
     <h2>Excluir fornecedor?</h2>
     <p>
-      O fornecedor <strong>{{ supplier.name }}</strong> sera excluido.
+      O fornecedor <strong>{{ supplier.name }}</strong> será excluído.
     </p>
     @if (deleteError()) {
       <p class="dialog-error">{{ deleteError() }}</p>

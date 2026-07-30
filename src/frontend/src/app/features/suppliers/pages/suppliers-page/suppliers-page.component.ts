@@ -11,6 +11,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ModalDialogComponent } from '../../../../shared/ui/modal-dialog/modal-dialog.component';
+import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
+import { MascotComponent } from '../../../../shared/ui/mascot/mascot.component';
 
 import {
   SupplierFormComponent,
@@ -22,7 +24,7 @@ import { Supplier } from '../../models/supplier.model';
 
 @Component({
   selector: 'app-suppliers-page',
-  imports: [SupplierFormComponent, ModalDialogComponent],
+  imports: [SupplierFormComponent, ModalDialogComponent, AppIconComponent, MascotComponent],
   templateUrl: './suppliers-page.component.html',
   styleUrl: './suppliers-page.component.scss',
 })
@@ -112,8 +114,8 @@ export class SuppliersPageComponent implements OnInit {
         this.isSaving.set(false);
         this.formError.set(
           error.status === 409
-            ? 'Ja existe um fornecedor com esse nome.'
-            : 'Nao foi possivel salvar o fornecedor agora.',
+            ? 'Já existe um fornecedor com esse nome.'
+            : 'Não foi possível salvar o fornecedor agora.',
         );
       },
     });
@@ -143,7 +145,7 @@ export class SuppliersPageComponent implements OnInit {
         next: () => {
           this.isDeleting.set(false);
           this.deletingSupplier.set(null);
-          this.feedback.set('Fornecedor excluido com sucesso.');
+          this.feedback.set('Fornecedor excluído com sucesso.');
           this.loadSuppliers(false);
         },
         error: (error: HttpErrorResponse) => {
@@ -151,7 +153,7 @@ export class SuppliersPageComponent implements OnInit {
           this.deleteError.set(
             error.status === 409
               ? 'Este fornecedor possui preços cadastrados e não pode ser excluído.'
-              : 'Nao foi possivel excluir o fornecedor agora.',
+              : 'Não foi possível excluir o fornecedor agora.',
           );
         },
       });
@@ -174,7 +176,7 @@ export class SuppliersPageComponent implements OnInit {
         },
         error: () => {
           this.isLoading.set(false);
-          this.loadError.set('Nao foi possivel carregar os fornecedores agora.');
+          this.loadError.set('Não foi possível carregar os fornecedores agora.');
         },
       });
   }

@@ -11,6 +11,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ModalDialogComponent } from '../../../../shared/ui/modal-dialog/modal-dialog.component';
+import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
+import { MascotComponent } from '../../../../shared/ui/mascot/mascot.component';
 
 import {
   ShoppingListFormComponent,
@@ -22,18 +24,9 @@ import { filterShoppingLists } from '../../models/shopping-list.mapper';
 import {
   ShoppingList,
   ShoppingListPeriodFilter,
-  ShoppingListsSummary,
   ShoppingListStatus,
   ShoppingListStatusFilter,
 } from '../../models/shopping-list.model';
-
-const EMPTY_SUMMARY: ShoppingListsSummary = {
-  totalLists: 0,
-  draftLists: 0,
-  awaitingQuotesLists: 0,
-  readyForEqualizationLists: 0,
-  totalEstimated: 0,
-};
 
 const STATUS_LABELS: Record<ShoppingListStatus, string> = {
   draft: 'Adicionando itens',
@@ -54,7 +47,7 @@ const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
 
 @Component({
   selector: 'app-shopping-lists-page',
-  imports: [ShoppingListFormComponent, ModalDialogComponent],
+  imports: [ShoppingListFormComponent, ModalDialogComponent, AppIconComponent, MascotComponent],
   templateUrl: './shopping-lists-page.component.html',
   styleUrl: './shopping-lists-page.component.scss',
 })
@@ -65,7 +58,6 @@ export class ShoppingListsPageComponent implements OnInit {
   private readonly router = inject(Router);
 
   protected readonly lists = signal<readonly ShoppingList[]>([]);
-  protected readonly summary = signal<ShoppingListsSummary>(EMPTY_SUMMARY);
   protected readonly isLoading = signal(true);
   protected readonly loadError = signal<string | null>(null);
   protected readonly feedbackMessage = signal<string | null>(null);
@@ -274,7 +266,6 @@ export class ShoppingListsPageComponent implements OnInit {
       .subscribe({
         next: (overview) => {
           this.lists.set(overview.lists);
-          this.summary.set(overview.summary);
           this.isLoading.set(false);
         },
         error: () => {

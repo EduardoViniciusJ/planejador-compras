@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
 import { ShoppingListRequestDto } from '../../dtos/shopping-list.dto';
 import { ShoppingList } from '../../models/shopping-list.model';
 
@@ -14,7 +15,7 @@ export type ShoppingListFormMode = 'create' | 'edit';
 
 @Component({
   selector: 'app-shopping-list-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AppIconComponent],
   templateUrl: './shopping-list-form.component.html',
   styleUrl: './shopping-list-form.component.scss',
 })

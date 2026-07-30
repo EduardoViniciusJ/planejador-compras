@@ -31,13 +31,7 @@
     >
       Cancelar
     </button>
-    <button
-      type="submit"
-      class="btn"
-      [class.btn-success]="mode() === 'create'"
-      [class.btn-warning]="mode() === 'edit'"
-      [disabled]="submitting()"
-    >
+    <button type="submit" class="btn btn-primary" [disabled]="submitting()">
       {{
         submitting() ? 'Salvando...' : mode() === 'create' ? 'Adicionar preço' : 'Salvar alteracoes'
       }}

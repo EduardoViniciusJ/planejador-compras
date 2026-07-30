@@ -51,7 +51,7 @@
 
   @if (serverError()) {
     <div class="form-error" role="alert">
-      <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+      <app-icon name="alert-circle" [size]="18" />
       {{ serverError() }}
     </div>
   }
@@ -67,16 +67,14 @@
     </button>
     <button
       type="submit"
-      class="btn"
-      [class.btn-success]="mode() === 'create'"
-      [class.btn-warning]="mode() === 'edit'"
+      class="btn btn-primary"
       [disabled]="submitting()"
       data-testid="shopping-list-form-submit"
     >
       @if (submitting()) {
         <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
       } @else {
-        <i class="bi bi-check-lg" aria-hidden="true"></i>
+        <app-icon name="check" [size]="18" />
       }
       {{ submitting() ? 'Salvando...' : mode() === 'create' ? 'Criar lista' : 'Salvar alteracoes' }}
     </button>

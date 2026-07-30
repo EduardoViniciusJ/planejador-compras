@@ -1,6 +1,7 @@
 import { Component, DestroyRef, computed, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
 import { ShoppingListReportService } from '../../data-access/shopping-list-report.service';
 import { ShoppingListReportFormat } from '../../models/shopping-list-report-file.model';
 import { ReportFileDownloadService } from '../../services/report-file-download.service';
@@ -9,6 +10,7 @@ let nextExportComponentId = 0;
 
 @Component({
   selector: 'app-shopping-list-report-export',
+  imports: [AppIconComponent],
   templateUrl: './shopping-list-report-export.component.html',
   styleUrl: './shopping-list-report-export.component.scss',
 })
@@ -65,9 +67,7 @@ export class ShoppingListReportExportComponent {
       next: (file) => {
         try {
           this.reportFileDownloadService.download(file);
-          this.downloadFeedback.set(
-            `${format === 'pdf' ? 'PDF' : 'Excel'} baixado com sucesso.`,
-          );
+          this.downloadFeedback.set(`${format === 'pdf' ? 'PDF' : 'Excel'} baixado com sucesso.`);
         } catch {
           this.downloadError.set(
             `Não foi possível baixar o arquivo ${format === 'pdf' ? 'PDF' : 'Excel'}. Tente novamente.`,

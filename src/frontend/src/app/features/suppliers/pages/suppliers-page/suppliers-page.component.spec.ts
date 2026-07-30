@@ -34,7 +34,7 @@ describe('SuppliersPageComponent', () => {
   });
 
   it('should create a supplier', () => {
-    click('.page-heading .btn-success');
+    click('.management-page-header .btn-primary');
     const input = host().querySelector<HTMLInputElement>('input[formControlName="name"]')!;
     input.value = 'Novo fornecedor';
     input.dispatchEvent(new Event('input'));
