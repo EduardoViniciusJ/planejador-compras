@@ -25,7 +25,7 @@ describe('SidebarComponent', () => {
     await fixture.whenStable();
 
     const host = fixture.nativeElement as HTMLElement;
-    const link = host.querySelector('.sidebar-nav-link') as HTMLAnchorElement | null;
+    const link = host.querySelector('.sidebar-nav-link[href="/app"]') as HTMLAnchorElement | null;
 
     expect(link?.getAttribute('href')).toBe('/app');
     expect(link?.classList.contains('sidebar-nav-link-active')).toBe(true);
@@ -51,8 +51,11 @@ describe('SidebarComponent', () => {
     ];
 
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      '/app/dashboard',
       '/app',
       '/app/price-map',
+      '/app/purchase-orders',
+      '/app/equalizations',
       '/app/suppliers',
     ]);
   });

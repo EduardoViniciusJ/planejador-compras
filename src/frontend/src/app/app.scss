@@ -76,7 +76,7 @@
   background: color-mix(in srgb, var(--bs-primary) 10%, transparent);
 }
 
-.theme-toggle i {
+.theme-toggle app-icon {
   line-height: 1;
 }
 
@@ -165,8 +165,17 @@
 .hero-overlay {
   z-index: 1;
   background:
-    linear-gradient(90deg, var(--app-page-bg) 0%, color-mix(in srgb, var(--app-page-bg) 92%, transparent) 35%, transparent 70%),
-    linear-gradient(180deg, color-mix(in srgb, var(--app-page-bg) 92%, transparent), color-mix(in srgb, var(--app-surface-alt-bg) 82%, transparent));
+    linear-gradient(
+      90deg,
+      var(--app-page-bg) 0%,
+      color-mix(in srgb, var(--app-page-bg) 92%, transparent) 35%,
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--app-page-bg) 92%, transparent),
+      color-mix(in srgb, var(--app-surface-alt-bg) 82%, transparent)
+    );
 }
 
 [data-bs-theme='dark'] .hero-image {
@@ -176,8 +185,17 @@
 
 [data-bs-theme='dark'] .hero-overlay {
   background:
-    linear-gradient(90deg, var(--app-page-bg) 0%, color-mix(in srgb, var(--app-page-bg) 90%, transparent) 44%, transparent 78%),
-    linear-gradient(180deg, color-mix(in srgb, var(--app-page-bg) 96%, transparent), color-mix(in srgb, var(--app-surface-alt-bg) 88%, transparent));
+    linear-gradient(
+      90deg,
+      var(--app-page-bg) 0%,
+      color-mix(in srgb, var(--app-page-bg) 90%, transparent) 44%,
+      transparent 78%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--app-page-bg) 96%, transparent),
+      color-mix(in srgb, var(--app-surface-alt-bg) 88%, transparent)
+    );
 }
 
 .hero-content {
@@ -207,7 +225,11 @@
   border: 1px solid color-mix(in srgb, var(--bs-primary) 18%, var(--app-border-color));
   border-radius: var(--app-radius-xl);
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--bs-primary) 13%, transparent), transparent 38%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--bs-primary) 13%, transparent),
+      transparent 38%
+    ),
     color-mix(in srgb, var(--app-surface-elevated-bg) 82%, var(--app-page-bg));
   box-shadow:
     0 24px 70px color-mix(in srgb, var(--app-brand-ink) 14%, transparent),
@@ -240,8 +262,15 @@
   inset: 0;
   border-radius: inherit;
   background-image:
-    linear-gradient(color-mix(in srgb, var(--app-border-color) 50%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--app-border-color) 50%, transparent) 1px, transparent 1px);
+    linear-gradient(
+      color-mix(in srgb, var(--app-border-color) 50%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--app-border-color) 50%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 3rem 3rem;
   opacity: 0.34;
   pointer-events: none;
@@ -280,8 +309,8 @@
   color: var(--app-text-muted);
 }
 
-.combo-panel-header i,
-.combo-panel-footer i {
+.combo-panel-header app-icon,
+.combo-panel-footer app-icon {
   color: var(--bs-primary);
 }
 
@@ -354,7 +383,7 @@
   font-weight: 900;
 }
 
-.combo-flow-step i {
+.combo-flow-step app-icon {
   color: var(--bs-primary);
   font-size: 1.1rem;
 }
@@ -377,7 +406,12 @@
   min-width: 2rem;
   height: 2px;
   border-radius: var(--app-radius-pill);
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--bs-primary) 70%, transparent), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--bs-primary) 70%, transparent),
+    transparent
+  );
   animation: comboLinePulse 4.8s ease-in-out infinite;
 }
 
@@ -489,7 +523,7 @@
   animation: comboChipFloat 5.4s ease-in-out infinite;
 }
 
-.combo-floating-chip i {
+.combo-floating-chip app-icon {
   color: var(--bs-primary);
 }
 
@@ -505,7 +539,7 @@
 }
 
 .hero-title {
-  max-width: 12ch;
+  max-width: 14ch;
   font-size: 3.75rem;
   line-height: 1;
   font-weight: 900;
@@ -552,11 +586,8 @@
   font-size: 0.95rem;
 }
 
-.google-logo .fa-google {
-  color: transparent;
-  background: conic-gradient(from -35deg, #4285f4 0 28%, #34a853 0 47%, #fbbc05 0 68%, #ea4335 0 86%, #4285f4 0);
-  background-clip: text;
-  -webkit-background-clip: text;
+.google-logo app-icon {
+  color: #4285f4;
 }
 
 .hero-secondary-link {
@@ -702,7 +733,7 @@
   color: var(--bs-primary);
 }
 
-.process-card-top i {
+.process-card-top app-icon {
   color: var(--bs-primary);
   font-size: 1.55rem;
 }
@@ -850,7 +881,7 @@
   color: var(--bs-primary);
 }
 
-.footer-column i {
+.footer-column app-icon {
   color: var(--bs-primary);
 }
 
@@ -985,8 +1016,17 @@
 
   .hero-overlay {
     background:
-      linear-gradient(90deg, var(--app-page-bg) 0%, color-mix(in srgb, var(--app-page-bg) 92%, transparent) 62%, transparent),
-      linear-gradient(180deg, color-mix(in srgb, var(--app-page-bg) 94%, transparent), color-mix(in srgb, var(--app-surface-alt-bg) 90%, transparent));
+      linear-gradient(
+        90deg,
+        var(--app-page-bg) 0%,
+        color-mix(in srgb, var(--app-page-bg) 92%, transparent) 62%,
+        transparent
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--app-page-bg) 94%, transparent),
+        color-mix(in srgb, var(--app-surface-alt-bg) 90%, transparent)
+      );
   }
 
   .hero-content {
@@ -1002,7 +1042,7 @@
   }
 
   .hero-title {
-    max-width: 13ch;
+    max-width: 14ch;
     font-size: 3rem;
   }
 
@@ -1101,8 +1141,8 @@
     font-size: 0.66rem;
   }
 
-  .combo-flow-step i {
-    font-size: 0.95rem;
+  .combo-flow-step app-icon {
+    transform: scale(0.9);
   }
 
   .combo-flow-step strong {

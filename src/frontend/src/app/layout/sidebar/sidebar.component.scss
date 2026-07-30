@@ -44,6 +44,29 @@
   object-fit: contain;
 }
 
+.sidebar-brand-copy {
+  min-width: 0;
+  display: grid;
+  gap: 0.05rem;
+  line-height: 1.1;
+}
+
+.sidebar-brand-copy strong {
+  overflow: hidden;
+  color: var(--app-text-color);
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+}
+
+.sidebar-brand-copy small {
+  overflow: hidden;
+  color: var(--app-text-soft);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+}
+
 .sidebar-collapse-button {
   width: var(--app-control-height-sm);
   height: var(--app-control-height-sm);
@@ -89,11 +112,9 @@
     color var(--app-transition-fast);
 }
 
-.sidebar-nav-link i {
+.sidebar-nav-link app-icon {
   width: 1.2rem;
   flex: 0 0 1.2rem;
-  font-size: 1rem;
-  text-align: center;
 }
 
 .sidebar-nav-link:hover {
@@ -102,8 +123,18 @@
 }
 
 .sidebar-nav-link-active {
-  background: color-mix(in srgb, var(--bs-primary) 16%, var(--app-surface-bg));
-  color: var(--bs-primary);
+  position: relative;
+  background: color-mix(in srgb, var(--app-brand-accent) 18%, var(--app-surface-bg));
+  color: var(--app-text-color);
+}
+
+.sidebar-nav-link-active::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--app-brand-accent);
+  content: '';
 }
 
 .sidebar-footer {
@@ -139,11 +170,9 @@
   color: var(--app-text-color);
 }
 
-.sidebar-utility-button i {
+.sidebar-utility-button app-icon {
   width: 1.2rem;
   flex: 0 0 1.2rem;
-  font-size: 1rem;
-  text-align: center;
 }
 
 .sidebar-utility-button > span {
@@ -197,6 +226,7 @@
   font-size: 0.8rem;
 }
 
+.profile-menu-link,
 .profile-menu-logout {
   min-height: var(--app-control-height-sm);
   display: inline-flex;
@@ -208,6 +238,13 @@
   background: transparent;
   color: var(--app-text-color);
   font-weight: 600;
+  text-decoration: none;
+}
+
+.profile-menu-link:hover {
+  border-color: color-mix(in srgb, var(--app-brand-accent) 48%, var(--app-border-color));
+  background: var(--app-brand-soft);
+  color: var(--app-text-color);
 }
 
 .profile-menu-logout:hover:not(:disabled) {

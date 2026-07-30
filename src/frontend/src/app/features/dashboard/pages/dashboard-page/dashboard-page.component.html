@@ -1,0 +1,106 @@
+<section class="management-page dashboard-page">
+  <header class="management-page-header">
+    <div class="management-page-heading">
+      <span class="management-eyebrow">
+        <app-icon name="dashboard" [size]="17" />
+        Visão gerencial
+      </span>
+      <h1>Dashboard de compras</h1>
+      <p>Acompanhe custos, decisões e pendências da operação em um único lugar.</p>
+    </div>
+    <div class="management-actions">
+      <a class="btn btn-outline-secondary" routerLink="/app/equalizations">
+        <app-icon name="history" [size]="18" />
+        Ver equalizações
+      </a>
+      <a class="btn btn-primary" routerLink="/app/purchase-orders">
+        <app-icon name="file-invoice" [size]="18" />
+        Pedidos de compra
+      </a>
+    </div>
+  </header>
+
+  <aside class="dashboard-demo-notice" role="note">
+    <app-icon name="info-circle" [size]="18" />
+    <span>Indicadores demonstrativos para visualizar a futura experiência gerencial.</span>
+  </aside>
+
+  <div class="management-kpi-grid" aria-label="Indicadores de compras">
+    @for (metric of metrics; track metric.label) {
+      <article class="management-kpi" [style.--kpi-accent]="metric.color">
+        <div class="management-kpi-copy">
+          <span class="management-kpi-label">{{ metric.label }}</span>
+          <strong>{{ metric.value }}</strong>
+          <small>{{ metric.detail }}</small>
+        </div>
+        <span class="management-kpi-icon">
+          <app-icon [name]="metric.icon" [size]="22" />
+        </span>
+      </article>
+    }
+  </div>
+
+  <div class="dashboard-grid">
+    <section class="management-surface spending-surface">
+      <header class="management-surface-header">
+        <div>
+          <h2>Distribuição de gastos</h2>
+          <p>Estimativa das compras em andamento por categoria</p>
+        </div>
+        <span class="period-chip">Julho de 2026</span>
+      </header>
+
+      <div class="category-chart">
+        @for (category of categorySpend; track category.label) {
+          <div class="category-row">
+            <div class="category-label">
+              <span>{{ category.label }}</span>
+              <strong>{{ category.amount }}</strong>
+            </div>
+            <div class="category-track" aria-hidden="true">
+              <span [style.width.%]="category.value"></span>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <aside class="management-surface decision-card">
+      <div class="decision-copy">
+        <span class="management-eyebrow">Próxima decisão</span>
+        <h2>3 listas prontas para equalização</h2>
+        <p>Compare as propostas recebidas antes de liberar os próximos pedidos.</p>
+        <a class="btn btn-primary" routerLink="/app/equalizations">
+          Revisar decisões
+          <app-icon name="arrow-right" [size]="18" />
+        </a>
+      </div>
+      <app-mascot variant="06" size="medium" />
+    </aside>
+  </div>
+
+  <section class="management-surface activity-surface">
+    <header class="management-surface-header">
+      <div>
+        <h2>Atividade recente</h2>
+        <p>Últimas movimentações da equipe de compras</p>
+      </div>
+      <a routerLink="/app" class="surface-link">Abrir listas</a>
+    </header>
+
+    <div class="activity-list">
+      @for (activity of activities; track activity.title) {
+        <article class="activity-item">
+          <span class="activity-icon" [attr.data-tone]="activity.tone">
+            <app-icon [name]="activity.icon" [size]="20" />
+          </span>
+          <div>
+            <strong>{{ activity.title }}</strong>
+            <span>{{ activity.detail }}</span>
+          </div>
+          <time>{{ activity.time }}</time>
+        </article>
+      }
+    </div>
+  </section>
+</section>

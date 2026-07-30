@@ -1,0 +1,48 @@
+<section class="legal-page" aria-labelledby="legal-page-title">
+  <header class="legal-hero">
+    <div class="legal-hero-copy">
+      <span class="legal-eyebrow">{{ document.eyebrow }}</span>
+      <h1 id="legal-page-title">{{ document.title }}</h1>
+      <p>{{ document.introduction }}</p>
+      <span class="legal-update">Última atualização: {{ document.updatedAt }}</span>
+    </div>
+
+    <div class="legal-mascot-wrap" aria-hidden="true">
+      <span class="legal-mascot-glow"></span>
+      <app-mascot class="legal-mascot" variant="principal" size="large" />
+    </div>
+  </header>
+
+  <div class="legal-content">
+    <p class="legal-highlight">{{ document.highlight }}</p>
+
+    <article class="legal-document">
+      @for (section of document.sections; track section.id) {
+        <section class="legal-section" [id]="section.id">
+          <h2>{{ section.title }}</h2>
+
+          @for (paragraph of section.paragraphs; track paragraph) {
+            <p>{{ paragraph }}</p>
+          }
+
+          @if (section.bullets?.length) {
+            <ul>
+              @for (bullet of section.bullets; track bullet) {
+                <li>{{ bullet }}</li>
+              }
+            </ul>
+          }
+        </section>
+      }
+    </article>
+
+    <nav class="legal-related" aria-label="Outros documentos legais">
+      <span>Veja também</span>
+      <div>
+        @for (related of relatedDocuments; track related.href) {
+          <a [href]="related.href">{{ related.label }}</a>
+        }
+      </div>
+    </nav>
+  </div>
+</section>

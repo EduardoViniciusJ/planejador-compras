@@ -19,6 +19,10 @@
         height="32"
         aria-hidden="true"
       />
+      <span class="sidebar-brand-copy">
+        <strong>Planejador</strong>
+        <small>Compras profissionais</small>
+      </span>
     </a>
     <button
       type="button"
@@ -29,7 +33,7 @@
       [attr.title]="collapsed() ? 'Expandir menu lateral' : 'Recolher menu lateral'"
       (click)="collapseRequested.emit()"
     >
-      <i class="bi bi-list" aria-hidden="true"></i>
+      <app-icon name="menu-2" [size]="20" />
     </button>
   </div>
 
@@ -43,7 +47,7 @@
         [attr.title]="collapsed() ? item.label : null"
         (click)="notifyNavigation()"
       >
-        <i class="bi" [class]="'bi ' + item.icon" aria-hidden="true"></i>
+        <app-icon [name]="item.icon" [size]="20" />
         <span>{{ item.label }}</span>
       </a>
     }
@@ -58,12 +62,7 @@
       [attr.title]="collapsed() ? themeButtonLabel() : null"
       (click)="themeRequested.emit()"
     >
-      <i
-        class="bi"
-        [class.bi-moon-stars-fill]="currentTheme() === 'light'"
-        [class.bi-brightness-high-fill]="currentTheme() === 'dark'"
-        aria-hidden="true"
-      ></i>
+      <app-icon [name]="currentTheme() === 'light' ? 'moon-stars' : 'sun'" [size]="20" />
       <span>{{ themeButtonLabel() }}</span>
     </button>
 
@@ -77,7 +76,7 @@
         [attr.title]="collapsed() ? 'Perfil' : null"
         (click)="profileRequested.emit()"
       >
-        <i class="bi bi-person-circle" aria-hidden="true"></i>
+        <app-icon name="user-circle" [size]="20" />
         <span>{{ profileLabel() }}</span>
       </button>
 
@@ -104,7 +103,7 @@
             [disabled]="isLoggingOut()"
             (click)="logoutRequested.emit()"
           >
-            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+            <app-icon name="logout" [size]="19" />
             {{ isLoggingOut() ? 'Saindo...' : 'Sair' }}
           </button>
         </section>

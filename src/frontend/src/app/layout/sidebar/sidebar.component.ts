@@ -11,6 +11,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { CurrentUser } from '../../core/auth/models/current-user.model';
 import { AppTheme } from '../../core/theme/theme.service';
+import { AppIconComponent } from '../../shared/ui/app-icon/app-icon.component';
 
 interface SidebarNavigationItem {
   readonly icon: string;
@@ -20,14 +21,27 @@ interface SidebarNavigationItem {
 }
 
 const PRIMARY_NAVIGATION: readonly SidebarNavigationItem[] = [
-  { icon: 'bi-card-checklist', label: 'Listas de compras', route: '/app', exact: true },
-  { icon: 'bi-table', label: 'Mapa de preços', route: '/app/price-map', exact: false },
-  { icon: 'bi-buildings', label: 'Fornecedores', route: '/app/suppliers', exact: false },
+  { icon: 'dashboard', label: 'Dashboard', route: '/app/dashboard', exact: false },
+  { icon: 'checklist', label: 'Listas de compras', route: '/app', exact: true },
+  { icon: 'table', label: 'Mapa de preços', route: '/app/price-map', exact: false },
+  {
+    icon: 'file-invoice',
+    label: 'Pedidos de compra',
+    route: '/app/purchase-orders',
+    exact: false,
+  },
+  {
+    icon: 'scale',
+    label: 'Equalizações',
+    route: '/app/equalizations',
+    exact: false,
+  },
+  { icon: 'buildings', label: 'Fornecedores', route: '/app/suppliers', exact: false },
 ];
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, AppIconComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
