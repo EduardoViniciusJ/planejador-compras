@@ -18,6 +18,35 @@
   align-items: end;
   gap: 1rem;
 }
+
+.equalization-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.save-equalization-button {
+  position: relative;
+  white-space: nowrap;
+}
+
+.hover-mascot {
+  position: absolute;
+  right: 0.2rem;
+  bottom: calc(100% - 0.35rem);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.35rem);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.mascot-hover-action:hover .hover-mascot,
+.mascot-hover-action:focus-visible .hover-mascot {
+  opacity: 1;
+  transform: translateY(0);
+}
 .back-link {
   display: flex;
   gap: 0.4rem;
@@ -66,11 +95,27 @@
   color: var(--app-success-strong);
 }
 .coverage-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
   margin: 0;
   padding: 0.75rem 0.9rem;
   border: 1px solid color-mix(in srgb, var(--app-warning) 38%, var(--app-border-color));
   border-radius: var(--app-radius-sm);
   background: color-mix(in srgb, var(--app-warning) 9%, var(--app-surface-bg));
+}
+
+.save-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--app-danger) 38%, var(--app-border-color));
+  border-radius: var(--app-radius-sm);
+  background: color-mix(in srgb, var(--app-danger) 7%, var(--app-surface-bg));
+  color: var(--app-danger);
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 .table-surface {
   border: 1px solid var(--app-border-color);
@@ -142,6 +187,48 @@ td:first-child {
   margin-right: 0.35rem;
   background: color-mix(in srgb, var(--app-success) 35%, var(--app-surface-bg));
 }
+
+.save-decision {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-surface-bg);
+
+  h2,
+  p {
+    margin: 0;
+  }
+
+  h2 {
+    margin-top: 0.2rem;
+    color: var(--app-text-primary);
+    font-size: 1.2rem;
+  }
+
+  p {
+    max-width: 50rem;
+    margin-top: 0.35rem;
+    color: var(--app-text-muted);
+    font-size: 0.82rem;
+  }
+
+  .btn {
+    justify-content: center;
+    white-space: nowrap;
+  }
+}
+
+.decision-eyebrow {
+  color: var(--app-text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 .page-state {
   min-height: 20rem;
   display: grid;
@@ -159,9 +246,12 @@ td:first-child {
 .page-state p {
   color: var(--app-text-muted);
 }
-.page-state > i {
-  font-size: 2rem;
+.page-state > app-icon {
   color: var(--app-text-soft);
+}
+
+.page-state-mascot {
+  margin-bottom: 0.15rem;
 }
 @media (max-width: 1050px) {
   .matrix-page header {
@@ -171,6 +261,10 @@ td:first-child {
   .heading-section {
     justify-content: space-between;
   }
+  .equalization-header-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
   .metrics {
     width: 100%;
   }
@@ -179,6 +273,9 @@ td:first-child {
   .heading-section {
     align-items: stretch;
     flex-direction: column;
+  }
+  .save-decision {
+    grid-template-columns: 1fr;
   }
   .metrics {
     grid-template-columns: 1fr;

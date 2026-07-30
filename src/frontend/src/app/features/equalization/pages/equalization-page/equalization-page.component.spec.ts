@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { Observable, Subject, of, throwError } from 'rxjs';
 
+import { SavedEqualizationService } from '../../../equalization-history/data-access/saved-equalization.service';
+import { SavedEqualizationDetailDto } from '../../../equalization-history/dtos/saved-equalization.dto';
 import { ShoppingListReportService } from '../../../reports/data-access/shopping-list-report.service';
 import { ShoppingListReportFile } from '../../../reports/models/shopping-list-report-file.model';
 import { ReportFileDownloadService } from '../../../reports/services/report-file-download.service';
@@ -25,12 +27,37 @@ const populatedMatrix: Equalization = {
       unit: 'box',
       lowestSupplierName: 'A',
       cells: new Map([
-        ['A', { supplierName: 'A', unitPrice: 10, totalPrice: 20, isLowest: true }],
+        [
+          'A',
+          {
+            supplierId: 'supplier-a',
+            supplierName: 'A',
+            unitPrice: 10,
+            totalPrice: 20,
+            isLowest: true,
+          },
+        ],
       ]),
     },
   ],
   bestChoiceTotal: 20,
   supplierTotals: new Map([['A', 20]]),
+};
+
+const savedEqualization: SavedEqualizationDetailDto = {
+  id: 'equalization-1',
+  code: 'EQ-2026-ABC12345',
+  shoppingListId: 'list-1',
+  shoppingListName: 'Office',
+  createdByName: 'Marina',
+  createdByEmail: 'marina@example.com',
+  bestChoiceTotal: 20,
+  bestCompleteSupplierName: 'A',
+  bestCompleteSupplierTotal: 20,
+  estimatedEconomy: 0,
+  createdAtUtc: '2026-07-30T15:00:00Z',
+  suppliers: ['A'],
+  items: [],
 };
 
 interface PageTestOptions {
@@ -48,6 +75,10 @@ async function createPage(options: PageTestOptions = {}): Promise<{
   fileDownloadService: {
     download: ReturnType<typeof vi.fn>;
   };
+  savedEqualizationService: {
+    save: ReturnType<typeof vi.fn>;
+  };
+  router: Router;
 }> {
   const defaultFile: ShoppingListReportFile = {
     content: new Blob(['report']),
@@ -58,6 +89,9 @@ async function createPage(options: PageTestOptions = {}): Promise<{
     downloadExcel: vi.fn(options.downloadExcel ?? (() => of(defaultFile))),
   };
   const fileDownloadService = { download: vi.fn() };
+  const savedEqualizationService = {
+    save: vi.fn(() => of(savedEqualization)),
+  };
 
   await TestBed.configureTestingModule({
     imports: [EqualizationPageComponent],
@@ -78,13 +112,20 @@ async function createPage(options: PageTestOptions = {}): Promise<{
       },
       { provide: ShoppingListReportService, useValue: reportService },
       { provide: ReportFileDownloadService, useValue: fileDownloadService },
+      { provide: SavedEqualizationService, useValue: savedEqualizationService },
     ],
   }).compileComponents();
 
   const fixture = TestBed.createComponent(EqualizationPageComponent);
   fixture.detectChanges();
 
-  return { fixture, reportService, fileDownloadService };
+  return {
+    fixture,
+    reportService,
+    fileDownloadService,
+    savedEqualizationService,
+    router: TestBed.inject(Router),
+  };
 }
 
 function openExportMenu(fixture: ComponentFixture<EqualizationPageComponent>): void {
@@ -116,6 +157,22 @@ describe('EqualizationPageComponent', () => {
     expect(host.textContent).toContain('Paper');
     expect(host.querySelector('.quote-unit-price')?.textContent).toContain('R$');
     expect(host.querySelector('.quote-total-price')?.textContent).toContain('Total:');
+    expect(host.textContent).toContain('Concluir e salvar equalização');
+    expect(host.textContent).toContain('registro imutável');
+  });
+
+  it('should save a new immutable version and open its detail', async () => {
+    const { fixture, savedEqualizationService, router } = await createPage();
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    const host = fixture.nativeElement as HTMLElement;
+
+    findButtonByText(host, 'Concluir e salvar equalização').click();
+    fixture.detectChanges();
+
+    expect(savedEqualizationService.save).toHaveBeenCalledWith('list-1', expect.any(String));
+    expect(navigate).toHaveBeenCalledWith(['/app/equalizations', 'equalization-1'], {
+      state: { equalizationCreated: true },
+    });
   });
 
   it('should render the insufficient quotes state', async () => {

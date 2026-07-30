@@ -1,4 +1,5 @@
 export interface EqualizationQuoteDto {
+  readonly supplierId: string;
   readonly supplierName: string;
   readonly unitPrice: number;
   readonly totalPrice: number;

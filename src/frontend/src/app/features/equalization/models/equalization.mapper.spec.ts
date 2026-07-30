@@ -12,8 +12,8 @@ describe('equalization mappers', () => {
           quantity: 2,
           unit: 'box',
           quotes: [
-            { supplierName: 'A', unitPrice: 10, totalPrice: 20 },
-            { supplierName: 'B', unitPrice: 8, totalPrice: 16 },
+            { supplierId: 'supplier-a', supplierName: 'A', unitPrice: 10, totalPrice: 20 },
+            { supplierId: 'supplier-b', supplierName: 'B', unitPrice: 8, totalPrice: 16 },
           ],
         },
       ],

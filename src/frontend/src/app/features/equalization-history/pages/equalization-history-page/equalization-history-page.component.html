@@ -1,0 +1,163 @@
+<section class="management-page equalization-history-page">
+  <header class="management-page-header">
+    <div class="management-page-heading">
+      <span class="management-eyebrow">Inteligência de compras</span>
+      <h1>Equalizações salvas</h1>
+      <p>Consulte comparações históricas sem alterar os preços registrados em cada decisão.</p>
+    </div>
+
+    <div class="management-actions">
+      <a class="btn btn-outline-secondary" routerLink="/app/purchase-orders">
+        <app-icon name="file-invoice" [size]="18" />
+        Ver pedidos
+      </a>
+      <a class="btn btn-primary mascot-hover-action" routerLink="/app/price-map">
+        <app-icon name="scale" [size]="18" />
+        Nova equalização
+      </a>
+    </div>
+  </header>
+
+  <section class="equalizations-toolbar management-surface" aria-label="Busca de equalizações">
+    <div>
+      <span class="management-eyebrow">Histórico imutável</span>
+      <h2>Equalizações concluídas</h2>
+      <p>Pesquise pelo número, lista, fornecedor ou responsável.</p>
+    </div>
+
+    <label class="equalization-search">
+      <app-icon name="search" [size]="18" />
+      <span class="visually-hidden">Buscar equalização</span>
+      <input
+        type="search"
+        placeholder="Buscar equalização"
+        autocomplete="off"
+        data-testid="equalization-search"
+        [value]="searchTerm()"
+        (input)="updateSearch($event)"
+      />
+    </label>
+  </section>
+
+  @if (isLoading()) {
+    <div class="equalizations-state" aria-label="Carregando equalizações">
+      <span class="spinner-border" aria-hidden="true"></span>
+      <p>Carregando equalizações...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="equalizations-state" role="alert">
+      <span class="state-icon"><app-icon name="alert-triangle" [size]="24" /></span>
+      <h2>Não foi possível carregar as equalizações</h2>
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn-outline-primary" (click)="retry()">
+        <app-icon name="refresh" [size]="18" />
+        Tentar novamente
+      </button>
+    </div>
+  } @else if (equalizations().length === 0) {
+    <div class="equalizations-state">
+      @if (searchTerm()) {
+        <span class="state-icon"><app-icon name="search" [size]="24" /></span>
+        <h2>Nenhuma equalização encontrada</h2>
+        <p>Revise os termos usados na pesquisa.</p>
+      } @else {
+        <app-mascot class="state-mascot" variant="06" size="medium" />
+        <h2>Nenhuma equalização salva</h2>
+        <p>Abra um mapa de preços, confira a prévia e conclua a equalização.</p>
+        <a class="btn btn-primary" routerLink="/app/price-map">
+          <app-icon name="scale" [size]="18" />
+          Abrir mapa de preços
+        </a>
+      }
+    </div>
+  } @else {
+    <div class="equalizations-grid">
+      @for (equalization of equalizations(); track equalization.id) {
+        <article class="equalization-card management-surface">
+          <header class="equalization-card-header">
+            <div>
+              <span class="equalization-code">{{ equalization.code }}</span>
+              <span class="equalization-date">
+                Salva em {{ formatDate(equalization.createdAtUtc) }}
+              </span>
+            </div>
+            <span class="immutable-badge">
+              <app-icon name="lock" [size]="14" />
+              Imutável
+            </span>
+          </header>
+
+          <div class="equalization-card-content">
+            <span class="management-eyebrow">Lista de origem</span>
+            <h3>{{ equalization.shoppingListName }}</h3>
+            <p>Responsável: {{ equalization.createdByName || equalization.createdByEmail }}</p>
+          </div>
+
+          <dl class="equalization-card-information">
+            <div>
+              <dt>Itens</dt>
+              <dd>{{ equalization.itemCount }}</dd>
+            </div>
+            <div>
+              <dt>Fornecedores</dt>
+              <dd>{{ equalization.supplierCount }}</dd>
+            </div>
+            <div>
+              <dt>Melhor resultado</dt>
+              <dd>{{ bestResult(equalization) }}</dd>
+            </div>
+          </dl>
+
+          <div class="equalization-values">
+            <div>
+              <span>Menores preços por item</span>
+              <strong>{{ formatCurrency(equalization.bestChoiceTotal) }}</strong>
+            </div>
+            <div>
+              <span>Melhor fornecedor completo</span>
+              <strong>{{ formatCurrency(equalization.bestCompleteSupplierTotal) }}</strong>
+            </div>
+            <div class="economy-value">
+              <span>Economia estimada</span>
+              <strong>{{ formatCurrency(equalization.estimatedEconomy) }}</strong>
+            </div>
+          </div>
+
+          <footer>
+            <a
+              class="btn btn-outline-secondary mascot-hover-action"
+              [routerLink]="['/app/equalizations', equalization.id]"
+            >
+              <app-icon name="eye" [size]="18" />
+              Ver equalização
+            </a>
+          </footer>
+        </article>
+      }
+    </div>
+
+    @if (totalPages() > 1) {
+      <nav class="equalizations-pagination" aria-label="Paginação das equalizações">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [disabled]="page() === 1"
+          (click)="goToPage(page() - 1)"
+        >
+          <app-icon name="arrow-left" [size]="17" />
+          Anterior
+        </button>
+        <span>Página {{ page() }} de {{ totalPages() }} · {{ totalCount() }} registros</span>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [disabled]="page() === totalPages()"
+          (click)="goToPage(page() + 1)"
+        >
+          Próxima
+          <app-icon name="arrow-right" [size]="17" />
+        </button>
+      </nav>
+    }
+  }
+</section>

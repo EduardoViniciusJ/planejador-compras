@@ -6,7 +6,7 @@
     </div>
   } @else if (loadError()) {
     <div class="page-state" role="alert">
-      <i class="bi bi-exclamation-triangle"></i>
+      <app-icon name="alert-triangle" [size]="24" />
       <h1>Nao foi possivel calcular</h1>
       <p>{{ loadError() }}</p>
       <button class="btn btn-outline-primary" (click)="retry()">Tentar novamente</button>
@@ -17,14 +17,31 @@
         <div class="heading-section">
           <div class="page-title">
             <a class="back-link" [routerLink]="['/app/price-map', list.id]"
-              ><i class="bi bi-arrow-left"></i> Voltar para o mapa de preços</a
+              ><app-icon name="arrow-left" [size]="18" /> Voltar para o mapa de preços</a
             ><span>Lista: {{ list.name }}</span>
             <h1>Comparação de preços</h1>
           </div>
-          <app-shopping-list-report-export
-            [shoppingListId]="listId"
-            accessibleLabel="Exportar relatório da equalização"
-          />
+          <div class="equalization-header-actions">
+            <app-shopping-list-report-export
+              [shoppingListId]="listId"
+              accessibleLabel="Exportar relatório da equalização"
+            />
+            <button
+              type="button"
+              class="btn btn-primary save-equalization-button mascot-hover-action"
+              [disabled]="isSaving() || matrix.rows.length === 0 || matrix.suppliers.length === 0"
+              (click)="saveEqualization()"
+            >
+              @if (isSaving()) {
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                Salvando...
+              } @else {
+                <app-icon name="lock" [size]="18" />
+                Concluir e salvar equalização
+                <app-mascot class="hover-mascot" variant="09" size="small" />
+              }
+            </button>
+          </div>
         </div>
         <div class="metrics">
           <div>
@@ -42,20 +59,26 @@
           </div>
         </div>
       </header>
+      @if (saveError()) {
+        <div class="save-error" role="alert">
+          <app-icon name="alert-triangle" [size]="18" />
+          {{ saveError() }}
+        </div>
+      }
       @if (matrix.rows.length === 0 || matrix.suppliers.length === 0) {
         <div class="page-state table-surface">
-          <i class="bi bi-grid-3x3-gap"></i>
+          <app-mascot class="page-state-mascot" variant="06" size="medium" />
           <h2>Ainda não há preços para comparar</h2>
           <p>Informe preços para os itens desta lista e volte para ver a comparação.</p>
-          <a class="btn btn-success" [routerLink]="['/app/price-map', list.id]"
+          <a class="btn btn-primary" [routerLink]="['/app/price-map', list.id]"
             >Voltar ao mapa de preços</a
           >
         </div>
       } @else {
         @if (!bestSupplier()?.hasCompleteCoverage) {
           <p class="coverage-notice">
-            <i class="bi bi-info-circle"></i> Nenhum fornecedor cotou todos os itens. O comparativo
-            ainda destaca a melhor escolha por item.
+            <app-icon name="info-circle" [size]="18" /> Nenhum fornecedor cotou todos os itens. O
+            comparativo ainda destaca a melhor escolha por item.
           </p>
         }
         <div class="table-surface table-scroll">
@@ -111,6 +134,32 @@
           </table>
         </div>
         <p class="legend"><span></span> Menor preco por item</p>
+
+        <section class="save-decision" aria-labelledby="save-equalization-title">
+          <app-mascot variant="06" size="medium" />
+          <div>
+            <span class="decision-eyebrow">Próxima etapa</span>
+            <h2 id="save-equalization-title">Registre esta decisão</h2>
+            <p>
+              Ao concluir, esta comparação será preservada como um registro imutável. Alterações
+              futuras em itens ou preços não modificarão esta versão.
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="isSaving()"
+            (click)="saveEqualization()"
+          >
+            @if (isSaving()) {
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              Salvando...
+            } @else {
+              <app-icon name="lock" [size]="18" />
+              Concluir e salvar equalização
+            }
+          </button>
+        </section>
       }
     }
   }

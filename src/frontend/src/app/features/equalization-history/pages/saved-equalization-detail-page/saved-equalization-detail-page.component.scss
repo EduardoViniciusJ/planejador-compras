@@ -1,0 +1,208 @@
+@use '../../../equalization/pages/equalization-page/equalization-page.component.scss';
+
+:host {
+  display: block;
+}
+
+.saved-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.saved-title-row h1 {
+  margin: 0;
+}
+
+.immutable-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: var(--app-radius-pill);
+  background: var(--app-success-soft);
+  color: var(--app-success-strong);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.page-title > p {
+  margin: 0.35rem 0 0;
+  color: var(--app-text-muted);
+  font-size: 0.75rem;
+}
+
+.saved-feedback,
+.snapshot-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--app-radius-xs);
+  font-size: 0.78rem;
+}
+
+.saved-feedback {
+  margin-top: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--app-success) 35%, var(--app-border));
+  background: var(--app-success-soft);
+  color: var(--app-success-strong);
+  font-weight: 700;
+}
+
+.snapshot-notice {
+  margin-bottom: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--app-info) 32%, var(--app-border));
+  background: var(--app-info-soft);
+  color: var(--app-text-secondary);
+}
+
+.purchase-order-decision {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-surface-bg);
+}
+
+.purchase-order-decision h2,
+.purchase-order-decision p {
+  margin: 0;
+}
+
+.purchase-order-decision h2 {
+  margin-top: 0.2rem;
+  color: var(--app-text-primary);
+  font-size: 1.2rem;
+}
+
+.purchase-order-decision p {
+  max-width: 50rem;
+  margin-top: 0.35rem;
+  color: var(--app-text-muted);
+  font-size: 0.82rem;
+}
+
+.decision-eyebrow {
+  color: var(--app-text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.supplier-order-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 0.75rem;
+}
+
+.supplier-order-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-surface-alt-bg);
+}
+
+.supplier-order-card .btn {
+  justify-content: center;
+}
+
+.supplier-order-card-best {
+  border-color: color-mix(in srgb, var(--app-success) 45%, var(--app-border));
+  background: color-mix(in srgb, var(--app-success) 7%, var(--app-surface-bg));
+}
+
+.supplier-order-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.supplier-order-heading strong,
+.supplier-order-heading span {
+  display: block;
+}
+
+.supplier-order-heading strong {
+  color: var(--app-text-primary);
+  font-size: 0.9rem;
+}
+
+.supplier-order-heading div > span {
+  margin-top: 0.2rem;
+  color: var(--app-text-muted);
+  font-size: 0.72rem;
+}
+
+.recommended-badge,
+.partial-badge {
+  flex: 0 0 auto;
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--app-radius-pill);
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.recommended-badge {
+  background: var(--app-success-soft);
+  color: var(--app-success-strong);
+}
+
+.partial-badge {
+  background: var(--app-warning-soft);
+  color: var(--app-warning-strong);
+}
+
+.supplier-order-total span,
+.supplier-order-total strong {
+  display: block;
+}
+
+.supplier-order-total span {
+  color: var(--app-text-muted);
+  font-size: 0.7rem;
+}
+
+.supplier-order-total strong {
+  margin-top: 0.2rem;
+  color: var(--app-text-primary);
+  font-size: 1.1rem;
+}
+
+.immutable-footer {
+  min-height: 5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-md);
+  background: color-mix(in srgb, var(--app-brand) 7%, var(--app-surface-bg));
+}
+
+.immutable-footer app-mascot {
+  align-self: flex-end;
+}
+
+.immutable-footer p {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.78rem;
+}
+
+.immutable-footer strong {
+  color: var(--app-text-primary);
+}
+
+@media (max-width: 720px) {
+  .heading-section > .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

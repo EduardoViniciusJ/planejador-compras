@@ -1,0 +1,187 @@
+<section class="matrix-page saved-equalization-page">
+  @if (isLoading()) {
+    <div class="page-state">
+      <span class="spinner-border" aria-hidden="true"></span>
+      <p>Carregando equalização...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="page-state" role="alert">
+      <app-icon name="alert-triangle" [size]="24" />
+      <h1>Não foi possível carregar</h1>
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn-outline-primary" (click)="retry()">
+        Tentar novamente
+      </button>
+    </div>
+  } @else if (detail(); as saved) {
+    @if (matrix(); as comparison) {
+      <header>
+        <div class="heading-section">
+          <div class="page-title">
+            <a class="back-link" routerLink="/app/equalizations">
+              <app-icon name="arrow-left" [size]="18" />
+              Voltar para equalizações
+            </a>
+            <span>{{ saved.code }} · Lista: {{ saved.shoppingListName }}</span>
+            <div class="saved-title-row">
+              <h1>Equalização salva</h1>
+              <span class="immutable-badge">
+                <app-icon name="lock" [size]="15" />
+                Registro imutável
+              </span>
+            </div>
+            <p>
+              Concluída em {{ formatDate(saved.createdAtUtc) }} por
+              {{ saved.createdByName || saved.createdByEmail }}.
+            </p>
+          </div>
+          <a class="btn btn-outline-secondary" routerLink="/app/purchase-orders">
+            <app-icon name="file-invoice" [size]="18" />
+            Ver pedidos
+          </a>
+        </div>
+
+        @if (wasJustCreated) {
+          <div class="saved-feedback" role="status">
+            <app-icon name="circle-check" [size]="18" />
+            Equalização {{ saved.code }} salva com sucesso.
+          </div>
+        }
+
+        <div class="metrics">
+          <div>
+            <span>Menores preços por item</span>
+            <strong>{{ formatCurrency(saved.bestChoiceTotal) }}</strong>
+          </div>
+          <div>
+            <span>Melhor total em um fornecedor</span>
+            <strong>{{ formatCurrency(saved.bestCompleteSupplierTotal) }}</strong>
+          </div>
+          <div class="metric-saving">
+            <span>Economia estimada</span>
+            <strong>{{ formatCurrency(saved.estimatedEconomy) }}</strong>
+          </div>
+        </div>
+      </header>
+
+      <div class="snapshot-notice" role="note">
+        <app-icon name="lock" [size]="18" />
+        <span
+          >Os itens e preços abaixo representam o momento em que esta equalização foi salva.</span
+        >
+      </div>
+
+      <div class="table-surface table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qtd.</th>
+              @for (supplier of comparison.suppliers; track supplier) {
+                <th>{{ supplier }}</th>
+              }
+              <th>Melhor fornecedor</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of comparison.rows; track row.shoppingItemId) {
+              <tr>
+                <td>
+                  <strong>{{ row.itemName }}</strong>
+                </td>
+                <td>{{ row.quantity }} {{ row.unit }}</td>
+                @for (supplier of comparison.suppliers; track supplier) {
+                  <td class="quote-cell" [class.best-cell]="cell(row.cells, supplier)?.isLowest">
+                    @if (cell(row.cells, supplier); as quote) {
+                      <strong class="quote-unit-price">
+                        {{ formatCurrency(quote.unitPrice) }}
+                      </strong>
+                      <span class="quote-total-price">
+                        Total: {{ formatCurrency(quote.totalPrice) }}
+                      </span>
+                    } @else {
+                      <span>-</span>
+                    }
+                  </td>
+                }
+                <td class="winner">{{ row.lowestSupplierName ?? '-' }}</td>
+              </tr>
+            }
+            <tr class="totals-row">
+              <td [attr.colspan]="2">Total por fornecedor</td>
+              @for (supplier of comparison.suppliers; track supplier) {
+                <td>
+                  {{
+                    supplierTotal(supplier) === null
+                      ? 'Incompleto'
+                      : formatCurrency(supplierTotal(supplier))
+                  }}
+                </td>
+              }
+              <td>{{ formatCurrency(comparison.bestChoiceTotal) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="legend"><span></span> Menor preço por item</p>
+
+      <section class="purchase-order-decision" aria-labelledby="saved-purchase-order-title">
+        <div>
+          <span class="decision-eyebrow">Próxima etapa</span>
+          <h2 id="saved-purchase-order-title">Emitir pedido desta equalização</h2>
+          <p>O pedido usará os preços imutáveis deste registro, mesmo que a lista seja alterada.</p>
+        </div>
+
+        <div class="supplier-order-grid">
+          @for (option of supplierOrderOptions(); track option.supplierId) {
+            <article
+              class="supplier-order-card"
+              [class.supplier-order-card-best]="option.isBestCompleteSupplier"
+            >
+              <div class="supplier-order-heading">
+                <div>
+                  <strong>{{ option.supplierName }}</strong>
+                  <span>
+                    {{ option.quotedItemCount }} de {{ option.totalItemCount }}
+                    {{ option.totalItemCount === 1 ? 'item cotado' : 'itens cotados' }}
+                  </span>
+                </div>
+                @if (option.isBestCompleteSupplier) {
+                  <span class="recommended-badge">Melhor total completo</span>
+                } @else if (!option.hasCompleteCoverage) {
+                  <span class="partial-badge">Cobertura parcial</span>
+                }
+              </div>
+
+              <div class="supplier-order-total">
+                <span>Total dos itens cotados</span>
+                <strong>{{ formatCurrency(option.quotedTotal) }}</strong>
+              </div>
+
+              <a
+                class="btn btn-primary"
+                [routerLink]="['/app/purchase-orders/new']"
+                [queryParams]="{
+                  shoppingListId: saved.shoppingListId,
+                  supplierId: option.supplierId,
+                  equalizationId: saved.id,
+                }"
+              >
+                <app-icon name="file-invoice" [size]="18" />
+                Emitir pedido para {{ option.supplierName }}
+              </a>
+            </article>
+          }
+        </div>
+      </section>
+
+      <aside class="immutable-footer">
+        <app-mascot variant="03" size="small" />
+        <p>
+          <strong>Histórico preservado.</strong>
+          Novas alterações na lista exigem uma nova equalização.
+        </p>
+      </aside>
+    }
+  }
+</section>
