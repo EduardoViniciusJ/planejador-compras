@@ -52,6 +52,7 @@ public sealed class ShoppingListComparisonCalculator
                     .GroupBy(quote => quote.SupplierId)
                     .Select(group => group.MinBy(quote => quote.UnitPrice)!)
                     .Select(quote => new EqualizationQuoteDto(
+                        quote.SupplierId,
                         supplierNames[quote.SupplierId],
                         quote.UnitPrice,
                         quote.UnitPrice * item.Quantity))

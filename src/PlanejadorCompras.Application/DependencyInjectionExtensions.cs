@@ -10,6 +10,8 @@ using PlanejadorCompras.Application.UseCases.ShoppingItem;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
 using PlanejadorCompras.Application.UseCases.Interfaces;
 using PlanejadorCompras.Application.UseCases.Supplier;
+using PlanejadorCompras.Application.UseCases.PurchaseOrder;
+using PlanejadorCompras.Application.UseCases.Equalization;
 
 namespace PlanejadorCompras.Application;
 
@@ -19,6 +21,7 @@ public static class DependencyInjectionExtensions
     {
         services.TryAddSingleton(TimeProvider.System);
         services.AddSingleton<ShoppingListComparisonCalculator>();
+        services.AddScoped<PurchaseOrderDraftService>();
         AddUseCases(services);
 
         return services;
@@ -29,7 +32,6 @@ public static class DependencyInjectionExtensions
         // Auth
         services.AddScoped<GoogleLoginUseCase>();
         services.AddScoped<GoogleAuthorizationCodeLoginUseCase>();
-
         // ShoppingList
         services.AddScoped<CreateShoppingListUseCase>();
         services.AddScoped<GetShoppingListByIdUseCase>();
@@ -66,5 +68,18 @@ public static class DependencyInjectionExtensions
         services.AddScoped<GetSuppliersUseCase>();
         services.AddScoped<UpdateSupplierUseCase>();
         services.AddScoped<DeleteSupplierUseCase>();
+
+        // PurchaseOrder
+        services.AddScoped<GetPurchaseOrderDraftUseCase>();
+        services.AddScoped<CreatePurchaseOrderUseCase>();
+        services.AddScoped<GetPurchaseOrdersUseCase>();
+        services.AddScoped<GetPurchaseOrderByIdUseCase>();
+        services.AddScoped<UpdatePurchaseOrderStatusUseCase>();
+        services.AddScoped<ExportPurchaseOrderPdfUseCase>();
+
+        // Equalization history
+        services.AddScoped<CreateSavedEqualizationUseCase>();
+        services.AddScoped<GetSavedEqualizationsUseCase>();
+        services.AddScoped<GetSavedEqualizationByIdUseCase>();
     }
 }
