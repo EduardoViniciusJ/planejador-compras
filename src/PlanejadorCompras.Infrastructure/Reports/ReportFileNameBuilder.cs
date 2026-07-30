@@ -11,6 +11,24 @@ internal static class ReportFileNameBuilder
         string shoppingListName,
         string extension)
     {
+        return BuildFileName(shoppingListName, "equalizacao", extension);
+    }
+
+    public static string BuildPurchaseOrderFileName(
+        string purchaseOrderCode,
+        string extension)
+    {
+        return BuildFileName(
+            $"pedido-compra-{purchaseOrderCode}",
+            "pedido-compra",
+            extension);
+    }
+
+    private static string BuildFileName(
+        string? value,
+        string fallbackBaseName,
+        string extension)
+    {
         ArgumentException.ThrowIfNullOrWhiteSpace(extension);
 
         var safeExtension = extension.TrimStart('.');
@@ -20,11 +38,11 @@ internal static class ReportFileNameBuilder
             throw new ArgumentException("File extension contains invalid characters.", nameof(extension));
         }
 
-        var safeBaseName = BuildSafeBaseName(shoppingListName);
+        var safeBaseName = BuildSafeBaseName(value);
 
         if (string.IsNullOrEmpty(safeBaseName))
         {
-            safeBaseName = "equalizacao";
+            safeBaseName = fallbackBaseName;
         }
 
         return $"{safeBaseName}.{safeExtension.ToLowerInvariant()}";

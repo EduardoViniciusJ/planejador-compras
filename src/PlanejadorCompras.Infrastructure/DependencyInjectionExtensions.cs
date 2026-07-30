@@ -9,6 +9,8 @@ using PlanejadorCompras.Domain.Repositories.ShoppingItem;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;
 using PlanejadorCompras.Domain.Repositories.Supplier;
 using PlanejadorCompras.Domain.Repositories.ShoppingListSupplier;
+using PlanejadorCompras.Domain.Repositories.PurchaseOrder;
+using PlanejadorCompras.Domain.Repositories.Equalization;
 using PlanejadorCompras.Infrastructure.Persistence;
 using PlanejadorCompras.Infrastructure.Queries;
 using PlanejadorCompras.Infrastructure.Reports.Excel;
@@ -54,6 +56,8 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IItemQuoteRepository, ItemQuoteRepository>();
         services.AddScoped<ISupplierRepository, SupplierRepository>();
         services.AddScoped<IShoppingListSupplierRepository, ShoppingListSupplierRepository>();
+        services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+        services.AddScoped<ISavedEqualizationRepository, SavedEqualizationRepository>();
     }
 
     private static void AddUnitOfWork(IServiceCollection services)
@@ -68,14 +72,18 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IUserItemQuotesQuery, UserItemQuotesQuery>();
         services.AddScoped<IShoppingListAccessService, ShoppingListAccessService>();
         services.AddScoped<ISupplierAccessService, SupplierAccessService>();
+        services.AddScoped<IPurchaseOrderAccessService, PurchaseOrderAccessService>();
+        services.AddScoped<ISavedEqualizationAccessService, SavedEqualizationAccessService>();
     }
 
     private static void AddReportExporters(IServiceCollection services)
     {
         EmbeddedPdfFontResolver.EnsureRegistered();
         services.AddSingleton<ShoppingListPdfDocumentBuilder>();
+        services.AddSingleton<PurchaseOrderPdfDocumentBuilder>();
         services.AddSingleton<IShoppingListExcelExporter, ClosedXmlShoppingListReportExporter>();
         services.AddSingleton<IShoppingListPdfExporter, PdfSharpShoppingListReportExporter>();
+        services.AddSingleton<IPurchaseOrderPdfExporter, PdfSharpPurchaseOrderExporter>();
     }
 
     private static void AddExternalServices(IServiceCollection services)
@@ -88,5 +96,7 @@ public static class DependencyInjectionExtensions
             client.Timeout = TimeSpan.FromSeconds(10);
         });
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddSingleton<IPurchaseOrderCodeGenerator, PurchaseOrderCodeGenerator>();
+        services.AddSingleton<ISavedEqualizationCodeGenerator, SavedEqualizationCodeGenerator>();
     }
 }

@@ -17,6 +17,16 @@ public sealed class PlanejadorComprasDbContext(DbContextOptions<PlanejadorCompra
 
     public DbSet<ShoppingListSupplier> ShoppingListSuppliers => Set<ShoppingListSupplier>();
 
+    public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
+
+    public DbSet<PurchaseOrderItem> PurchaseOrderItems => Set<PurchaseOrderItem>();
+
+    public DbSet<SavedEqualization> SavedEqualizations => Set<SavedEqualization>();
+
+    public DbSet<SavedEqualizationItem> SavedEqualizationItems => Set<SavedEqualizationItem>();
+
+    public DbSet<SavedEqualizationQuote> SavedEqualizationQuotes => Set<SavedEqualizationQuote>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PlanejadorComprasDbContext).Assembly);
