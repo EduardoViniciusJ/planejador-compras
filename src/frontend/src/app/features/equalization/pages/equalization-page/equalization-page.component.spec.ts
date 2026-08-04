@@ -158,10 +158,11 @@ describe('EqualizationPageComponent', () => {
     expect(host.querySelector('.quote-unit-price')?.textContent).toContain('R$');
     expect(host.querySelector('.quote-total-price')?.textContent).toContain('Total:');
     expect(host.textContent).toContain('Concluir e salvar equalização');
-    expect(host.textContent).toContain('registro imutável');
+    expect(host.textContent).toContain('será salva para consulta');
+    expect(host.querySelector('.save-equalization-button app-mascot')).toBeNull();
   });
 
-  it('should save a new immutable version and open its detail', async () => {
+  it('should save a new historical version and open its detail', async () => {
     const { fixture, savedEqualizationService, router } = await createPage();
     const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const host = fixture.nativeElement as HTMLElement;

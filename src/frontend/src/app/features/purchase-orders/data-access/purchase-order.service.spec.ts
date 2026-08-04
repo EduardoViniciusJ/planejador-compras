@@ -103,4 +103,12 @@ describe('PurchaseOrderService', () => {
       },
     });
   });
+
+  it('should delete an order', () => {
+    service.delete('order-1').subscribe();
+
+    const request = httpTesting.expectOne(buildApiUrl('/api/purchase-orders/order-1'));
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null);
+  });
 });

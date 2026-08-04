@@ -30,7 +30,7 @@
 
 .order-status {
   padding: 0.35rem 0.55rem;
-  border-radius: 999px;
+  border-radius: var(--app-control-radius);
   font-size: 0.68rem;
   font-weight: 800;
 }
@@ -212,7 +212,7 @@
     margin: -0.2rem 0 0.25rem;
   }
 
-  .btn {
+  .ant-btn {
     justify-content: center;
   }
 }
@@ -273,7 +273,7 @@
   .management-actions {
     width: 100%;
 
-    .btn {
+    .ant-btn {
       flex: 1;
       justify-content: center;
     }

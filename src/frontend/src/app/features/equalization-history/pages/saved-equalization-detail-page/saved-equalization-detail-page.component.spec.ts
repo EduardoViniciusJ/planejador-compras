@@ -39,7 +39,7 @@ const DETAIL: SavedEqualizationDetailDto = {
 };
 
 describe('SavedEqualizationDetailPageComponent', () => {
-  it('should render the historical snapshot and issue orders from its immutable id', async () => {
+  it('should render the saved version and issue orders from its historical id', async () => {
     const service = { getById: vi.fn(() => of(DETAIL)) };
 
     await TestBed.configureTestingModule({
@@ -57,10 +57,12 @@ describe('SavedEqualizationDetailPageComponent', () => {
     const fixture = TestBed.createComponent(SavedEqualizationDetailPageComponent);
     fixture.detectChanges();
     const host = fixture.nativeElement as HTMLElement;
-    const orderLink = host.querySelector<HTMLAnchorElement>('.supplier-order-card .btn');
+    const orderLink = host.querySelector<HTMLAnchorElement>(
+      '.supplier-order-card .issue-order-action',
+    );
 
     expect(service.getById).toHaveBeenCalledWith(DETAIL.id);
-    expect(host.textContent).toContain('Registro imutável');
+    expect(host.textContent).toContain('Os itens e preços abaixo representam o momento');
     expect(host.textContent).toContain('Mouse');
     expect(host.querySelectorAll('.best-cell')).toHaveLength(1);
     expect(orderLink?.href).toContain('equalizationId=equalization-1');

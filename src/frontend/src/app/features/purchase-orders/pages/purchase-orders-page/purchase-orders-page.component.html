@@ -7,12 +7,16 @@
     </div>
 
     <div class="management-actions">
-      <a class="btn btn-outline-secondary" routerLink="/app/equalizations">
+      <a nz-button routerLink="/app/equalizations">
         <app-icon name="scale" [size]="18" />
         Ver equalizações
       </a>
     </div>
   </header>
+
+  @if (feedback()) {
+    <nz-alert nzType="success" nzShowIcon [nzMessage]="feedback()!" />
+  }
 
   <section class="orders-toolbar management-surface" aria-label="Filtros de pedidos">
     <div>
@@ -26,6 +30,7 @@
         <app-icon name="search" [size]="18" />
         <span class="visually-hidden">Buscar pedido</span>
         <input
+          nz-input
           type="search"
           placeholder="Buscar pedido"
           autocomplete="off"
@@ -54,7 +59,7 @@
 
   @if (isLoading()) {
     <div class="orders-state" aria-label="Carregando pedidos">
-      <span class="spinner-border" aria-hidden="true"></span>
+      <nz-spin nzSimple />
       <p>Carregando pedidos...</p>
     </div>
   } @else if (loadError()) {
@@ -62,7 +67,7 @@
       <span class="state-icon"><app-icon name="alert-triangle" [size]="24" /></span>
       <h2>Não foi possível carregar os pedidos</h2>
       <p>{{ loadError() }}</p>
-      <button type="button" class="btn btn-outline-primary" (click)="retry()">
+      <button nz-button type="button" (click)="retry()">
         <app-icon name="refresh" [size]="18" />
         Tentar novamente
       </button>
@@ -72,7 +77,7 @@
       <app-mascot class="orders-state-mascot" variant="06" size="medium" />
       <h2>Nenhum pedido emitido</h2>
       <p>Faça a equalização de uma lista e formalize a compra com o fornecedor escolhido.</p>
-      <a class="btn btn-primary" routerLink="/app/equalizations">
+      <a nz-button nzType="primary" routerLink="/app/equalizations">
         <app-icon name="scale" [size]="18" />
         Ver equalizações
       </a>
@@ -123,17 +128,67 @@
             <strong>{{ formatCurrency(order.totalPrice) }}</strong>
           </div>
 
-          <footer>
+          <footer class="management-card-actions">
             <a
-              class="btn btn-outline-secondary mascot-hover-action"
+              nz-button
+              class="management-card-action mascot-hover-action"
               [routerLink]="['/app/purchase-orders', order.id]"
             >
               <app-icon name="eye" [size]="18" />
               Ver detalhes
             </a>
+            <button
+              nz-button
+              nzDanger
+              type="button"
+              class="management-card-action"
+              [attr.aria-label]="'Excluir ' + order.code"
+              (click)="openDelete(order)"
+            >
+              <app-icon name="trash" [size]="18" />
+              Excluir
+            </button>
           </footer>
         </article>
       }
     </div>
   }
 </section>
+
+@if (deletingOrder(); as order) {
+  <app-modal-dialog
+    title="Excluir pedido de compra?"
+    eyebrow="Confirmação"
+    width="small"
+    [closeDisabled]="isDeleting()"
+    (closeRequested)="closeDelete()"
+  >
+    <div class="management-delete-content">
+      <span class="management-delete-icon"><app-icon name="trash" [size]="22" /></span>
+      <p>
+        O pedido <strong>{{ order.code }}</strong> e todos os itens registrados nele serão excluídos
+        permanentemente.
+      </p>
+      @if (deleteError()) {
+        <nz-alert nzType="error" nzShowIcon [nzMessage]="deleteError()!" />
+      }
+      <div class="management-delete-actions">
+        <button nz-button type="button" [disabled]="isDeleting()" (click)="closeDelete()">
+          Cancelar
+        </button>
+        <button
+          nz-button
+          nzDanger
+          nzType="primary"
+          type="button"
+          [nzLoading]="isDeleting()"
+          [disabled]="isDeleting()"
+          data-testid="confirm-delete-purchase-order"
+          (click)="confirmDelete()"
+        >
+          Excluir pedido
+        </button>
+      </div>
+    </div>
+  </app-modal-dialog>
+}

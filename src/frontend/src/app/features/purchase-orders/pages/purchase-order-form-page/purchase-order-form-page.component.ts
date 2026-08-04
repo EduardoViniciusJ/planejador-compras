@@ -2,6 +2,10 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { AuthService } from '../../../../core/auth/auth.service';
 import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
@@ -10,7 +14,15 @@ import { PurchaseOrderDraftDto } from '../../dtos/purchase-order.dto';
 
 @Component({
   selector: 'app-purchase-order-form-page',
-  imports: [ReactiveFormsModule, RouterLink, AppIconComponent],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    AppIconComponent,
+    NzAlertModule,
+    NzButtonModule,
+    NzInputModule,
+    NzSpinModule,
+  ],
   templateUrl: './purchase-order-form-page.component.html',
   styleUrl: './purchase-order-form-page.component.scss',
 })

@@ -117,19 +117,6 @@
   font-size: 0.7rem;
 }
 
-.immutable-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--app-radius-pill);
-  background: var(--app-success-soft);
-  color: var(--app-success-strong);
-  font-size: 0.68rem;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
 .equalization-card-content {
   min-width: 0;
   padding: 1rem;
@@ -222,18 +209,17 @@
 }
 
 .equalization-card footer {
-  display: flex;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
   padding: 0.75rem 1rem;
   border-top: 1px solid var(--app-border);
 }
 
-.equalization-card footer .btn {
+.equalization-card footer .ant-btn {
+  width: 100%;
+  min-width: 0;
   justify-content: center;
-}
-
-.equalization-card footer .mascot-hover-action {
-  --app-mascot-hover-image: url('/images/mascotes/mascote-03.png');
 }
 
 .equalizations-state {
@@ -265,7 +251,7 @@
   font-size: 0.8rem;
 }
 
-.equalizations-state .btn {
+.equalizations-state .ant-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -299,7 +285,7 @@
   font-size: 0.75rem;
 }
 
-.equalizations-pagination .btn {
+.equalizations-pagination .ant-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -307,6 +293,23 @@
 
 @container (max-width: 24rem) {
   .equalization-values {
+    grid-template-columns: 1fr;
+  }
+
+  .equalization-card-information {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 0.75rem;
+  }
+
+  .equalization-card-information div:nth-child(3) {
+    grid-column: 1 / -1;
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@container (max-width: 20rem) {
+  .equalization-card footer {
     grid-template-columns: 1fr;
   }
 }
@@ -331,20 +334,5 @@
 @media (max-width: 479px) {
   .equalization-card-header {
     flex-direction: column;
-  }
-
-  .equalization-card-information {
-    grid-template-columns: 1fr 1fr;
-    row-gap: 0.75rem;
-  }
-
-  .equalization-card-information div:nth-child(3) {
-    grid-column: 1 / -1;
-    padding-left: 0;
-    border-left: 0;
-  }
-
-  .equalization-card footer .btn {
-    width: 100%;
   }
 }

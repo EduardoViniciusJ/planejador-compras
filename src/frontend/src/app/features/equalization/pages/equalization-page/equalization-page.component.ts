@@ -2,6 +2,9 @@ import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize, forkJoin } from 'rxjs';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
 import { MascotComponent } from '../../../../shared/ui/mascot/mascot.component';
 import { SavedEqualizationService } from '../../../equalization-history/data-access/saved-equalization.service';
@@ -19,7 +22,15 @@ const currencyFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', cu
 
 @Component({
   selector: 'app-equalization-page',
-  imports: [RouterLink, ShoppingListReportExportComponent, AppIconComponent, MascotComponent],
+  imports: [
+    RouterLink,
+    ShoppingListReportExportComponent,
+    AppIconComponent,
+    MascotComponent,
+    NzAlertModule,
+    NzButtonModule,
+    NzSpinModule,
+  ],
   templateUrl: './equalization-page.component.html',
   styleUrl: './equalization-page.component.scss',
 })

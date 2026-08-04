@@ -15,18 +15,6 @@
   margin: 0;
 }
 
-.immutable-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.3rem 0.55rem;
-  border-radius: var(--app-radius-pill);
-  background: var(--app-success-soft);
-  color: var(--app-success-strong);
-  font-size: 0.7rem;
-  font-weight: 800;
-}
-
 .page-title > p {
   margin: 0.35rem 0 0;
   color: var(--app-text-muted);
@@ -108,7 +96,7 @@
   background: var(--app-surface-alt-bg);
 }
 
-.supplier-order-card .btn {
+.supplier-order-card .ant-btn {
   justify-content: center;
 }
 
@@ -175,7 +163,7 @@
   font-size: 1.1rem;
 }
 
-.immutable-footer {
+.history-footer {
   min-height: 5rem;
   display: flex;
   align-items: center;
@@ -186,22 +174,22 @@
   background: color-mix(in srgb, var(--app-brand) 7%, var(--app-surface-bg));
 }
 
-.immutable-footer app-mascot {
+.history-footer app-mascot {
   align-self: flex-end;
 }
 
-.immutable-footer p {
+.history-footer p {
   margin: 0;
   color: var(--app-text-muted);
   font-size: 0.78rem;
 }
 
-.immutable-footer strong {
+.history-footer strong {
   color: var(--app-text-primary);
 }
 
 @media (max-width: 720px) {
-  .heading-section > .btn {
+  .heading-section > .ant-btn {
     width: 100%;
     justify-content: center;
   }

@@ -1,7 +1,7 @@
 <section class="matrix-page saved-equalization-page">
   @if (isLoading()) {
     <div class="page-state">
-      <span class="spinner-border" aria-hidden="true"></span>
+      <nz-spin nzSimple />
       <p>Carregando equalização...</p>
     </div>
   } @else if (loadError()) {
@@ -9,7 +9,7 @@
       <app-icon name="alert-triangle" [size]="24" />
       <h1>Não foi possível carregar</h1>
       <p>{{ loadError() }}</p>
-      <button type="button" class="btn btn-outline-primary" (click)="retry()">
+      <button nz-button type="button" (click)="retry()">
         Tentar novamente
       </button>
     </div>
@@ -25,17 +25,13 @@
             <span>{{ saved.code }} · Lista: {{ saved.shoppingListName }}</span>
             <div class="saved-title-row">
               <h1>Equalização salva</h1>
-              <span class="immutable-badge">
-                <app-icon name="lock" [size]="15" />
-                Registro imutável
-              </span>
             </div>
             <p>
               Concluída em {{ formatDate(saved.createdAtUtc) }} por
               {{ saved.createdByName || saved.createdByEmail }}.
             </p>
           </div>
-          <a class="btn btn-outline-secondary" routerLink="/app/purchase-orders">
+          <a nz-button class="management-action" routerLink="/app/purchase-orders">
             <app-icon name="file-invoice" [size]="18" />
             Ver pedidos
           </a>
@@ -65,7 +61,7 @@
       </header>
 
       <div class="snapshot-notice" role="note">
-        <app-icon name="lock" [size]="18" />
+        <app-icon name="history" [size]="18" />
         <span
           >Os itens e preços abaixo representam o momento em que esta equalização foi salva.</span
         >
@@ -129,7 +125,7 @@
         <div>
           <span class="decision-eyebrow">Próxima etapa</span>
           <h2 id="saved-purchase-order-title">Emitir pedido desta equalização</h2>
-          <p>O pedido usará os preços imutáveis deste registro, mesmo que a lista seja alterada.</p>
+          <p>O pedido usará os preços registrados nesta decisão, mesmo que a lista seja alterada.</p>
         </div>
 
         <div class="supplier-order-grid">
@@ -159,7 +155,9 @@
               </div>
 
               <a
-                class="btn btn-primary"
+                nz-button
+                nzType="primary"
+                class="issue-order-action"
                 [routerLink]="['/app/purchase-orders/new']"
                 [queryParams]="{
                   shoppingListId: saved.shoppingListId,
@@ -175,11 +173,11 @@
         </div>
       </section>
 
-      <aside class="immutable-footer">
+      <aside class="history-footer">
         <app-mascot variant="03" size="small" />
         <p>
-          <strong>Histórico preservado.</strong>
-          Novas alterações na lista exigem uma nova equalização.
+          <strong>Dados desta decisão.</strong>
+          Para comparar novos preços, conclua uma nova equalização.
         </p>
       </aside>
     }

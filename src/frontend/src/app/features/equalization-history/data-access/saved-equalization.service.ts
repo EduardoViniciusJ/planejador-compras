@@ -34,6 +34,10 @@ export class SavedEqualizationService {
     return this.http.get<SavedEqualizationDetailDto>(buildApiUrl(`/api/equalizations/${id}`));
   }
 
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(buildApiUrl(`/api/equalizations/${id}`));
+  }
+
   save(shoppingListId: string, requestId: string): Observable<SavedEqualizationDetailDto> {
     return this.http.post<SavedEqualizationDetailDto>(
       buildApiUrl(`/api/shopping-lists/${shoppingListId}/equalizations`),

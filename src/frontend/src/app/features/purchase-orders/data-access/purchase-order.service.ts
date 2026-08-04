@@ -43,6 +43,10 @@ export class PurchaseOrderService {
     return this.http.post<PurchaseOrderDetailDto>(buildApiUrl('/api/purchase-orders'), request);
   }
 
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(buildApiUrl(`/api/purchase-orders/${id}`));
+  }
+
   updateStatus(
     id: string,
     status: Extract<PurchaseOrderStatus, 'completed' | 'cancelled'>,

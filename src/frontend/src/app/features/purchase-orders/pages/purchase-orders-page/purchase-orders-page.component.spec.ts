@@ -102,4 +102,30 @@ describe('PurchaseOrdersPageComponent', () => {
     expect(cards).toHaveLength(1);
     expect(cards[0].textContent).toContain('PC-2026-DEF67890');
   });
+
+  it('should confirm deletion and remove the order card', async () => {
+    const service = {
+      getAll: vi.fn(() => of(ORDERS)),
+      delete: vi.fn(() => of(void 0)),
+    };
+    await TestBed.configureTestingModule({
+      imports: [PurchaseOrdersPageComponent],
+      providers: [
+        provideRouter([]),
+        { provide: PurchaseOrderService, useValue: service },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(PurchaseOrdersPageComponent);
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+    host.querySelector<HTMLButtonElement>('[aria-label="Excluir PC-2026-ABC12345"]')?.click();
+    fixture.detectChanges();
+    host.querySelector<HTMLButtonElement>('[data-testid="confirm-delete-purchase-order"]')?.click();
+    fixture.detectChanges();
+
+    expect(service.delete).toHaveBeenCalledWith('order-1');
+    expect(host.querySelectorAll('.purchase-order-card')).toHaveLength(1);
+    expect(host.textContent).toContain('Pedido PC-2026-ABC12345 excluído.');
+  });
 });

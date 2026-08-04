@@ -7,20 +7,24 @@
     </div>
 
     <div class="management-actions">
-      <a class="btn btn-outline-secondary" routerLink="/app/purchase-orders">
+      <a nz-button routerLink="/app/purchase-orders">
         <app-icon name="file-invoice" [size]="18" />
         Ver pedidos
       </a>
-      <a class="btn btn-primary mascot-hover-action" routerLink="/app/price-map">
+      <a nz-button nzType="primary" class="mascot-hover-action" routerLink="/app/price-map">
         <app-icon name="scale" [size]="18" />
         Nova equalização
       </a>
     </div>
   </header>
 
+  @if (feedback()) {
+    <nz-alert nzType="success" nzShowIcon [nzMessage]="feedback()!" />
+  }
+
   <section class="equalizations-toolbar management-surface" aria-label="Busca de equalizações">
     <div>
-      <span class="management-eyebrow">Histórico imutável</span>
+      <span class="management-eyebrow">Histórico de decisões</span>
       <h2>Equalizações concluídas</h2>
       <p>Pesquise pelo número, lista, fornecedor ou responsável.</p>
     </div>
@@ -29,6 +33,7 @@
       <app-icon name="search" [size]="18" />
       <span class="visually-hidden">Buscar equalização</span>
       <input
+        nz-input
         type="search"
         placeholder="Buscar equalização"
         autocomplete="off"
@@ -41,7 +46,7 @@
 
   @if (isLoading()) {
     <div class="equalizations-state" aria-label="Carregando equalizações">
-      <span class="spinner-border" aria-hidden="true"></span>
+      <nz-spin nzSimple />
       <p>Carregando equalizações...</p>
     </div>
   } @else if (loadError()) {
@@ -49,7 +54,7 @@
       <span class="state-icon"><app-icon name="alert-triangle" [size]="24" /></span>
       <h2>Não foi possível carregar as equalizações</h2>
       <p>{{ loadError() }}</p>
-      <button type="button" class="btn btn-outline-primary" (click)="retry()">
+      <button nz-button type="button" (click)="retry()">
         <app-icon name="refresh" [size]="18" />
         Tentar novamente
       </button>
@@ -64,7 +69,7 @@
         <app-mascot class="state-mascot" variant="06" size="medium" />
         <h2>Nenhuma equalização salva</h2>
         <p>Abra um mapa de preços, confira a prévia e conclua a equalização.</p>
-        <a class="btn btn-primary" routerLink="/app/price-map">
+        <a nz-button nzType="primary" routerLink="/app/price-map">
           <app-icon name="scale" [size]="18" />
           Abrir mapa de preços
         </a>
@@ -81,10 +86,6 @@
                 Salva em {{ formatDate(equalization.createdAtUtc) }}
               </span>
             </div>
-            <span class="immutable-badge">
-              <app-icon name="lock" [size]="14" />
-              Imutável
-            </span>
           </header>
 
           <div class="equalization-card-content">
@@ -123,14 +124,26 @@
             </div>
           </div>
 
-          <footer>
+          <footer class="management-card-actions">
             <a
-              class="btn btn-outline-secondary mascot-hover-action"
+              nz-button
+              class="management-card-action"
               [routerLink]="['/app/equalizations', equalization.id]"
             >
               <app-icon name="eye" [size]="18" />
               Ver equalização
             </a>
+            <button
+              nz-button
+              nzDanger
+              type="button"
+              class="management-card-action"
+              [attr.aria-label]="'Excluir ' + equalization.code"
+              (click)="openDelete(equalization)"
+            >
+              <app-icon name="trash" [size]="18" />
+              Excluir
+            </button>
           </footer>
         </article>
       }
@@ -138,19 +151,14 @@
 
     @if (totalPages() > 1) {
       <nav class="equalizations-pagination" aria-label="Paginação das equalizações">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          [disabled]="page() === 1"
-          (click)="goToPage(page() - 1)"
-        >
+        <button nz-button type="button" [disabled]="page() === 1" (click)="goToPage(page() - 1)">
           <app-icon name="arrow-left" [size]="17" />
           Anterior
         </button>
         <span>Página {{ page() }} de {{ totalPages() }} · {{ totalCount() }} registros</span>
         <button
+          nz-button
           type="button"
-          class="btn btn-outline-secondary"
           [disabled]="page() === totalPages()"
           (click)="goToPage(page() + 1)"
         >
@@ -161,3 +169,42 @@
     }
   }
 </section>
+
+@if (deletingEqualization(); as equalization) {
+  <app-modal-dialog
+    title="Excluir equalização salva?"
+    eyebrow="Confirmação"
+    width="small"
+    [closeDisabled]="isDeleting()"
+    (closeRequested)="closeDelete()"
+  >
+    <div class="management-delete-content">
+      <span class="management-delete-icon"><app-icon name="trash" [size]="22" /></span>
+      <p>
+        A equalização <strong>{{ equalization.code }}</strong
+        >, seus itens e suas cotações salvas serão excluídos permanentemente. Pedidos já emitidos
+        serão preservados.
+      </p>
+      @if (deleteError()) {
+        <nz-alert nzType="error" nzShowIcon [nzMessage]="deleteError()!" />
+      }
+      <div class="management-delete-actions">
+        <button nz-button type="button" [disabled]="isDeleting()" (click)="closeDelete()">
+          Cancelar
+        </button>
+        <button
+          nz-button
+          nzDanger
+          nzType="primary"
+          type="button"
+          [nzLoading]="isDeleting()"
+          [disabled]="isDeleting()"
+          data-testid="confirm-delete-equalization"
+          (click)="confirmDelete()"
+        >
+          Excluir equalização
+        </button>
+      </div>
+    </div>
+  </app-modal-dialog>
+}

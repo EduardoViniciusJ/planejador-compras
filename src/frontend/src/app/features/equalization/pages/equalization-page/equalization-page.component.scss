@@ -30,27 +30,10 @@
   white-space: nowrap;
 }
 
-.hover-mascot {
-  position: absolute;
-  right: 0.2rem;
-  bottom: calc(100% - 0.35rem);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(0.35rem);
-  transition:
-    opacity 160ms ease,
-    transform 160ms ease;
-}
-
-.mascot-hover-action:hover .hover-mascot,
-.mascot-hover-action:focus-visible .hover-mascot {
-  opacity: 1;
-  transform: translateY(0);
-}
 .back-link {
   display: flex;
   gap: 0.4rem;
-  color: var(--bs-primary);
+  color: var(--app-primary);
   font-weight: 700;
   font-size: 0.85rem;
   text-decoration: none;
@@ -216,7 +199,7 @@ td:first-child {
     font-size: 0.82rem;
   }
 
-  .btn {
+  .ant-btn {
     justify-content: center;
     white-space: nowrap;
   }

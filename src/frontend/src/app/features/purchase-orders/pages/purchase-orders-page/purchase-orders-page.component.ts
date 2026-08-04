@@ -1,9 +1,14 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
 import { MascotComponent } from '../../../../shared/ui/mascot/mascot.component';
+import { ModalDialogComponent } from '../../../../shared/ui/modal-dialog/modal-dialog.component';
 import { PurchaseOrderService } from '../../data-access/purchase-order.service';
 import { PurchaseOrderStatus, PurchaseOrderSummaryDto } from '../../dtos/purchase-order.dto';
 
@@ -11,7 +16,16 @@ type PurchaseOrderStatusFilter = 'all' | PurchaseOrderStatus;
 
 @Component({
   selector: 'app-purchase-orders-page',
-  imports: [RouterLink, AppIconComponent, MascotComponent],
+  imports: [
+    RouterLink,
+    AppIconComponent,
+    MascotComponent,
+    ModalDialogComponent,
+    NzAlertModule,
+    NzButtonModule,
+    NzInputModule,
+    NzSpinModule,
+  ],
   templateUrl: './purchase-orders-page.component.html',
   styleUrl: './purchase-orders-page.component.scss',
 })
@@ -24,6 +38,10 @@ export class PurchaseOrdersPageComponent implements OnInit {
   protected readonly statusFilter = signal<PurchaseOrderStatusFilter>('all');
   protected readonly isLoading = signal(true);
   protected readonly loadError = signal<string | null>(null);
+  protected readonly deletingOrder = signal<PurchaseOrderSummaryDto | null>(null);
+  protected readonly isDeleting = signal(false);
+  protected readonly deleteError = signal<string | null>(null);
+  protected readonly feedback = signal<string | null>(null);
 
   protected readonly filteredOrders = computed(() => {
     const status = this.statusFilter();
@@ -61,6 +79,46 @@ export class PurchaseOrdersPageComponent implements OnInit {
 
   protected updateStatusFilter(event: Event): void {
     this.statusFilter.set((event.target as HTMLSelectElement).value as PurchaseOrderStatusFilter);
+  }
+
+  protected openDelete(order: PurchaseOrderSummaryDto): void {
+    this.deletingOrder.set(order);
+    this.deleteError.set(null);
+  }
+
+  protected closeDelete(): void {
+    if (this.isDeleting()) {
+      return;
+    }
+
+    this.deletingOrder.set(null);
+    this.deleteError.set(null);
+  }
+
+  protected confirmDelete(): void {
+    const order = this.deletingOrder();
+    if (!order || this.isDeleting()) {
+      return;
+    }
+
+    this.isDeleting.set(true);
+    this.deleteError.set(null);
+
+    this.purchaseOrderService
+      .delete(order.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.orders.update((orders) => orders.filter((item) => item.id !== order.id));
+          this.isDeleting.set(false);
+          this.deletingOrder.set(null);
+          this.feedback.set(`Pedido ${order.code} excluído.`);
+        },
+        error: () => {
+          this.isDeleting.set(false);
+          this.deleteError.set('Não foi possível excluir o pedido agora. Tente novamente.');
+        },
+      });
   }
 
   protected formatCurrency(value: number): string {

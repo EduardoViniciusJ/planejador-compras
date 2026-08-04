@@ -1,7 +1,7 @@
 <section class="management-page purchase-order-detail-page">
   @if (isLoading()) {
     <div class="detail-state">
-      <span class="spinner-border" aria-hidden="true"></span>
+      <nz-spin nzSimple />
       <p>Carregando pedido...</p>
     </div>
   } @else if (loadError()) {
@@ -9,7 +9,7 @@
       <app-icon name="alert-triangle" [size]="24" />
       <h1>Não foi possível abrir o pedido</h1>
       <p>{{ loadError() }}</p>
-      <button type="button" class="btn btn-outline-primary" (click)="retry()">
+      <button nz-button type="button" (click)="retry()">
         Tentar novamente
       </button>
     </div>
@@ -33,7 +33,8 @@
       <div class="management-actions">
         @if (purchaseOrder.equalizationId) {
           <a
-            class="btn btn-outline-secondary"
+            nz-button
+
             [routerLink]="['/app/equalizations', purchaseOrder.equalizationId]"
           >
             <app-icon name="scale" [size]="18" />
@@ -41,27 +42,26 @@
           </a>
         }
         <button
+          nz-button
           type="button"
-          class="btn btn-outline-secondary"
+          [nzLoading]="isDownloadingPdf()"
           [disabled]="isDownloadingPdf()"
           (click)="downloadPdf()"
         >
-          @if (isDownloadingPdf()) {
-            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-          } @else {
+          @if (!isDownloadingPdf()) {
             <app-icon name="file-type-pdf" [size]="18" />
           }
           Baixar PDF
         </button>
         <button
+          nz-button
           type="button"
-          class="btn whatsapp-button"
+          class="whatsapp-button"
+          [nzLoading]="isSharing()"
           [disabled]="isSharing()"
           (click)="shareOnWhatsApp()"
         >
-          @if (isSharing()) {
-            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-          } @else {
+          @if (!isSharing()) {
             <app-icon name="brand-whatsapp" [size]="19" />
           }
           Enviar pelo WhatsApp
@@ -174,8 +174,10 @@
             <h2>Atualizar situação</h2>
             <p>Finalize quando a compra for concluída ou cancele este pedido.</p>
             <button
+              nz-button
+              nzType="primary"
               type="button"
-              class="btn btn-primary"
+
               [disabled]="isUpdatingStatus()"
               (click)="updateStatus('completed')"
             >
@@ -183,8 +185,10 @@
               Marcar como concluído
             </button>
             <button
+              nz-button
+              nzDanger
               type="button"
-              class="btn btn-outline-danger"
+
               [disabled]="isUpdatingStatus()"
               (click)="updateStatus('cancelled')"
             >

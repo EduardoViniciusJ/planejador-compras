@@ -88,6 +88,7 @@
 
 .purchase-order-card {
   display: grid;
+  container-type: inline-size;
   gap: 1rem;
   padding: 1.125rem;
   border: 1px solid var(--app-border);
@@ -104,12 +105,15 @@
   }
 
   footer {
-    display: flex;
-    justify-content: flex-end;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
     padding-top: 0.875rem;
     border-top: 1px solid var(--app-border);
 
-    .btn {
+    .ant-btn {
+      width: 100%;
+      min-width: 0;
       justify-content: center;
     }
 
@@ -150,7 +154,7 @@
 
 .order-status {
   padding: 0.35rem 0.55rem;
-  border-radius: 999px;
+  border-radius: var(--app-control-radius);
   font-size: 0.68rem;
   font-weight: 800;
 }
@@ -292,10 +296,6 @@
   .order-information {
     grid-template-columns: 1fr;
   }
-
-  .purchase-order-card footer .btn {
-    width: 100%;
-  }
 }
 
 @media (max-width: 560px) {
@@ -308,5 +308,11 @@
   .order-card-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+@container (max-width: 20rem) {
+  .purchase-order-card footer {
+    grid-template-columns: 1fr;
   }
 }

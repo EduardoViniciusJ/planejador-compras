@@ -51,4 +51,12 @@ describe('SavedEqualizationService', () => {
     expect(request.request.body).toEqual({ requestId: 'request-1' });
     request.flush({});
   });
+
+  it('should delete a saved equalization', () => {
+    service.delete('equalization-1').subscribe();
+
+    const request = httpTesting.expectOne(buildApiUrl('/api/equalizations/equalization-1'));
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null);
+  });
 });

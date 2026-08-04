@@ -2,15 +2,29 @@ import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
 import { MascotComponent } from '../../../../shared/ui/mascot/mascot.component';
+import { ModalDialogComponent } from '../../../../shared/ui/modal-dialog/modal-dialog.component';
 import { SavedEqualizationService } from '../../data-access/saved-equalization.service';
 import { SavedEqualizationSummaryDto } from '../../dtos/saved-equalization.dto';
 
 @Component({
   selector: 'app-equalization-history-page',
-  imports: [RouterLink, AppIconComponent, MascotComponent],
+  imports: [
+    RouterLink,
+    AppIconComponent,
+    MascotComponent,
+    ModalDialogComponent,
+    NzAlertModule,
+    NzButtonModule,
+    NzInputModule,
+    NzSpinModule,
+  ],
   templateUrl: './equalization-history-page.component.html',
   styleUrl: './equalization-history-page.component.scss',
 })
@@ -27,6 +41,10 @@ export class EqualizationHistoryPageComponent implements OnInit {
   protected readonly totalPages = signal(0);
   protected readonly isLoading = signal(true);
   protected readonly loadError = signal<string | null>(null);
+  protected readonly deletingEqualization = signal<SavedEqualizationSummaryDto | null>(null);
+  protected readonly isDeleting = signal(false);
+  protected readonly deleteError = signal<string | null>(null);
+  protected readonly feedback = signal<string | null>(null);
 
   ngOnInit(): void {
     this.searchChanges
@@ -56,6 +74,52 @@ export class EqualizationHistoryPageComponent implements OnInit {
 
     this.page.set(page);
     this.load();
+  }
+
+  protected openDelete(equalization: SavedEqualizationSummaryDto): void {
+    this.deletingEqualization.set(equalization);
+    this.deleteError.set(null);
+  }
+
+  protected closeDelete(): void {
+    if (this.isDeleting()) {
+      return;
+    }
+
+    this.deletingEqualization.set(null);
+    this.deleteError.set(null);
+  }
+
+  protected confirmDelete(): void {
+    const equalization = this.deletingEqualization();
+    if (!equalization || this.isDeleting()) {
+      return;
+    }
+
+    this.isDeleting.set(true);
+    this.deleteError.set(null);
+
+    this.service
+      .delete(equalization.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          if (this.page() > 1 && this.equalizations().length === 1) {
+            this.page.update((page) => page - 1);
+          }
+
+          this.isDeleting.set(false);
+          this.deletingEqualization.set(null);
+          this.feedback.set(`Equalização ${equalization.code} excluída.`);
+          this.load();
+        },
+        error: () => {
+          this.isDeleting.set(false);
+          this.deleteError.set(
+            'Não foi possível excluir a equalização agora. Tente novamente.',
+          );
+        },
+      });
   }
 
   protected bestResult(equalization: SavedEqualizationSummaryDto): string {
