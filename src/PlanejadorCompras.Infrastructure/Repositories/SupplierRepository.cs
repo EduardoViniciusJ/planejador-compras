@@ -39,6 +39,17 @@ public sealed class SupplierRepository(PlanejadorComprasDbContext context) : ISu
                         (!excludingId.HasValue || supplier.Id != excludingId.Value),
             cancellationToken);
 
+    public Task<bool> ExistsByCnpjAsync(
+        Guid userId,
+        string cnpj,
+        Guid? excludingId = null,
+        CancellationToken cancellationToken = default) =>
+        context.Suppliers.AnyAsync(
+            supplier => supplier.UserId == userId
+                        && supplier.Cnpj == cnpj
+                        && (!excludingId.HasValue || supplier.Id != excludingId.Value),
+            cancellationToken);
+
     public Task<bool> HasQuotesAsync(Guid id, CancellationToken cancellationToken = default) =>
         context.ItemQuotes.AnyAsync(quote => quote.SupplierId == id, cancellationToken);
 
