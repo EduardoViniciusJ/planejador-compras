@@ -70,4 +70,5 @@ describe('ShoppingListReportService', () => {
       .expectOne(buildApiUrl('/api/shopping-lists/list-1/reports/pdf'))
       .flush(new Blob(['pdf']));
   });
+
 });

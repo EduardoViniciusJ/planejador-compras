@@ -1,9 +1,10 @@
-<form class="shopping-list-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+<form nz-form nzLayout="vertical" class="shopping-list-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
   <div class="form-field">
     <label for="shopping-list-name">Nome da lista</label>
     <input
+      nz-input
       id="shopping-list-name"
-      class="form-control"
+      class="app-input"
       type="text"
       formControlName="name"
       maxlength="100"
@@ -30,8 +31,9 @@
       <span>Opcional</span>
     </label>
     <textarea
+      nz-input
       id="shopping-list-description"
-      class="form-control"
+      class="app-input"
       formControlName="description"
       maxlength="500"
       rows="5"
@@ -58,25 +60,26 @@
 
   <div class="form-actions">
     <button
+      nz-button
       type="button"
-      class="btn btn-outline-secondary"
+
       [disabled]="submitting()"
       (click)="cancel()"
     >
       Cancelar
     </button>
     <button
+      nz-button
+      nzType="primary"
       type="submit"
-      class="btn btn-primary"
-      [disabled]="submitting()"
+
+      [nzLoading]="submitting()"
       data-testid="shopping-list-form-submit"
     >
-      @if (submitting()) {
-        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-      } @else {
+      @if (!submitting()) {
         <app-icon name="check" [size]="18" />
       }
-      {{ submitting() ? 'Salvando...' : mode() === 'create' ? 'Criar lista' : 'Salvar alteracoes' }}
+      {{ submitting() ? 'Salvando...' : mode() === 'create' ? 'Criar lista' : 'Salvar alterações' }}
     </button>
   </div>
 </form>

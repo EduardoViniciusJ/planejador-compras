@@ -1,6 +1,7 @@
 <div class="export-control" (keydown.escape)="closeExportMenu()">
   <button
-    class="btn export-button"
+    nz-button
+    class="export-button"
     type="button"
     aria-haspopup="true"
     [attr.aria-controls]="optionsId"
@@ -17,23 +18,17 @@
 
   @if (exportMenuOpen()) {
     <div [id]="optionsId" class="export-options" aria-label="Formatos de exportação">
-      <button type="button" [disabled]="isDownloadingPdf()" (click)="downloadReport('pdf')">
-        @if (isDownloadingPdf()) {
-          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-          <span>Gerando PDF...</span>
-        } @else {
+      <button nz-button nzType="text" type="button" [nzLoading]="isDownloadingPdf()" (click)="downloadReport('pdf')">
+        @if (!isDownloadingPdf()) {
           <app-icon name="file-type-pdf" [size]="20" />
-          <span>Baixar PDF</span>
         }
+        <span>{{ isDownloadingPdf() ? 'Gerando PDF...' : 'Baixar PDF' }}</span>
       </button>
-      <button type="button" [disabled]="isDownloadingExcel()" (click)="downloadReport('excel')">
-        @if (isDownloadingExcel()) {
-          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-          <span>Gerando Excel...</span>
-        } @else {
+      <button nz-button nzType="text" type="button" [nzLoading]="isDownloadingExcel()" (click)="downloadReport('excel')">
+        @if (!isDownloadingExcel()) {
           <app-icon name="file-spreadsheet" [size]="20" />
-          <span>Baixar Excel</span>
         }
+        <span>{{ isDownloadingExcel() ? 'Gerando Excel...' : 'Baixar Excel' }}</span>
       </button>
     </div>
   }

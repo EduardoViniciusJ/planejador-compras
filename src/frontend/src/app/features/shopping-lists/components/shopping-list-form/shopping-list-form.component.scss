@@ -30,7 +30,7 @@
   font-weight: 500;
 }
 
-.form-control {
+.app-input {
   box-sizing: border-box;
   min-height: var(--app-control-height);
   width: 100%;
@@ -41,16 +41,16 @@
   color: var(--app-text-color);
 }
 
-textarea.form-control {
+textarea.app-input {
   min-height: 8rem;
   resize: vertical;
 }
 
-.form-control::placeholder {
+.app-input::placeholder {
   color: var(--app-text-soft);
 }
 
-.form-control[aria-invalid='true'] {
+.app-input[aria-invalid='true'] {
   border-color: #dc3545;
 }
 
@@ -86,7 +86,7 @@ textarea.form-control {
   padding-top: 0.25rem;
 }
 
-.form-actions .btn {
+.form-actions .ant-btn {
   min-height: var(--app-control-height);
   display: inline-flex;
   align-items: center;

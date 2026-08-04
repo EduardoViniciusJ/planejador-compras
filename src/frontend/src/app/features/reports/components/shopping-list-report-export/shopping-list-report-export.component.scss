@@ -1,6 +1,7 @@
 :host {
   position: relative;
   display: inline-block;
+  min-width: var(--app-action-button-min-width);
 }
 
 .export-control {
@@ -8,42 +9,38 @@
 }
 
 .export-button {
-  --bs-btn-color: #ffffff;
-  --bs-btn-bg: #171717;
-  --bs-btn-border-color: #171717;
-  --bs-btn-hover-color: #ffffff;
-  --bs-btn-hover-bg: #2b2b2b;
-  --bs-btn-hover-border-color: #2b2b2b;
-  --bs-btn-active-color: #ffffff;
-  --bs-btn-active-bg: #303030;
-  --bs-btn-active-border-color: #303030;
-  --bs-btn-disabled-color: #ffffff;
-  --bs-btn-disabled-bg: #525252;
-  --bs-btn-disabled-border-color: #525252;
-  min-height: 2.35rem;
+  width: 100%;
+  height: var(--app-control-height);
+  min-height: var(--app-control-height);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  padding: 0.42rem 0.7rem;
+  padding: 0 0.9rem;
   font-size: var(--app-font-size-base);
   line-height: var(--app-line-height-body);
   white-space: nowrap;
+  border-color: var(--app-contrast-bg);
+  background: var(--app-contrast-bg);
+  color: var(--app-contrast-text);
 }
 
-:host-context([data-bs-theme='dark']) .export-button {
-  --bs-btn-color: var(--app-text-color);
-  --bs-btn-bg: var(--app-surface-alt-bg);
-  --bs-btn-border-color: var(--app-border-strong);
-  --bs-btn-hover-color: var(--app-brand-accent);
-  --bs-btn-hover-bg: var(--app-surface-inset-bg);
-  --bs-btn-hover-border-color: var(--app-brand-accent);
-  --bs-btn-active-color: var(--app-brand-accent);
-  --bs-btn-active-bg: var(--app-surface-inset-bg);
-  --bs-btn-active-border-color: var(--app-brand-accent);
-  --bs-btn-disabled-color: var(--app-text-soft);
-  --bs-btn-disabled-bg: var(--app-surface-alt-bg);
-  --bs-btn-disabled-border-color: var(--app-border-color);
+:host-context([data-app-theme='dark']) .export-button {
+  border-color: var(--app-border-strong);
+  background: var(--app-surface-alt-bg);
+  color: var(--app-text-color);
+}
+
+.export-button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--app-contrast-bg) 88%, white);
+  background: color-mix(in srgb, var(--app-contrast-bg) 88%, white);
+  color: var(--app-contrast-text);
+}
+
+:host-context([data-app-theme='dark']) .export-button:hover:not(:disabled) {
+  border-color: var(--app-brand-accent);
+  background: var(--app-surface-inset-bg);
+  color: var(--app-brand-accent);
 }
 
 .export-chevron {
@@ -63,7 +60,7 @@
   border: 1px solid var(--app-border-color);
   border-radius: var(--app-radius-sm);
   background: var(--app-surface-bg);
-  box-shadow: var(--bs-box-shadow);
+  box-shadow: var(--app-shadow-md);
 }
 
 .export-options {
@@ -79,7 +76,7 @@
   border: 0;
   border-radius: calc(var(--app-radius-sm) - 0.15rem);
   background: transparent;
-  color: var(--bs-body-color);
+  color: var(--app-text-color);
   text-align: left;
 }
 
@@ -104,9 +101,9 @@
 }
 
 .export-error {
-  border-color: color-mix(in srgb, var(--bs-danger) 40%, var(--app-border-color));
-  background: color-mix(in srgb, var(--bs-danger) 8%, var(--app-surface-bg));
-  color: var(--bs-danger-text-emphasis);
+  border-color: color-mix(in srgb, var(--app-danger) 40%, var(--app-border-color));
+  background: color-mix(in srgb, var(--app-danger) 8%, var(--app-surface-bg));
+  color: var(--app-danger-strong);
 }
 
 .export-success {
@@ -116,8 +113,8 @@
 }
 
 @media (max-width: 575.98px) {
-  :host,
-  .export-button {
+  :host {
+    min-width: 0;
     width: 100%;
   }
 

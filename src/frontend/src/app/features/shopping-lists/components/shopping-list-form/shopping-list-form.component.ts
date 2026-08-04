@@ -6,6 +6,9 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
 import { ShoppingListRequestDto } from '../../dtos/shopping-list.dto';
@@ -15,7 +18,7 @@ export type ShoppingListFormMode = 'create' | 'edit';
 
 @Component({
   selector: 'app-shopping-list-form',
-  imports: [ReactiveFormsModule, AppIconComponent],
+  imports: [ReactiveFormsModule, AppIconComponent, NzButtonModule, NzFormModule, NzInputModule],
   templateUrl: './shopping-list-form.component.html',
   styleUrl: './shopping-list-form.component.scss',
 })
