@@ -6,7 +6,14 @@ import { SuppliersPageComponent } from './suppliers-page.component';
 
 describe('SuppliersPageComponent', () => {
   let fixture: ComponentFixture<SuppliersPageComponent>;
-  const supplier = { id: 'supplier-1', name: 'Papelaria Central', createdAt: new Date() };
+  const supplier = {
+    id: 'supplier-1',
+    name: 'Papelaria Central',
+    cnpj: null,
+    address: null,
+    contact: null,
+    createdAt: new Date(),
+  };
   const service = {
     getAll: vi.fn(() => of([supplier])),
     create: vi.fn(() => of(supplier)),
@@ -26,6 +33,11 @@ describe('SuppliersPageComponent', () => {
 
   it('should render and filter suppliers', () => {
     expect(host().textContent).toContain('Papelaria Central');
+    const emptyValues = Array.from(host().querySelectorAll<HTMLElement>('.empty-value'));
+    expect(emptyValues).toHaveLength(3);
+    expect(emptyValues.every((element) => element.textContent?.trim() === 'Não informado')).toBe(
+      true,
+    );
     const search = host().querySelector<HTMLInputElement>('input[type="search"]')!;
     search.value = 'inexistente';
     search.dispatchEvent(new Event('input'));
@@ -34,18 +46,23 @@ describe('SuppliersPageComponent', () => {
   });
 
   it('should create a supplier', () => {
-    click('.management-page-header .btn-primary');
+    click('[data-testid="add-supplier"]');
     const input = host().querySelector<HTMLInputElement>('input[formControlName="name"]')!;
     input.value = 'Novo fornecedor';
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
     host().querySelector<HTMLFormElement>('.supplier-form')!.dispatchEvent(new Event('submit'));
-    expect(service.create).toHaveBeenCalledWith({ name: 'Novo fornecedor' });
+    expect(service.create).toHaveBeenCalledWith({
+      name: 'Novo fornecedor',
+      cnpj: null,
+      address: null,
+      contact: null,
+    });
   });
 
   it('should delete a supplier after confirmation', () => {
-    click('[title="Excluir"]');
-    click('.confirm-dialog .btn-danger');
+    click('[data-testid="delete-supplier"]');
+    click('[data-testid="confirm-delete-supplier"]');
     expect(service.delete).toHaveBeenCalledWith('supplier-1');
   });
 

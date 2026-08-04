@@ -3,123 +3,154 @@
     <div class="management-page-heading">
       <span class="management-eyebrow">Base de fornecedores</span>
       <h1>Fornecedores</h1>
-      <p>Cadastre as empresas que oferecem preços para suas compras.</p>
+      <p>Mantenha os dados comerciais usados nas cotações e nos pedidos de compra.</p>
     </div>
-    <button class="btn btn-primary mascot-hover-action" type="button" (click)="openCreate()">
-      <app-icon name="plus" [size]="18" /> Adicionar fornecedor
-    </button>
+    <div class="management-actions">
+      <button nz-button nzType="primary" type="button" class="mascot-hover-action" data-testid="add-supplier" (click)="openCreate()">
+        <app-icon name="plus" [size]="18" /> Novo fornecedor
+      </button>
+    </div>
   </header>
 
   @if (feedback()) {
-    <p class="feedback" role="status">
-      <app-icon name="circle-check" [size]="18" /> {{ feedback() }}
-    </p>
+    <nz-alert nzType="success" nzShowIcon [nzMessage]="feedback()!" />
   }
 
+  <section class="suppliers-toolbar management-surface" aria-label="Busca de fornecedores">
+    <div>
+      <span class="management-eyebrow">Cadastro comercial</span>
+      <h2>{{ suppliers().length }} fornecedor{{ suppliers().length === 1 ? '' : 'es' }}</h2>
+      <p>Busque por nome, CNPJ, cidade, telefone ou e-mail.</p>
+    </div>
+
+    <nz-input-group nzPrefixIcon="search">
+      <input
+        nz-input
+        type="search"
+        placeholder="Buscar fornecedor"
+        [value]="searchTerm()"
+        (input)="updateSearch($event)"
+      />
+    </nz-input-group>
+  </section>
+
   @if (isLoading()) {
-    <div class="page-state">
-      <span class="spinner-border"></span>
+    <div class="page-state management-surface">
+      <nz-spin nzSimple />
       <p>Carregando fornecedores...</p>
     </div>
   } @else if (loadError()) {
-    <div class="page-state" role="alert">
-      <app-icon name="alert-triangle" [size]="24" />
-      <h2>Não foi possível carregar</h2>
-      <p>{{ loadError() }}</p>
-      <button class="btn btn-outline-primary" (click)="retry()">Tentar novamente</button>
-    </div>
-  } @else {
-    <section class="suppliers-toolbar management-surface" aria-label="Busca de fornecedores">
-      <div>
-        <span class="management-eyebrow">Cadastro</span>
-        <h2>Fornecedores cadastrados</h2>
-        <p>Localize uma empresa pelo nome para consultar ou atualizar o cadastro.</p>
-      </div>
-
-      <label class="search-control">
-        <app-icon name="search" [size]="18" /><span class="visually-hidden">Buscar fornecedor</span>
-        <input
-          type="search"
-          placeholder="Buscar por nome"
-          [value]="searchTerm()"
-          (input)="updateSearch($event)"
-        />
-      </label>
-    </section>
-
-    <div class="suppliers-surface management-surface">
-      @if (filteredSuppliers().length === 0) {
-        <div class="page-state">
-          @if (!searchTerm()) {
-            <app-mascot class="page-state-mascot" variant="07" size="medium" />
-          } @else {
-            <app-icon class="page-state-icon" name="search" [size]="24" />
-          }
-          <h2>
-            {{ searchTerm() ? 'Nenhum fornecedor encontrado' : 'Nenhum fornecedor cadastrado' }}
-          </h2>
-          <p>
-            {{
-              searchTerm()
-                ? 'Tente buscar por outro nome.'
-                : 'Cadastre um fornecedor para informar preços aos itens.'
-            }}
-          </p>
-          @if (!searchTerm()) {
-            <button class="btn btn-primary" (click)="openCreate()">Adicionar fornecedor</button>
-          }
-        </div>
-      } @else {
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Fornecedor</th>
-                <th>Cadastrado em</th>
-                <th><span class="visually-hidden">Ações</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (supplier of filteredSuppliers(); track supplier.id) {
-                <tr>
-                  <td>
-                    <strong>{{ supplier.name }}</strong>
-                  </td>
-                  <td>{{ supplier.createdAt.toLocaleDateString('pt-BR') }}</td>
-                  <td class="row-actions">
-                    <button
-                      class="edit-action"
-                      type="button"
-                      title="Editar"
-                      aria-label="Editar fornecedor"
-                      (click)="openEdit(supplier)"
-                    >
-                      <app-icon name="pencil" [size]="18" />
-                    </button>
-                    <button
-                      class="danger-action"
-                      type="button"
-                      title="Excluir"
-                      aria-label="Excluir fornecedor"
-                      (click)="openDelete(supplier)"
-                    >
-                      <app-icon name="trash" [size]="18" />
-                    </button>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
+    <nz-alert
+      nzType="error"
+      nzShowIcon
+      nzMessage="Não foi possível carregar os fornecedores"
+      [nzDescription]="loadError()!"
+    />
+    <button nz-button type="button" (click)="retry()">Tentar novamente</button>
+  } @else if (filteredSuppliers().length === 0) {
+    <div class="page-state management-surface">
+      @if (!searchTerm()) {
+        <app-mascot class="page-state-mascot" variant="07" size="medium" />
+      }
+      <h2>{{ searchTerm() ? 'Nenhum fornecedor encontrado' : 'Nenhum fornecedor cadastrado' }}</h2>
+      <nz-empty
+        [nzNotFoundContent]="searchTerm() ? 'Revise os termos da busca.' : 'Cadastre o primeiro fornecedor para iniciar suas cotações.'"
+      />
+      @if (!searchTerm()) {
+        <button nz-button nzType="primary" type="button" (click)="openCreate()">
+          Adicionar fornecedor
+        </button>
       }
     </div>
+  } @else {
+    <section class="suppliers-surface management-surface">
+      <nz-table
+        #supplierTable
+        nzSize="middle"
+        [nzData]="filteredSuppliers()"
+        [nzFrontPagination]="filteredSuppliers().length > 10"
+        [nzPageSize]="10"
+        [nzScroll]="{ x: '920px' }"
+      >
+        <thead>
+          <tr>
+            <th>Fornecedor</th>
+            <th>CNPJ</th>
+            <th>Contato</th>
+            <th>Localização</th>
+            <th nzWidth="108px"><span class="visually-hidden">Ações</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (supplier of supplierTable.data; track supplier.id) {
+            <tr>
+              <td>
+                <div class="supplier-identity">
+                  <span class="supplier-avatar">{{ supplier.name.charAt(0).toUpperCase() }}</span>
+                  <div>
+                    <strong>{{ supplier.name }}</strong>
+                    <small>Cadastrado em {{ supplier.createdAt.toLocaleDateString('pt-BR') }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                @if (supplier.cnpj) {
+                  <nz-tag>{{ formatCnpj(supplier.cnpj) }}</nz-tag>
+                } @else {
+                  <span class="empty-value">Não informado</span>
+                }
+              </td>
+              <td>
+                <span [class.empty-value]="supplierContact(supplier) === 'Não informado'">
+                  {{ supplierContact(supplier) }}
+                </span>
+              </td>
+              <td>
+                <span [class.empty-value]="supplierLocation(supplier) === 'Não informado'">
+                  {{ supplierLocation(supplier) }}
+                </span>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button
+                    nz-button
+                    nzType="text"
+                    type="button"
+                    nz-tooltip
+                    nzTooltipTitle="Editar fornecedor"
+                    [attr.aria-label]="'Editar ' + supplier.name"
+                    (click)="openEdit(supplier)"
+                  >
+                    <app-icon name="pencil" [size]="18" />
+                  </button>
+                  <button
+                    nz-button
+                    nzType="text"
+                    nzDanger
+                    type="button"
+                    nz-tooltip
+                    nzTooltipTitle="Excluir fornecedor"
+                    data-testid="delete-supplier"
+                    [attr.aria-label]="'Excluir ' + supplier.name"
+                    (click)="openDelete(supplier)"
+                  >
+                    <app-icon name="trash" [size]="18" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </section>
   }
 </section>
 
 @if (isFormOpen()) {
   <app-modal-dialog
-    [title]="editingSupplier()?.name ?? 'Adicionar fornecedor'"
-    [eyebrow]="formMode() === 'create' ? 'Novo fornecedor' : 'Editar fornecedor'"
+    [title]="editingSupplier()?.name ?? 'Novo fornecedor'"
+    [eyebrow]="formMode() === 'create' ? 'Cadastro comercial' : 'Editar cadastro'"
+    [width]="'large'"
     [closeDisabled]="isSaving()"
     (closeRequested)="closeForm()"
   >
@@ -139,23 +170,23 @@
   <section class="confirm-dialog" role="alertdialog" aria-modal="true">
     <app-icon name="trash" [size]="22" />
     <h2>Excluir fornecedor?</h2>
-    <p>
-      O fornecedor <strong>{{ supplier.name }}</strong> será excluído.
-    </p>
+    <p>O cadastro de <strong>{{ supplier.name }}</strong> será excluído.</p>
     @if (deleteError()) {
-      <p class="dialog-error">{{ deleteError() }}</p>
+      <nz-alert nzType="error" nzShowIcon [nzMessage]="deleteError()!" />
     }
     <div>
-      <button class="btn btn-outline-secondary" [disabled]="isDeleting()" (click)="closeDelete()">
-        Cancelar</button
-      ><button
-        class="btn btn-danger"
-        [disabled]="isDeleting() || !!deleteError()"
+      <button nz-button type="button" [disabled]="isDeleting()" (click)="closeDelete()">Cancelar</button>
+      <button
+        nz-button
+        nzDanger
+        nzType="primary"
+        type="button"
+        [nzLoading]="isDeleting()"
+        [disabled]="!!deleteError()"
+        data-testid="confirm-delete-supplier"
         (click)="confirmDelete()"
       >
-        {{
-          isDeleting() ? 'Excluindo...' : deleteError() ? 'Fornecedor em uso' : 'Excluir fornecedor'
-        }}
+        {{ deleteError() ? 'Fornecedor em uso' : 'Excluir fornecedor' }}
       </button>
     </div>
   </section>

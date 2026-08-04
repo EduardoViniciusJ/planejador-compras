@@ -1,45 +1,170 @@
-<form class="supplier-form" [formGroup]="form" (ngSubmit)="submit()">
-  <label>
-    <span>Nome do fornecedor</span>
-    <input
-      class="form-control"
-      type="text"
-      formControlName="name"
-      maxlength="100"
-      autocomplete="organization"
-      placeholder="Ex.: Papelaria Central"
-      [attr.aria-invalid]="form.controls.name.touched && form.controls.name.invalid"
-    />
-    @if (form.controls.name.touched && form.controls.name.invalid) {
-      <small>Informe um nome com ate 100 caracteres.</small>
-    }
-  </label>
+<form nz-form nzLayout="vertical" class="supplier-form" [formGroup]="form" (ngSubmit)="submit()">
+  <section class="supplier-form-section">
+    <header>
+      <strong>Identificação</strong>
+      <span>Dados principais para localizar o fornecedor em cotações e pedidos.</span>
+    </header>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzXs]="24" [nzMd]="14">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="supplier-name">Nome do fornecedor</nz-form-label>
+          <nz-form-control
+            [nzValidateStatus]="form.controls.name"
+            nzErrorTip="Informe um nome com até 100 caracteres."
+          >
+            <input
+              nz-input
+              id="supplier-name"
+              type="text"
+              formControlName="name"
+              maxlength="100"
+              autocomplete="organization"
+              placeholder="Ex.: Papelaria Central"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzXs]="24" [nzMd]="10">
+        <nz-form-item>
+          <nz-form-label nzFor="supplier-cnpj">CNPJ</nz-form-label>
+          <nz-form-control
+            [nzValidateStatus]="form.controls.cnpj"
+            nzErrorTip="Informe um CNPJ válido."
+          >
+            <input
+              nz-input
+              id="supplier-cnpj"
+              type="text"
+              formControlName="cnpj"
+              maxlength="18"
+              inputmode="numeric"
+              placeholder="00.000.000/0000-00"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </section>
+
+  <nz-divider nzText="Endereço opcional" nzOrientation="left" />
+
+  <section class="supplier-form-section">
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzXs]="24">
+        <nz-form-item>
+          <nz-form-label nzFor="supplier-street">Rua e número</nz-form-label>
+          <nz-form-control [nzValidateStatus]="form.controls.street">
+            <input
+              nz-input
+              id="supplier-street"
+              type="text"
+              formControlName="street"
+              maxlength="200"
+              autocomplete="street-address"
+              placeholder="Ex.: Rua das Compras, 120"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzXs]="24" [nzMd]="15">
+        <nz-form-item>
+          <nz-form-label nzFor="supplier-city">Cidade</nz-form-label>
+          <nz-form-control [nzValidateStatus]="form.controls.city">
+            <input
+              nz-input
+              id="supplier-city"
+              type="text"
+              formControlName="city"
+              maxlength="100"
+              autocomplete="address-level2"
+              placeholder="Ex.: Curitiba"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzXs]="24" [nzMd]="9">
+        <nz-form-item>
+          <nz-form-label nzFor="supplier-postal-code">CEP</nz-form-label>
+          <nz-form-control
+            [nzValidateStatus]="form.controls.postalCode"
+            nzErrorTip="Informe um CEP com 8 dígitos."
+          >
+            <input
+              nz-input
+              id="supplier-postal-code"
+              type="text"
+              formControlName="postalCode"
+              maxlength="9"
+              inputmode="numeric"
+              autocomplete="postal-code"
+              placeholder="00000-000"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </section>
+
+  <nz-divider nzText="Contato opcional" nzOrientation="left" />
+
+  <section class="supplier-form-section">
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzXs]="24" [nzMd]="14">
+        <nz-form-item>
+          <nz-form-label nzFor="supplier-email">E-mail</nz-form-label>
+          <nz-form-control
+            [nzValidateStatus]="form.controls.email"
+            nzErrorTip="Informe um e-mail válido."
+          >
+            <input
+              nz-input
+              id="supplier-email"
+              type="email"
+              formControlName="email"
+              maxlength="254"
+              autocomplete="email"
+              placeholder="compras@fornecedor.com.br"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzXs]="24" [nzMd]="10">
+        <nz-form-item>
+          <nz-form-label nzFor="supplier-phone">Telefone</nz-form-label>
+          <nz-form-control
+            [nzValidateStatus]="form.controls.phone"
+            nzErrorTip="Informe um telefone com DDD."
+          >
+            <input
+              nz-input
+              id="supplier-phone"
+              type="tel"
+              formControlName="phone"
+              maxlength="20"
+              autocomplete="tel"
+              placeholder="(41) 99999-9999"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </section>
 
   @if (serverError()) {
     <p class="form-error" role="alert">{{ serverError() }}</p>
   }
 
   <div class="form-actions">
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      [disabled]="submitting()"
-      (click)="cancel()"
-    >
+    <button nz-button type="button" [disabled]="submitting()" (click)="cancel()">
       Cancelar
     </button>
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="submitting()"
-    >
-      {{
-        submitting()
-          ? 'Salvando...'
-          : mode() === 'create'
-            ? 'Adicionar fornecedor'
-            : 'Salvar alteracoes'
-      }}
+    <button nz-button nzType="primary" type="submit" [nzLoading]="submitting()">
+      {{ mode() === 'create' ? 'Adicionar fornecedor' : 'Salvar alterações' }}
     </button>
   </div>
 </form>

@@ -9,6 +9,14 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 import { ModalDialogComponent } from '../../../../shared/ui/modal-dialog/modal-dialog.component';
 import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
@@ -24,7 +32,20 @@ import { Supplier } from '../../models/supplier.model';
 
 @Component({
   selector: 'app-suppliers-page',
-  imports: [SupplierFormComponent, ModalDialogComponent, AppIconComponent, MascotComponent],
+  imports: [
+    SupplierFormComponent,
+    ModalDialogComponent,
+    AppIconComponent,
+    MascotComponent,
+    NzAlertModule,
+    NzButtonModule,
+    NzEmptyModule,
+    NzInputModule,
+    NzSpinModule,
+    NzTableModule,
+    NzTagModule,
+    NzTooltipModule,
+  ],
   templateUrl: './suppliers-page.component.html',
   styleUrl: './suppliers-page.component.scss',
 })
@@ -38,7 +59,13 @@ export class SuppliersPageComponent implements OnInit {
     const term = this.searchTerm().trim().toLocaleLowerCase('pt-BR');
     return term
       ? this.suppliers().filter((supplier) =>
-          supplier.name.toLocaleLowerCase('pt-BR').includes(term),
+          [
+            supplier.name,
+            supplier.cnpj,
+            supplier.contact?.email,
+            supplier.contact?.phone,
+            supplier.address?.city,
+          ].some((value) => value?.toLocaleLowerCase('pt-BR').includes(term)),
         )
       : this.suppliers();
   });
@@ -161,6 +188,26 @@ export class SuppliersPageComponent implements OnInit {
 
   protected retry(): void {
     this.loadSuppliers();
+  }
+
+  protected formatCnpj(value: string | null): string {
+    if (!value) return 'Não informado';
+    const digits = value.replace(/\D/g, '');
+    return digits.length === 14
+      ? digits.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
+      : value;
+  }
+
+  protected supplierLocation(supplier: Supplier): string {
+    const address = supplier.address;
+    if (!address) return 'Não informado';
+    return [address.street, address.city].filter(Boolean).join(' · ') || 'Não informado';
+  }
+
+  protected supplierContact(supplier: Supplier): string {
+    const contact = supplier.contact;
+    if (!contact) return 'Não informado';
+    return contact.email || contact.phone || 'Não informado';
   }
 
   private loadSuppliers(showLoading = true): void {
