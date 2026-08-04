@@ -15,6 +15,7 @@ public sealed class PurchaseOrdersController(
     GetPurchaseOrdersUseCase getAllUseCase,
     GetPurchaseOrderByIdUseCase getByIdUseCase,
     UpdatePurchaseOrderStatusUseCase updateStatusUseCase,
+    DeletePurchaseOrderUseCase deleteUseCase,
     ExportPurchaseOrderPdfUseCase exportPdfUseCase)
     : ControllerBase
 {
@@ -71,6 +72,17 @@ public sealed class PurchaseOrdersController(
         [FromBody] UpdatePurchaseOrderStatusRequestDto request,
         CancellationToken cancellationToken) =>
         Ok(await updateStatusUseCase.ExecuteAsync(id, request, cancellationToken));
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        await deleteUseCase.ExecuteAsync(id, cancellationToken);
+        return NoContent();
+    }
 
     [HttpGet("{id:guid}/pdf")]
     [Produces("application/pdf")]

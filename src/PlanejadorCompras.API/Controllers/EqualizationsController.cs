@@ -12,7 +12,8 @@ namespace PlanejadorCompras.API.Controllers;
 public sealed class EqualizationsController(
     CreateSavedEqualizationUseCase createUseCase,
     GetSavedEqualizationsUseCase getAllUseCase,
-    GetSavedEqualizationByIdUseCase getByIdUseCase)
+    GetSavedEqualizationByIdUseCase getByIdUseCase,
+    DeleteSavedEqualizationUseCase deleteUseCase)
     : ControllerBase
 {
     [HttpGet]
@@ -40,6 +41,17 @@ public sealed class EqualizationsController(
         Guid id,
         CancellationToken cancellationToken) =>
         Ok(await getByIdUseCase.ExecuteAsync(id, cancellationToken));
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        await deleteUseCase.ExecuteAsync(id, cancellationToken);
+        return NoContent();
+    }
 
     [HttpPost("/api/shopping-lists/{shoppingListId:guid}/equalizations")]
     [ProducesResponseType(
