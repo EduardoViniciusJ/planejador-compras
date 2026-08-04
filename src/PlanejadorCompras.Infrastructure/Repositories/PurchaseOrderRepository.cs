@@ -52,4 +52,18 @@ public sealed class PurchaseOrderRepository(PlanejadorComprasDbContext context)
     {
         await context.PurchaseOrders.AddAsync(purchaseOrder, cancellationToken);
     }
+
+    public async Task<bool> DeleteAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var order = await GetByIdAsync(id, cancellationToken);
+        if (order is null)
+        {
+            return false;
+        }
+
+        context.PurchaseOrders.Remove(order);
+        return true;
+    }
 }

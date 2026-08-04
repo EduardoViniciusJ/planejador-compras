@@ -72,6 +72,20 @@ public sealed class SavedEqualizationRepository(PlanejadorComprasDbContext conte
         await context.SavedEqualizations.AddAsync(equalization, cancellationToken);
     }
 
+    public async Task<bool> DeleteAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var equalization = await GetByIdAsync(id, cancellationToken);
+        if (equalization is null)
+        {
+            return false;
+        }
+
+        context.SavedEqualizations.Remove(equalization);
+        return true;
+    }
+
     private static IQueryable<SavedEqualization> IncludeSnapshot(
         IQueryable<SavedEqualization> query) =>
         query
