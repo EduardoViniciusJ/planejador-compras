@@ -13,7 +13,7 @@ public sealed class GetSuppliersUseCase(
     {
         var suppliers = await supplierRepository.GetByUserIdAsync(currentUser.UserId, cancellationToken);
         return suppliers
-            .Select(supplier => new SupplierResponseDto(supplier.Id, supplier.Name, supplier.CreatedAt))
+            .Select(SupplierResponseMapper.Map)
             .ToList();
     }
 }

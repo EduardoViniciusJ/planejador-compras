@@ -18,19 +18,36 @@ public sealed class CreateSupplierUseCase(
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
+        var input = SupplierRequestNormalizer.Normalize(request);
 
         if (await supplierRepository.ExistsByNameAsync(
                 currentUser.UserId,
-                request.Name,
+                input.Name,
                 cancellationToken: cancellationToken))
         {
             throw new ConflictException("Supplier name already exists.", "supplier_name_already_exists");
         }
 
-        var supplier = SupplierEntity.Create(currentUser.UserId, request.Name);
+        if (input.Cnpj is not null
+            && await supplierRepository.ExistsByCnpjAsync(
+                currentUser.UserId,
+                input.Cnpj,
+                cancellationToken: cancellationToken))
+        {
+            throw new ConflictException(
+                "Supplier CNPJ already exists.",
+                "supplier_cnpj_already_exists");
+        }
+
+        var supplier = SupplierEntity.Create(
+            currentUser.UserId,
+            input.Name,
+            input.Cnpj,
+            input.Address,
+            input.Contact);
         await supplierRepository.AddAsync(supplier, cancellationToken);
         await unitOfWork.CommitAsync(cancellationToken);
 
-        return new SupplierResponseDto(supplier.Id, supplier.Name, supplier.CreatedAt);
+        return SupplierResponseMapper.Map(supplier);
     }
 }

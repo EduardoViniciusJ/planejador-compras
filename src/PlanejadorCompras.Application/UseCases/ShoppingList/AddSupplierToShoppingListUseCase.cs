@@ -1,5 +1,6 @@
 using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.Services.Interfaces;
+using PlanejadorCompras.Application.UseCases.Supplier;
 using PlanejadorCompras.Domain.Repositories;
 using PlanejadorCompras.Domain.Repositories.ShoppingListSupplier;
 using ShoppingListSupplierEntity = PlanejadorCompras.Domain.Entities.ShoppingListSupplier;
@@ -31,6 +32,6 @@ public sealed class AddSupplierToShoppingListUseCase(
             await unitOfWork.CommitAsync(cancellationToken);
         }
 
-        return new SupplierResponseDto(supplier.Id, supplier.Name, supplier.CreatedAt);
+        return SupplierResponseMapper.Map(supplier);
     }
 }

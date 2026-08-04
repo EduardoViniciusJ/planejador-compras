@@ -1,5 +1,6 @@
 using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.Services.Interfaces;
+using PlanejadorCompras.Application.UseCases.Supplier;
 using PlanejadorCompras.Domain.Repositories.ShoppingListSupplier;
 
 namespace PlanejadorCompras.Application.UseCases.ShoppingList;
@@ -19,7 +20,7 @@ public sealed class GetShoppingListSuppliersUseCase(
             cancellationToken);
 
         return suppliers
-            .Select(supplier => new SupplierResponseDto(supplier.Id, supplier.Name, supplier.CreatedAt))
+            .Select(SupplierResponseMapper.Map)
             .ToList();
     }
 }

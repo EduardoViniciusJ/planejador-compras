@@ -10,6 +10,6 @@ public sealed class GetSupplierByIdUseCase(ISupplierAccessService supplierAccess
         CancellationToken cancellationToken = default)
     {
         var supplier = await supplierAccessService.GetForCurrentUserAsync(id, cancellationToken);
-        return new SupplierResponseDto(supplier.Id, supplier.Name, supplier.CreatedAt);
+        return SupplierResponseMapper.Map(supplier);
     }
 }
