@@ -1,46 +1,53 @@
-<form class="feature-form" [formGroup]="form" (ngSubmit)="submit()">
+<form nz-form nzLayout="vertical" class="feature-form" [formGroup]="form" (ngSubmit)="submit()">
   @if (showShoppingListSelect()) {
-    <label>
-      <span>Lista de compras</span>
-      <select formControlName="shoppingListId">
-        <option value="">Selecione uma lista de compras</option>
+    <div class="form-field">
+      <span id="shopping-item-list-label" class="form-label">Lista de compras</span>
+      <nz-select
+        formControlName="shoppingListId"
+        nzPlaceHolder="Selecione uma lista de compras"
+        aria-labelledby="shopping-item-list-label"
+      >
         @for (list of shoppingLists(); track list.id) {
-          <option [value]="list.id">{{ list.name }}</option>
+          <nz-option [nzValue]="list.id" [nzLabel]="list.name" />
         }
-      </select>
+      </nz-select>
       @if (form.controls.shoppingListId.touched && form.controls.shoppingListId.invalid) {
         <small>Selecione a lista deste item.</small>
       }
-    </label>
+    </div>
   }
 
-  <label>
+  <label class="name-field">
     <span>Nome do item</span>
-    <input type="text" formControlName="name" maxlength="100" autocomplete="off" />
+    <input nz-input type="text" formControlName="name" maxlength="100" autocomplete="off" />
     @if (form.controls.name.touched && form.controls.name.hasError('required')) {
       <small>Informe o nome do item.</small>
     }
   </label>
 
   <div class="form-grid">
-    <label>
+    <label class="quantity-field">
       <span>Quantidade</span>
-      <input type="number" formControlName="quantity" min="0.01" step="0.01" />
+      <input nz-input type="number" formControlName="quantity" min="0.01" step="0.01" />
       @if (form.controls.quantity.touched && form.controls.quantity.invalid) {
         <small>Use uma quantidade maior que zero.</small>
       }
     </label>
-    <label>
-      <span>Unidade</span>
-      <select formControlName="unit">
+    <div class="form-field unit-field">
+      <span id="shopping-item-unit-label" class="form-label">Unidade</span>
+      <nz-select
+        formControlName="unit"
+        nzPlaceHolder="Selecione a unidade"
+        aria-labelledby="shopping-item-unit-label"
+      >
         @for (option of unitOptions(); track option.value) {
-          <option [value]="option.value">{{ option.label }}</option>
+          <nz-option [nzValue]="option.value" [nzLabel]="option.label" />
         }
-      </select>
+      </nz-select>
       @if (form.controls.unit.touched && form.controls.unit.invalid) {
         <small>Informe uma unidade valida.</small>
       }
-    </label>
+    </div>
   </div>
 
   @if (serverError()) {
@@ -48,15 +55,8 @@
   }
 
   <div class="form-actions">
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      [disabled]="submitting()"
-      (click)="cancel()"
-    >
-      Cancelar
-    </button>
-    <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+    <button nz-button type="button" [disabled]="submitting()" (click)="cancel()">Cancelar</button>
+    <button nz-button nzType="primary" type="submit" [nzLoading]="submitting()">
       {{
         submitting() ? 'Salvando...' : mode() === 'create' ? 'Adicionar item' : 'Salvar alteracoes'
       }}

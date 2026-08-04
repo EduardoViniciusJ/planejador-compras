@@ -1,8 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin, map, of, switchMap } from 'rxjs';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 import { ItemQuoteFormComponent } from '../../../quotes/components/item-quote-form/item-quote-form.component';
 import { ItemQuoteService } from '../../../quotes/data-access/item-quote.service';
@@ -12,6 +17,7 @@ import { ShoppingListReportExportComponent } from '../../../reports/components/s
 import { ShoppingItemFormComponent } from '../../../shopping-items/components/shopping-item-form/shopping-item-form.component';
 import { ShoppingItemService } from '../../../shopping-items/data-access/shopping-item.service';
 import { ShoppingItemRequestDto } from '../../../shopping-items/dtos/shopping-item.dto';
+import { SHOPPING_ITEM_UNIT_OPTIONS } from '../../../shopping-items/models/shopping-item-unit-option';
 import { ShoppingListFormComponent } from '../../../shopping-lists/components/shopping-list-form/shopping-list-form.component';
 import { ShoppingListDetailService } from '../../../shopping-lists/data-access/shopping-list-detail.service';
 import { ShoppingListService } from '../../../shopping-lists/data-access/shopping-list.service';
@@ -31,6 +37,17 @@ import { MascotComponent } from '../../../../shared/ui/mascot/mascot.component';
 
 type PriceMapDialog = 'list' | 'item' | 'supplier-picker' | 'supplier-create' | 'quote' | null;
 type BaseColumn = 'item' | 'quantity' | 'unit';
+type InlineItemField = 'name' | 'quantity';
+
+interface InlineItemEditor {
+  readonly itemId: string;
+  readonly field: InlineItemField;
+}
+
+interface InlineQuoteEditor {
+  readonly itemId: string;
+  readonly supplierId: string;
+}
 
 interface QuoteContext {
   readonly item: ShoppingListDetailItem;
@@ -59,6 +76,11 @@ const resultColumnWidth = 144;
     ItemQuoteFormComponent,
     AppIconComponent,
     MascotComponent,
+    FormsModule,
+    NzAlertModule,
+    NzButtonModule,
+    NzSpinModule,
+    NzSelectModule,
   ],
   templateUrl: './price-map-page.component.html',
   styleUrl: './price-map-page.component.scss',
@@ -176,6 +198,12 @@ export class PriceMapPageComponent implements OnInit {
   protected readonly isDeleting = signal(false);
   protected readonly formError = signal<string | null>(null);
   protected readonly deleteError = signal<string | null>(null);
+  protected readonly inlineItemEditor = signal<InlineItemEditor | null>(null);
+  protected readonly inlineItemValue = signal('');
+  protected readonly inlineQuoteEditor = signal<InlineQuoteEditor | null>(null);
+  protected readonly inlineQuoteValue = signal('');
+  protected readonly actionError = signal<string | null>(null);
+  protected readonly unitOptions = SHOPPING_ITEM_UNIT_OPTIONS;
 
   ngOnInit(): void {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
@@ -183,15 +211,10 @@ export class PriceMapPageComponent implements OnInit {
       this.listId.set(listId);
       if (listId) this.rememberList(listId);
       this.loadPage();
-
-      if (this.route.snapshot.url.some((segment) => segment.path === 'new')) {
-        this.openCreateItem();
-      }
     });
   }
 
-  protected changeList(event: Event): void {
-    const listId = (event.target as HTMLSelectElement).value;
+  protected changeList(listId: string): void {
     if (listId) this.rememberList(listId);
     else this.forgetRememberedList();
     void this.router.navigate(listId ? ['/app/price-map', listId] : ['/app/price-map']);
@@ -203,12 +226,6 @@ export class PriceMapPageComponent implements OnInit {
 
   protected openCreateList(): void {
     this.openDialog('list');
-  }
-
-  protected openCreateItem(): void {
-    if (!this.listId()) return;
-    this.editingItem.set(null);
-    this.openDialog('item');
   }
 
   protected openEditItem(item: ShoppingListDetailItem): void {
@@ -237,10 +254,175 @@ export class PriceMapPageComponent implements OnInit {
     this.editingItem.set(null);
     this.quoteContext.set(null);
     this.formError.set(null);
+  }
 
-    if (this.route.snapshot.url.some((segment) => segment.path === 'new') && this.listId()) {
-      void this.router.navigate(['/app/price-map', this.listId()]);
+  protected startInlineItemEdit(item: ShoppingListDetailItem, field: InlineItemField): void {
+    if (this.isSaving()) return;
+    this.actionError.set(null);
+    this.inlineQuoteEditor.set(null);
+    this.inlineItemEditor.set({ itemId: item.id, field });
+    this.inlineItemValue.set(field === 'name' ? item.name : String(item.quantity));
+    this.focusInlineEditor(`inline-${field}-${item.id}`);
+  }
+
+  protected isInlineItemEditing(itemId: string, field: InlineItemField): boolean {
+    const editor = this.inlineItemEditor();
+    return editor?.itemId === itemId && editor.field === field;
+  }
+
+  protected updateInlineItemValue(event: Event): void {
+    this.inlineItemValue.set((event.target as HTMLInputElement).value);
+  }
+
+  protected handleInlineItemKeydown(event: KeyboardEvent, item: ShoppingListDetailItem): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.commitInlineItemEdit(item);
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      this.cancelInlineItemEdit();
     }
+  }
+
+  protected commitInlineItemEdit(item: ShoppingListDetailItem): void {
+    const editor = this.inlineItemEditor();
+    if (!editor || editor.itemId !== item.id || this.isSaving()) return;
+
+    const rawValue = this.inlineItemValue().trim();
+    const name = editor.field === 'name' ? rawValue : item.name;
+    const quantity =
+      editor.field === 'quantity' ? Number(rawValue.replace(',', '.')) : item.quantity;
+
+    if (!name || name.length > 100) {
+      this.actionError.set('Informe um nome com até 100 caracteres.');
+      return;
+    }
+    if (!Number.isFinite(quantity) || quantity < 0.01) {
+      this.actionError.set('A quantidade deve ser maior que zero.');
+      return;
+    }
+
+    if (name === item.name && quantity === item.quantity) {
+      this.cancelInlineItemEdit();
+      return;
+    }
+
+    this.inlineItemEditor.set(null);
+    this.updateItem(item, { name, quantity, unit: item.unit }, 'Item atualizado com sucesso.');
+  }
+
+  protected cancelInlineItemEdit(): void {
+    this.inlineItemEditor.set(null);
+    this.inlineItemValue.set('');
+  }
+
+  protected updateItemUnit(item: ShoppingListDetailItem, unit: string): void {
+    if (!unit || unit === item.unit || this.isSaving()) return;
+    this.inlineItemEditor.set(null);
+    this.updateItem(
+      item,
+      { name: item.name, quantity: item.quantity, unit },
+      'Unidade atualizada.',
+    );
+  }
+
+  protected unitOptionsFor(unit: string) {
+    return this.unitOptions.some((option) => option.value === unit)
+      ? this.unitOptions
+      : [...this.unitOptions, { value: unit, label: unit }];
+  }
+
+  protected startInlineQuoteEdit(item: ShoppingListDetailItem, supplier: Supplier): void {
+    if (this.isSaving()) return;
+    const quote = this.quoteFor(item.id, supplier.id);
+    this.actionError.set(null);
+    this.inlineItemEditor.set(null);
+    this.inlineQuoteEditor.set({ itemId: item.id, supplierId: supplier.id });
+    this.inlineQuoteValue.set(quote ? String(quote.unitPrice).replace('.', ',') : '');
+    this.focusInlineEditor(`inline-price-${item.id}-${supplier.id}`);
+  }
+
+  protected isInlineQuoteEditing(itemId: string, supplierId: string): boolean {
+    const editor = this.inlineQuoteEditor();
+    return editor?.itemId === itemId && editor.supplierId === supplierId;
+  }
+
+  protected updateInlineQuoteValue(event: Event): void {
+    this.inlineQuoteValue.set((event.target as HTMLInputElement).value);
+  }
+
+  protected handleInlineQuoteKeydown(
+    event: KeyboardEvent,
+    item: ShoppingListDetailItem,
+    supplier: Supplier,
+  ): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.commitInlineQuoteEdit(item, supplier);
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      this.cancelInlineQuoteEdit();
+    }
+  }
+
+  protected commitInlineQuoteEdit(item: ShoppingListDetailItem, supplier: Supplier): void {
+    const editor = this.inlineQuoteEditor();
+    if (
+      !editor ||
+      editor.itemId !== item.id ||
+      editor.supplierId !== supplier.id ||
+      this.isSaving()
+    ) {
+      return;
+    }
+
+    const rawValue = this.inlineQuoteValue().trim();
+    const existingQuote = this.quoteFor(item.id, supplier.id);
+    if (!rawValue && !existingQuote) {
+      this.cancelInlineQuoteEdit();
+      return;
+    }
+
+    const unitPrice = this.parseLocalizedNumber(rawValue);
+    if (!Number.isFinite(unitPrice) || unitPrice < 0) {
+      this.actionError.set('Informe um preço válido, igual ou maior que zero.');
+      return;
+    }
+    if (existingQuote?.unitPrice === unitPrice) {
+      this.cancelInlineQuoteEdit();
+      return;
+    }
+
+    const request: ItemQuoteRequestDto = {
+      shoppingItemId: item.id,
+      supplierId: supplier.id,
+      unitPrice,
+    };
+    const operation = existingQuote
+      ? this.quoteService.update(existingQuote.id, request)
+      : this.quoteService.create(request);
+
+    this.inlineQuoteEditor.set(null);
+    this.isSaving.set(true);
+    this.actionError.set(null);
+    operation.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.isSaving.set(false);
+        this.feedback.set(
+          existingQuote ? 'Preço atualizado com sucesso.' : 'Preço adicionado com sucesso.',
+        );
+        this.loadPage(false);
+      },
+      error: () => {
+        this.isSaving.set(false);
+        this.actionError.set('Não foi possível salvar o preço agora.');
+      },
+    });
+  }
+
+  protected cancelInlineQuoteEdit(): void {
+    this.inlineQuoteEditor.set(null);
+    this.inlineQuoteValue.set('');
   }
 
   protected saveList(request: ShoppingListRequestDto): void {
@@ -542,6 +724,50 @@ export class PriceMapPageComponent implements OnInit {
 
   protected formatCurrency(value: number): string {
     return currencyFormatter.format(value);
+  }
+
+  private updateItem(
+    item: ShoppingListDetailItem,
+    values: Pick<ShoppingItemRequestDto, 'name' | 'quantity' | 'unit'>,
+    successMessage: string,
+  ): void {
+    const request: ShoppingItemRequestDto = {
+      shoppingListId: this.listId(),
+      ...values,
+    };
+    this.isSaving.set(true);
+    this.actionError.set(null);
+    this.itemService
+      .update(item.id, request)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isSaving.set(false);
+          this.feedback.set(successMessage);
+          this.loadPage(false);
+        },
+        error: () => {
+          this.isSaving.set(false);
+          this.actionError.set('Não foi possível atualizar o item agora.');
+        },
+      });
+  }
+
+  private parseLocalizedNumber(value: string): number {
+    const normalized = value
+      .replace(/\s/g, '')
+      .replace(/^R\$/i, '')
+      .replace(/\.(?=\d{3}(?:\D|$))/g, '')
+      .replace(',', '.');
+    return Number(normalized);
+  }
+
+  private focusInlineEditor(id: string): void {
+    globalThis.setTimeout(() => {
+      const input = globalThis.document?.getElementById(id) as HTMLInputElement | null;
+      input?.focus();
+      input?.select();
+    });
   }
 
   private openDialog(dialog: Exclude<PriceMapDialog, null>): void {

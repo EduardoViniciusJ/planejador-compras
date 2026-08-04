@@ -158,7 +158,7 @@ describe('PriceMapPageComponent', () => {
   });
 
   it('should render items and suppliers in the price map', () => {
-    expect(host().textContent).toContain('Office');
+    expect(host().querySelector('.map-list-selector')).toBeTruthy();
     expect(host().textContent).toContain('Paper');
     expect(host().textContent).toContain('Fornecedor A');
     expect(host().textContent).toContain('Fornecedor B');
@@ -179,20 +179,20 @@ describe('PriceMapPageComponent', () => {
 
   it('should keep the price map actions simple and without a duplicated add-item action', () => {
     const toolbar = host().querySelector('.map-toolbar');
-    const workspaceActions = host().querySelector('.workspace-actions');
 
     expect(toolbar?.querySelector('.map-list-selector')).toBeTruthy();
     expect(toolbar?.querySelector('.map-title')).toBeNull();
     expect(toolbar?.textContent).toContain('Mapa de preços');
-    expect(toolbar?.textContent).toContain('Selecione uma lista');
-    expect(toolbar?.querySelector('a')).toBeNull();
-    expect(workspaceActions?.querySelector('.btn-primary')?.textContent).toContain(
+    expect(toolbar?.querySelector('.equalization-action')?.textContent).toContain(
       'Ver equalização',
     );
-    expect(workspaceActions?.textContent).toContain('Adicionar fornecedor');
-    expect(workspaceActions?.textContent).not.toContain('Adicionar item');
+    expect(toolbar?.querySelector('.equalization-action.mascot-hover-action')).toBeNull();
+    expect(toolbar?.textContent).toContain('Adicionar fornecedor');
+    expect(toolbar?.textContent).not.toContain('Lista ativa');
+    expect(toolbar?.textContent).not.toContain('com preços');
     expect(host().querySelector('.matrix-controls > .btn')).toBeNull();
-    expect(host().querySelector('.totals-label')?.textContent).toContain('Adicionar item');
+    expect(host().querySelector('.totals-label')?.textContent).toContain('Totais');
+    expect(host().textContent).not.toContain('Adicionar item');
   });
 
   it('should export PDF and Excel directly from the selected price map', () => {
@@ -254,8 +254,8 @@ describe('PriceMapPageComponent', () => {
 
   it('should add a price from an empty supplier cell', () => {
     click('.empty-price-button');
-    setInput('input[formControlName="unitPrice"]', '8');
-    submit('.feature-form');
+    setInput('.inline-price-editor', '8');
+    pressKey('.inline-price-editor', 'Enter');
 
     expect(quoteService.create).toHaveBeenCalledWith({
       shoppingItemId: 'item-1',
@@ -264,20 +264,10 @@ describe('PriceMapPageComponent', () => {
     });
   });
 
-  it('should add an item from the totals row', () => {
-    click('.totals-label .add-item-row-action');
-    setInput('input[formControlName="name"]', 'Keyboard');
-    submit('.feature-form');
-
-    expect(itemService.create).toHaveBeenCalledWith(
-      expect.objectContaining({ shoppingListId: 'list-1', name: 'Keyboard', unit: 'un' }),
-    );
-  });
-
-  it('should edit and delete an item from the price map', () => {
+  it('should edit item name and quantity inline and delete it from the price map', () => {
     click('button[title="Editar item"]');
-    setInput('input[formControlName="name"]', 'Paper updated');
-    submit('.feature-form');
+    setInput('.inline-name-editor', 'Paper updated');
+    pressKey('.inline-name-editor', 'Enter');
 
     expect(itemService.update).toHaveBeenCalledWith(
       'item-1',
@@ -287,16 +277,47 @@ describe('PriceMapPageComponent', () => {
       }),
     );
 
+    doubleClick('.quantity-cell .editable-value');
+    setInput('.inline-quantity-editor', '3');
+    pressKey('.inline-quantity-editor', 'Enter');
+
+    expect(itemService.update).toHaveBeenLastCalledWith(
+      'item-1',
+      expect.objectContaining({ shoppingListId: 'list-1', quantity: 3 }),
+    );
+
     click('button[title="Excluir item"]');
-    click('.delete-content .btn-danger');
+    click('.delete-content .confirm-delete-action');
 
     expect(itemService.delete).toHaveBeenCalledWith('item-1');
   });
 
+  it('should update the unit directly from the table selector', () => {
+    const component = fixture.componentInstance as unknown as {
+      detail: () => {
+        items: readonly [{ id: string; name: string; quantity: number; unit: string }];
+      };
+      updateItemUnit: (
+        item: { id: string; name: string; quantity: number; unit: string },
+        unit: string,
+      ) => void;
+    };
+
+    expect(host().querySelector('.inline-unit-select')).toBeTruthy();
+    component.updateItemUnit(component.detail().items[0], 'kg');
+
+    expect(itemService.update).toHaveBeenCalledWith('item-1', {
+      shoppingListId: 'list-1',
+      name: 'Paper',
+      quantity: 2,
+      unit: 'kg',
+    });
+  });
+
   it('should edit and delete a price from the price map', () => {
-    click('.price-button');
-    setInput('input[formControlName="unitPrice"]', '9');
-    submit('.feature-form');
+    doubleClick('.price-button');
+    setInput('.inline-price-editor', '9');
+    pressKey('.inline-price-editor', 'Enter');
 
     expect(quoteService.update).toHaveBeenCalledWith('quote-1', {
       shoppingItemId: 'item-1',
@@ -305,13 +326,13 @@ describe('PriceMapPageComponent', () => {
     });
 
     click('button[title="Excluir preço"]');
-    click('.delete-content .btn-danger');
+    click('.delete-content .confirm-delete-action');
 
     expect(quoteService.delete).toHaveBeenCalledWith('quote-1');
   });
 
   it('should add a catalog supplier only after the user chooses it', () => {
-    click('.workspace-actions .btn-outline-secondary');
+    clickButtonByText('Adicionar fornecedor');
     const option = [
       ...host().querySelectorAll<HTMLButtonElement>('.supplier-picker-list button'),
     ].find((button) => button.textContent?.includes('Fornecedor C'));
@@ -340,6 +361,20 @@ describe('PriceMapPageComponent', () => {
     );
     expect(button).toBeTruthy();
     button?.click();
+    fixture.detectChanges();
+  }
+
+  function doubleClick(selector: string): void {
+    const element = host().querySelector<HTMLElement>(selector);
+    expect(element).toBeTruthy();
+    element?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    fixture.detectChanges();
+  }
+
+  function pressKey(selector: string, key: string): void {
+    const element = host().querySelector<HTMLElement>(selector);
+    expect(element).toBeTruthy();
+    element?.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
     fixture.detectChanges();
   }
 

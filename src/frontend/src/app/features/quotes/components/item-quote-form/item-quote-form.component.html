@@ -1,19 +1,22 @@
-<form class="feature-form" [formGroup]="form" (ngSubmit)="submit()">
-  <label>
-    <span>Fornecedor</span>
-    <select class="form-select" formControlName="supplierId">
-      <option value="">Selecione um fornecedor</option>
+<form nz-form nzLayout="vertical" class="feature-form" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="form-field">
+    <span id="item-quote-supplier-label" class="form-label">Fornecedor</span>
+    <nz-select
+      formControlName="supplierId"
+      nzPlaceHolder="Selecione um fornecedor"
+      aria-labelledby="item-quote-supplier-label"
+    >
       @for (supplier of suppliers(); track supplier.id) {
-        <option [value]="supplier.id">{{ supplier.name }}</option>
+        <nz-option [nzValue]="supplier.id" [nzLabel]="supplier.name" />
       }
-    </select>
+    </nz-select>
     @if (form.controls.supplierId.touched && form.controls.supplierId.invalid) {
       <small>Selecione um fornecedor cadastrado.</small>
     }
-  </label>
+  </div>
   <label>
     <span>Preco unitario (R$)</span>
-    <input type="number" formControlName="unitPrice" min="0" step="0.01" />
+    <input nz-input type="number" formControlName="unitPrice" min="0" step="0.01" />
     @if (form.controls.unitPrice.touched && form.controls.unitPrice.invalid) {
       <small>Use um preco maior ou igual a zero.</small>
     }
@@ -23,15 +26,8 @@
     <p class="form-error" role="alert">{{ serverError() }}</p>
   }
   <div class="form-actions">
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      [disabled]="submitting()"
-      (click)="cancel()"
-    >
-      Cancelar
-    </button>
-    <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+    <button nz-button type="button" [disabled]="submitting()" (click)="cancel()">Cancelar</button>
+    <button nz-button nzType="primary" type="submit" [nzLoading]="submitting()">
       {{
         submitting() ? 'Salvando...' : mode() === 'create' ? 'Adicionar preço' : 'Salvar alteracoes'
       }}

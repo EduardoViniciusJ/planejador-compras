@@ -6,31 +6,21 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 import { ShoppingItemRequestDto } from '../../dtos/shopping-item.dto';
+import { SHOPPING_ITEM_UNIT_OPTIONS } from '../../models/shopping-item-unit-option';
 import { ShoppingListDetailItem } from '../../../shopping-lists/models/shopping-list-detail.model';
 import { ShoppingList } from '../../../shopping-lists/models/shopping-list.model';
 
 export type ShoppingItemFormMode = 'create' | 'edit';
 
-const DEFAULT_UNIT_OPTIONS = [
-  { value: 'un', label: 'Unidade (un)' },
-  { value: 'cx', label: 'Caixa (cx)' },
-  { value: 'pct', label: 'Pacote (pct)' },
-  { value: 'kg', label: 'Quilograma (kg)' },
-  { value: 'g', label: 'Grama (g)' },
-  { value: 'L', label: 'Litro (L)' },
-  { value: 'mL', label: 'Mililitro (mL)' },
-  { value: 'm', label: 'Metro (m)' },
-  { value: 'cm', label: 'Centímetro (cm)' },
-  { value: 'par', label: 'Par' },
-  { value: 'kit', label: 'Kit' },
-  { value: 'rl', label: 'Rolo (rl)' },
-] as const;
-
 @Component({
   selector: 'app-shopping-item-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NzButtonModule, NzFormModule, NzInputModule, NzSelectModule],
   templateUrl: './shopping-item-form.component.html',
   styleUrl: './shopping-item-form.component.scss',
 })
@@ -55,11 +45,11 @@ export class ShoppingItemFormComponent {
   });
   protected readonly unitOptions = computed(() => {
     const currentUnit = this.item()?.unit;
-    if (!currentUnit || DEFAULT_UNIT_OPTIONS.some((option) => option.value === currentUnit)) {
-      return DEFAULT_UNIT_OPTIONS;
+    if (!currentUnit || SHOPPING_ITEM_UNIT_OPTIONS.some((option) => option.value === currentUnit)) {
+      return SHOPPING_ITEM_UNIT_OPTIONS;
     }
 
-    return [...DEFAULT_UNIT_OPTIONS, { value: currentUnit, label: currentUnit }];
+    return [...SHOPPING_ITEM_UNIT_OPTIONS, { value: currentUnit, label: currentUnit }];
   });
 
   constructor() {

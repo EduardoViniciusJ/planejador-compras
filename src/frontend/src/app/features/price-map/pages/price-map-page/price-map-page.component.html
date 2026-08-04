@@ -10,12 +10,16 @@
           <app-icon name="checklist" [size]="18" />
           <span>Lista</span>
         </label>
-        <select id="price-map-list" [value]="listId()" (change)="changeList($event)">
-          <option value="">Selecione uma lista</option>
+        <nz-select
+          id="price-map-list"
+          [ngModel]="listId()"
+          nzPlaceHolder="Selecione uma lista"
+          (ngModelChange)="changeList($event)"
+        >
           @for (list of lists(); track list.id) {
-            <option [value]="list.id">{{ list.name }}</option>
+            <nz-option [nzValue]="list.id" [nzLabel]="list.name" />
           }
-        </select>
+        </nz-select>
       </div>
       @if (listId()) {
         <app-shopping-list-report-export
@@ -24,21 +28,45 @@
           accessibleLabel="Exportar mapa de preços"
         />
       }
-      <button type="button" class="btn btn-primary" (click)="openCreateList()">
+      <button nz-button nzType="primary" type="button" (click)="openCreateList()">
         <app-icon name="plus" [size]="18" /> Nova lista
       </button>
+      @if (detail(); as activeList) {
+        @if (activeList.totalItems > 0 && activeList.quotedItems > 0) {
+          <a
+            nz-button
+            nzType="primary"
+            class="equalization-action"
+            [routerLink]="['/app/lists', activeList.id, 'equalization']"
+          >
+            <app-icon name="layout-grid" [size]="18" /> Ver equalização
+          </a>
+        }
+        <button nz-button type="button" (click)="openSupplierPicker()">
+          <app-icon name="building-plus" [size]="18" /> Adicionar fornecedor
+        </button>
+      }
     </div>
   </header>
 
   @if (feedback()) {
-    <p class="feedback" role="status">
-      <app-icon name="circle-check" [size]="18" /> {{ feedback() }}
-    </p>
+    <nz-alert class="map-feedback" nzType="success" nzShowIcon [nzMessage]="feedback()!" />
+  }
+
+  @if (actionError()) {
+    <nz-alert
+      class="map-feedback"
+      nzType="error"
+      nzShowIcon
+      [nzMessage]="actionError()!"
+      nzCloseable
+      (nzOnClose)="actionError.set(null)"
+    />
   }
 
   @if (isLoading()) {
     <div class="page-state">
-      <span class="spinner-border" aria-hidden="true"></span>
+      <nz-spin nzSimple />
       <p>Preparando o mapa de preços...</p>
     </div>
   } @else if (loadError()) {
@@ -46,9 +74,7 @@
       <app-icon name="alert-triangle" [size]="24" />
       <h2>Não foi possível abrir o mapa</h2>
       <p>{{ loadError() }}</p>
-      <button class="btn btn-outline-primary" type="button" (click)="retry()">
-        Tentar novamente
-      </button>
+      <button nz-button type="button" (click)="retry()">Tentar novamente</button>
     </div>
   } @else if (!listId()) {
     <div class="page-state welcome-state">
@@ -56,61 +82,25 @@
       <h2>Escolha uma lista de compras</h2>
       <p>Depois disso você poderá adicionar itens, fornecedores e preços no mesmo lugar.</p>
       @if (lists().length === 0) {
-        <button class="btn btn-primary" type="button" (click)="openCreateList()">
+        <button nz-button nzType="primary" type="button" (click)="openCreateList()">
           Criar primeira lista
         </button>
       }
     </div>
   } @else if (detail(); as list) {
-    <div class="workspace-toolbar">
-      <div class="workspace-title">
-        <span class="workspace-eyebrow">Lista ativa</span>
-        <h2>{{ list.name }}</h2>
-        <div class="workspace-metrics" aria-label="Resumo da lista">
-          <span>
-            <strong>{{ list.totalItems }}</strong>
-            {{ list.totalItems === 1 ? 'item' : 'itens' }}
-          </span>
-          <span>
-            <strong>{{ suppliers().length }}</strong>
-            {{ suppliers().length === 1 ? 'fornecedor' : 'fornecedores' }}
-          </span>
-          <span>
-            <strong>{{ list.quotedItems }}</strong>
-            com preços
-          </span>
-        </div>
-      </div>
-      <div class="workspace-actions">
-        @if (list.totalItems > 0 && list.quotedItems > 0) {
-          <a
-            class="btn btn-primary equalization-action mascot-hover-action"
-            [routerLink]="['/app/lists', list.id, 'equalization']"
-          >
-            <app-icon name="layout-grid" [size]="18" /> Ver equalização
-          </a>
-        }
-        <button type="button" class="btn btn-outline-secondary" (click)="openSupplierPicker()">
-          <app-icon name="building-plus" [size]="18" /> Adicionar fornecedor
-        </button>
-      </div>
-    </div>
-
     @if (list.items.length === 0) {
       <div class="page-state workspace-empty">
         <app-mascot class="page-state-mascot" variant="01" size="medium" />
-        <h2>Adicione o primeiro item</h2>
-        <p>O item aparecerá como uma linha do mapa e poderá receber preços dos fornecedores.</p>
-        <button class="btn btn-primary" type="button" (click)="openCreateItem()">
-          Adicionar item
-        </button>
+        <h2>Adicione itens na lista de compras</h2>
+        <p>Prepare primeiro a lista e depois volte ao mapa para registrar os preços recebidos.</p>
+        <a nz-button nzType="primary" routerLink="/app">Ir para listas de compras</a>
       </div>
     } @else if (suppliers().length === 0) {
       <div class="page-state workspace-empty">
         <app-mascot class="page-state-mascot" variant="07" size="medium" />
         <h2>Adicione um fornecedor à lista</h2>
         <p>Escolha um fornecedor já cadastrado ou cadastre um novo para esta lista.</p>
-        <button class="btn btn-primary" type="button" (click)="openSupplierPicker()">
+        <button nz-button nzType="primary" type="button" (click)="openSupplierPicker()">
           Adicionar fornecedor
         </button>
       </div>
@@ -331,7 +321,26 @@
                     >
                       <div class="item-heading">
                         <div>
-                          <span class="item-name">{{ item.name }}</span>
+                          @if (isInlineItemEditing(item.id, 'name')) {
+                            <input
+                              class="inline-editor inline-name-editor"
+                              [id]="'inline-name-' + item.id"
+                              type="text"
+                              maxlength="100"
+                              [value]="inlineItemValue()"
+                              aria-label="Nome do item"
+                              (input)="updateInlineItemValue($event)"
+                              (keydown)="handleInlineItemKeydown($event, item)"
+                              (blur)="commitInlineItemEdit(item)"
+                            />
+                          } @else {
+                            <span
+                              class="item-name editable-value"
+                              title="Clique duas vezes para editar"
+                              (dblclick)="startInlineItemEdit(item, 'name')"
+                              >{{ item.name }}</span
+                            >
+                          }
                         </div>
                         <div class="item-actions">
                           <button
@@ -339,7 +348,7 @@
                             type="button"
                             title="Editar item"
                             [attr.aria-label]="'Editar ' + item.name"
-                            (click)="openEditItem(item)"
+                            (click)="startInlineItemEdit(item, 'name')"
                           >
                             <app-icon name="pencil" [size]="17" />
                           </button>
@@ -362,16 +371,36 @@
                       [class.pinned-column]="isColumnPinned('quantity')"
                       [style.left.px]="stickyLeft('quantity')"
                     >
-                      <span>{{ item.quantity }}</span>
-                      <button
-                        class="edit-action"
-                        type="button"
-                        title="Editar quantidade"
-                        [attr.aria-label]="'Editar quantidade de ' + item.name"
-                        (click)="openEditItem(item)"
-                      >
-                        <app-icon name="pencil" [size]="17" />
-                      </button>
+                      @if (isInlineItemEditing(item.id, 'quantity')) {
+                        <input
+                          class="inline-editor inline-quantity-editor"
+                          [id]="'inline-quantity-' + item.id"
+                          type="number"
+                          min="0.01"
+                          step="0.01"
+                          [value]="inlineItemValue()"
+                          aria-label="Quantidade do item"
+                          (input)="updateInlineItemValue($event)"
+                          (keydown)="handleInlineItemKeydown($event, item)"
+                          (blur)="commitInlineItemEdit(item)"
+                        />
+                      } @else {
+                        <span
+                          class="editable-value"
+                          title="Clique duas vezes para editar"
+                          (dblclick)="startInlineItemEdit(item, 'quantity')"
+                          >{{ item.quantity }}</span
+                        >
+                        <button
+                          class="edit-action"
+                          type="button"
+                          title="Editar quantidade"
+                          [attr.aria-label]="'Editar quantidade de ' + item.name"
+                          (click)="startInlineItemEdit(item, 'quantity')"
+                        >
+                          <app-icon name="pencil" [size]="17" />
+                        </button>
+                      }
                     </td>
                   }
                   @if (isColumnVisible('unit')) {
@@ -380,16 +409,18 @@
                       [class.pinned-column]="isColumnPinned('unit')"
                       [style.left.px]="stickyLeft('unit')"
                     >
-                      <span>{{ item.unit }}</span>
-                      <button
-                        class="edit-action"
-                        type="button"
-                        title="Editar unidade"
-                        [attr.aria-label]="'Editar unidade de ' + item.name"
-                        (click)="openEditItem(item)"
+                      <nz-select
+                        class="inline-unit-select"
+                        nzSize="small"
+                        [ngModel]="item.unit"
+                        [nzDisabled]="isSaving()"
+                        [attr.aria-label]="'Unidade de ' + item.name"
+                        (ngModelChange)="updateItemUnit(item, $event)"
                       >
-                        <app-icon name="pencil" [size]="17" />
-                      </button>
+                        @for (option of unitOptionsFor(item.unit); track option.value) {
+                          <nz-option [nzValue]="option.value" [nzLabel]="option.value" />
+                        }
+                      </nz-select>
                     </td>
                   }
                   @for (supplier of visibleSuppliers(); track supplier.id) {
@@ -400,12 +431,25 @@
                         isLowest(item.id, quoteFor(item.id, supplier.id)!)
                       "
                     >
-                      @if (quoteFor(item.id, supplier.id); as quote) {
+                      @if (isInlineQuoteEditing(item.id, supplier.id)) {
+                        <input
+                          class="inline-editor inline-price-editor"
+                          [id]="'inline-price-' + item.id + '-' + supplier.id"
+                          type="text"
+                          inputmode="decimal"
+                          [value]="inlineQuoteValue()"
+                          [attr.aria-label]="'Preço unitário de ' + supplier.name"
+                          (input)="updateInlineQuoteValue($event)"
+                          (keydown)="handleInlineQuoteKeydown($event, item, supplier)"
+                          (blur)="commitInlineQuoteEdit(item, supplier)"
+                        />
+                      } @else if (quoteFor(item.id, supplier.id); as quote) {
                         <div class="price-cell-content">
                           <button
                             type="button"
                             class="price-button"
-                            (click)="openQuote(item, supplier)"
+                            title="Clique duas vezes para editar"
+                            (dblclick)="startInlineQuoteEdit(item, supplier)"
                           >
                             <strong>{{ formatCurrency(quote.unitPrice) }}</strong>
                           </button>
@@ -423,7 +467,7 @@
                         <button
                           type="button"
                           class="empty-price-button"
-                          (click)="openQuote(item, supplier)"
+                          (click)="startInlineQuoteEdit(item, supplier)"
                         >
                           <app-icon name="plus" [size]="17" /> Informar preço
                         </button>
@@ -453,15 +497,7 @@
               }
               <tr class="totals-row">
                 <th class="totals-label" scope="row" [attr.colspan]="visibleBaseColumnCount()">
-                  <button
-                    class="add-item-row-action"
-                    type="button"
-                    title="Adicionar item"
-                    aria-label="Adicionar item"
-                    (click)="openCreateItem()"
-                  >
-                    <app-icon name="plus" [size]="17" /><span>Adicionar item</span>
-                  </button>
+                  Totais
                 </th>
                 @for (supplier of visibleSuppliers(); track supplier.id) {
                   <td class="totals-unit-label">Total</td>
@@ -627,17 +663,13 @@
         </div>
       }
       <div class="supplier-picker-actions">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          [disabled]="isSaving()"
-          (click)="closeDialog()"
-        >
+        <button nz-button type="button" [disabled]="isSaving()" (click)="closeDialog()">
           Fechar
         </button>
         <button
+          nz-button
+          nzType="primary"
           type="button"
-          class="btn btn-primary"
           [disabled]="isSaving()"
           (click)="openCreateSupplier()"
         >
@@ -706,9 +738,15 @@
         <p class="dialog-error" role="alert">{{ deleteError() }}</p>
       }
       <div>
-        <button class="btn btn-outline-secondary" [disabled]="isDeleting()" (click)="closeDelete()">
-          Cancelar</button
-        ><button class="btn btn-danger" [disabled]="isDeleting()" (click)="confirmDeleteItem()">
+        <button nz-button [disabled]="isDeleting()" (click)="closeDelete()">Cancelar</button
+        ><button
+          nz-button
+          nzDanger
+          nzType="primary"
+          class="confirm-delete-action"
+          [disabled]="isDeleting()"
+          (click)="confirmDeleteItem()"
+        >
           {{ isDeleting() ? 'Excluindo...' : 'Excluir item' }}
         </button>
       </div>
@@ -733,9 +771,15 @@
         <p class="dialog-error" role="alert">{{ deleteError() }}</p>
       }
       <div>
-        <button class="btn btn-outline-secondary" [disabled]="isDeleting()" (click)="closeDelete()">
-          Cancelar</button
-        ><button class="btn btn-danger" [disabled]="isDeleting()" (click)="confirmDeleteQuote()">
+        <button nz-button [disabled]="isDeleting()" (click)="closeDelete()">Cancelar</button
+        ><button
+          nz-button
+          nzDanger
+          nzType="primary"
+          class="confirm-delete-action"
+          [disabled]="isDeleting()"
+          (click)="confirmDeleteQuote()"
+        >
           {{ isDeleting() ? 'Excluindo...' : 'Excluir preço' }}
         </button>
       </div>
@@ -761,10 +805,15 @@
         <p class="dialog-error" role="alert">{{ deleteError() }}</p>
       }
       <div>
-        <button class="btn btn-outline-secondary" [disabled]="isDeleting()" (click)="closeDelete()">
-          Cancelar
-        </button>
-        <button class="btn btn-danger" [disabled]="isDeleting()" (click)="confirmRemoveSupplier()">
+        <button nz-button [disabled]="isDeleting()" (click)="closeDelete()">Cancelar</button>
+        <button
+          nz-button
+          nzDanger
+          nzType="primary"
+          class="confirm-delete-action"
+          [disabled]="isDeleting()"
+          (click)="confirmRemoveSupplier()"
+        >
           {{ isDeleting() ? 'Removendo...' : 'Remover da lista' }}
         </button>
       </div>
