@@ -12,6 +12,7 @@ using PlanejadorCompras.Application.UseCases.Interfaces;
 using PlanejadorCompras.Application.UseCases.Supplier;
 using PlanejadorCompras.Application.UseCases.PurchaseOrder;
 using PlanejadorCompras.Application.UseCases.Equalization;
+using PlanejadorCompras.Application.UseCases.QuotationRequest;
 
 namespace PlanejadorCompras.Application;
 
@@ -75,11 +76,19 @@ public static class DependencyInjectionExtensions
         services.AddScoped<GetPurchaseOrdersUseCase>();
         services.AddScoped<GetPurchaseOrderByIdUseCase>();
         services.AddScoped<UpdatePurchaseOrderStatusUseCase>();
+        services.AddScoped<DeletePurchaseOrderUseCase>();
         services.AddScoped<ExportPurchaseOrderPdfUseCase>();
 
         // Equalization history
         services.AddScoped<CreateSavedEqualizationUseCase>();
         services.AddScoped<GetSavedEqualizationsUseCase>();
         services.AddScoped<GetSavedEqualizationByIdUseCase>();
+        services.AddScoped<DeleteSavedEqualizationUseCase>();
+
+        // Quotation requests
+        services.AddScoped<CreateQuotationRequestUseCase>();
+        services.AddScoped<GetQuotationRequestsUseCase>();
+        services.AddScoped<GetQuotationRequestByIdUseCase>();
+        services.AddScoped<ExportSavedQuotationRequestPdfUseCase>();
     }
 }
