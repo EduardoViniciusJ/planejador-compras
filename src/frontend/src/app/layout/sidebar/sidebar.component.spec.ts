@@ -51,13 +51,13 @@ describe('SidebarComponent', () => {
     ];
 
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
-      '/app/dashboard',
       '/app',
-      '/app/price-map',
+      '/app/quotation-requests',
       '/app/purchase-orders',
       '/app/equalizations',
       '/app/suppliers',
     ]);
+    expect(links[0]?.textContent).toContain('Lista de compras');
   });
 
   it('should expose theme and profile controls in the sidebar footer', () => {

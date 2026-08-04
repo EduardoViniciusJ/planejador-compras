@@ -3,18 +3,18 @@
   width: min(100%, 34rem);
   aspect-ratio: 1.08;
   justify-self: end;
-  border: 1px solid color-mix(in srgb, var(--bs-primary) 18%, var(--app-border-color));
+  border: 1px solid color-mix(in srgb, var(--app-primary) 18%, var(--app-border-color));
   border-radius: var(--app-radius-xl);
   background:
     linear-gradient(
       135deg,
-      color-mix(in srgb, var(--bs-primary) 13%, transparent),
+      color-mix(in srgb, var(--app-primary) 13%, transparent),
       transparent 38%
     ),
     color-mix(in srgb, var(--app-surface-elevated-bg) 82%, var(--app-page-bg));
   box-shadow:
     0 24px 70px color-mix(in srgb, var(--app-brand-ink) 14%, transparent),
-    0 0 80px color-mix(in srgb, var(--bs-primary) 18%, transparent);
+    0 0 80px color-mix(in srgb, var(--app-primary) 18%, transparent);
   overflow: visible;
   transform: rotate(-1.5deg);
   animation: quoteSceneFloat 7s ease-in-out infinite;
@@ -84,7 +84,7 @@
 .quote-item-best i,
 .quote-float-badge i,
 .quote-mini-card tabler-icon {
-  color: var(--bs-primary);
+  color: var(--app-primary);
 }
 
 .quote-panel-header strong,
@@ -109,11 +109,11 @@
 }
 
 .quote-item-best {
-  border-color: color-mix(in srgb, var(--bs-primary) 52%, var(--app-border-color));
+  border-color: color-mix(in srgb, var(--app-primary) 52%, var(--app-border-color));
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--bs-primary) 20%, transparent), transparent 62%),
+    linear-gradient(90deg, color-mix(in srgb, var(--app-primary) 20%, transparent), transparent 62%),
     color-mix(in srgb, var(--app-surface-elevated-bg) 92%, transparent);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bs-primary) 18%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--app-primary) 18%, transparent);
   animation: quoteBestPulse 3.8s ease-in-out infinite;
 }
 
@@ -127,7 +127,7 @@
   position: absolute;
   z-index: 2;
   gap: 0.5rem;
-  border: 1px solid color-mix(in srgb, var(--bs-primary) 22%, var(--app-border-color));
+  border: 1px solid color-mix(in srgb, var(--app-primary) 22%, var(--app-border-color));
   border-radius: var(--app-radius-pill);
   background: color-mix(in srgb, var(--app-surface-bg) 82%, transparent);
   box-shadow: var(--app-shadow-md);
@@ -198,13 +198,13 @@
   0%,
   100% {
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--bs-primary) 18%, transparent),
-      0 0 0 color-mix(in srgb, var(--bs-primary) 0%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--app-primary) 18%, transparent),
+      0 0 0 color-mix(in srgb, var(--app-primary) 0%, transparent);
   }
 
   50% {
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--bs-primary) 32%, transparent),
-      0 0 32px color-mix(in srgb, var(--bs-primary) 22%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--app-primary) 32%, transparent),
+      0 0 32px color-mix(in srgb, var(--app-primary) 22%, transparent);
   }
 }

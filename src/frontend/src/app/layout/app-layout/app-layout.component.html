@@ -1,4 +1,4 @@
-<div class="app-layout" [class.sidebar-collapsed-layout]="isSidebarCollapsed()">
+<nz-layout class="app-layout" [class.sidebar-collapsed-layout]="isSidebarCollapsed()">
   <app-sidebar
     [class.sidebar-host-collapsed]="isSidebarCollapsed()"
     [class.sidebar-host-mobile-open]="isSidebarOpen()"
@@ -25,9 +25,9 @@
     ></button>
   }
 
-  <div class="app-layout-content">
+  <nz-content class="app-layout-content">
     <main class="app-layout-main">
       <router-outlet />
     </main>
-  </div>
-</div>
+  </nz-content>
+</nz-layout>

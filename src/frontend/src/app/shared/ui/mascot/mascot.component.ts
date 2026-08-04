@@ -41,7 +41,7 @@ export type MascotVariant =
       height: 8.5rem;
     }
 
-    :host-context([data-bs-theme='dark']) .mascot {
+    :host-context([data-app-theme='dark']) .mascot {
       filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.36));
     }
   `,

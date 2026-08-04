@@ -42,14 +42,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'dashboard',
-        title: 'Dashboard | Planejador de Compras',
-        loadComponent: () =>
-          import('./features/dashboard/pages/dashboard-page/dashboard-page.component').then(
-            ({ DashboardPageComponent }) => DashboardPageComponent,
-          ),
-      },
-      {
         path: '',
         pathMatch: 'full',
         title: 'Listas de compras | Planejador de Compras',
@@ -60,10 +52,8 @@ export const routes: Routes = [
       },
       {
         path: 'price-map/:listId/items/new',
-        loadComponent: () =>
-          import('./features/price-map/pages/price-map-page/price-map-page.component').then(
-            ({ PriceMapPageComponent }) => PriceMapPageComponent,
-          ),
+        redirectTo: 'price-map/:listId',
+        pathMatch: 'full',
       },
       {
         path: 'price-map/:listId',
@@ -80,9 +70,25 @@ export const routes: Routes = [
             ({ PriceMapPageComponent }) => PriceMapPageComponent,
           ),
       },
-      { path: 'items/new/:listId', redirectTo: 'price-map/:listId/items/new', pathMatch: 'full' },
+      { path: 'items/new/:listId', redirectTo: 'price-map/:listId', pathMatch: 'full' },
       { path: 'items', redirectTo: 'price-map', pathMatch: 'full' },
       { path: 'quotes', redirectTo: 'price-map', pathMatch: 'full' },
+      {
+        path: 'quotation-requests/:id',
+        title: 'Solicitação de cotação | Planejador de Compras',
+        loadComponent: () =>
+          import('./features/quotation-requests/pages/quotation-request-detail-page/quotation-request-detail-page.component').then(
+            ({ QuotationRequestDetailPageComponent }) => QuotationRequestDetailPageComponent,
+          ),
+      },
+      {
+        path: 'quotation-requests',
+        title: 'Solicitações de cotação | Planejador de Compras',
+        loadComponent: () =>
+          import('./features/quotation-requests/pages/quotation-requests-page/quotation-requests-page.component').then(
+            ({ QuotationRequestsPageComponent }) => QuotationRequestsPageComponent,
+          ),
+      },
       {
         path: 'suppliers',
         title: 'Fornecedores | Planejador de Compras',
@@ -95,9 +101,7 @@ export const routes: Routes = [
         path: 'purchase-orders/new',
         title: 'Emitir pedido de compra | Planejador de Compras',
         loadComponent: () =>
-          import(
-            './features/purchase-orders/pages/purchase-order-form-page/purchase-order-form-page.component'
-          ).then(
+          import('./features/purchase-orders/pages/purchase-order-form-page/purchase-order-form-page.component').then(
             ({ PurchaseOrderFormPageComponent }) => PurchaseOrderFormPageComponent,
           ),
       },
@@ -105,11 +109,8 @@ export const routes: Routes = [
         path: 'purchase-orders/:id',
         title: 'Pedido de compra | Planejador de Compras',
         loadComponent: () =>
-          import(
-            './features/purchase-orders/pages/purchase-order-detail-page/purchase-order-detail-page.component'
-          ).then(
-            ({ PurchaseOrderDetailPageComponent }) =>
-              PurchaseOrderDetailPageComponent,
+          import('./features/purchase-orders/pages/purchase-order-detail-page/purchase-order-detail-page.component').then(
+            ({ PurchaseOrderDetailPageComponent }) => PurchaseOrderDetailPageComponent,
           ),
       },
       {
@@ -124,11 +125,8 @@ export const routes: Routes = [
         path: 'equalizations/:id',
         title: 'Equalização salva | Planejador de Compras',
         loadComponent: () =>
-          import(
-            './features/equalization-history/pages/saved-equalization-detail-page/saved-equalization-detail-page.component'
-          ).then(
-            ({ SavedEqualizationDetailPageComponent }) =>
-              SavedEqualizationDetailPageComponent,
+          import('./features/equalization-history/pages/saved-equalization-detail-page/saved-equalization-detail-page.component').then(
+            ({ SavedEqualizationDetailPageComponent }) => SavedEqualizationDetailPageComponent,
           ),
       },
       {

@@ -1,14 +1,10 @@
 @if (isAppRoute()) {
   <router-outlet />
 } @else {
-  <div id="top" class="app-shell min-vh-100 d-flex flex-column">
-    <header class="app-header navbar border-bottom">
-      <div class="app-header-inner container-fluid">
-        <a
-          class="navbar-brand text-body d-flex align-items-center gap-2 mb-0 fw-semibold"
-          href="/"
-          aria-label="Voltar para o início"
-        >
+  <div id="top" class="app-shell">
+    <header class="app-header">
+      <div class="app-header-inner">
+        <a class="navbar-brand" href="/" aria-label="Voltar para o início">
           <img
             class="brand-mark"
             src="/icons/brand-mascot.png"
@@ -20,18 +16,16 @@
           Planejador de Compras
         </a>
 
-        <nav
-          class="landing-nav d-none d-lg-flex align-items-center gap-4"
-          aria-label="Navegação principal"
-        >
+        <nav class="landing-nav" aria-label="Navegação principal">
           <a [attr.href]="sectionHref('como-funciona')">Como funciona</a>
           <a [attr.href]="sectionHref('beneficios')">Benefícios</a>
         </nav>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="header-actions">
           <button
+            nz-button
             type="button"
-            class="theme-toggle btn btn-outline-secondary btn-sm d-inline-flex align-items-center justify-content-center"
+            class="theme-toggle"
             [attr.aria-label]="themeButtonLabel()"
             [attr.title]="themeButtonLabel()"
             [attr.aria-pressed]="currentTheme() === 'dark'"
@@ -40,10 +34,7 @@
             <app-icon [name]="currentTheme() === 'light' ? 'moon-stars' : 'sun'" [size]="18" />
           </button>
 
-          <a
-            class="header-login-btn btn btn-primary btn-sm d-none d-sm-inline-flex align-items-center gap-2"
-            href="/login"
-          >
+          <a nz-button nzType="primary" class="header-login-btn" href="/login">
             Acessar plataforma
             <app-icon name="arrow-right" [size]="18" />
           </a>
@@ -52,59 +43,40 @@
     </header>
 
     @if (isLoginRoute()) {
-      <main class="login-route-main flex-grow-1">
+      <main class="login-route-main">
         <router-outlet />
       </main>
     } @else if (isLegalRoute()) {
-      <main class="legal-route-main flex-grow-1">
+      <main class="legal-route-main">
         <router-outlet />
       </main>
     } @else {
-      <main class="landing-page flex-grow-1">
+      <main class="landing-page">
         <section class="hero-section">
-          <img
-            class="hero-image"
-            src="/images/landing-hero.png"
-            alt="Painel do Planejador de Compras mostrando listas, cotações por fornecedor e melhor preço destacado."
-            decoding="async"
-            fetchpriority="high"
-          />
-
-          <div class="hero-overlay" aria-hidden="true"></div>
-
-          <div class="hero-content container-fluid">
+          <div class="hero-content">
             <div class="hero-copy">
-              <h1 class="hero-title mb-3">Planeje compras</h1>
+              <h1 class="hero-title">Planeje compras</h1>
 
-              <p class="hero-description mb-4">
+              <p class="hero-description">
                 Tenha mais controle sobre suas compras: organize o que precisa comprar, compare
                 propostas e escolha o melhor fornecedor com confiança.
               </p>
 
-              <div class="hero-actions d-flex flex-column flex-sm-row gap-3 mb-4">
-                <a
-                  class="google-login-btn btn btn-primary d-inline-flex align-items-center justify-content-center gap-3"
-                  href="/login"
-                >
+              <div class="hero-actions">
+                <a nz-button nzType="primary" class="google-login-btn" href="/login">
                   <span class="google-logo" aria-hidden="true">
-                    <app-icon name="brand-google" [size]="19" />
+                    <img src="/icons/google-g.svg" alt="" />
                   </span>
                   <span>Continuar com Google</span>
                 </a>
 
-                <a
-                  class="hero-secondary-link btn btn-outline-secondary d-inline-flex align-items-center justify-content-center gap-2"
-                  href="#como-funciona"
-                >
+                <a nz-button class="hero-secondary-link" href="#como-funciona">
                   Ver como funciona
                   <app-icon name="arrow-down" [size]="18" />
                 </a>
               </div>
 
-              <div
-                class="hero-summary d-flex flex-column flex-sm-row gap-3"
-                aria-label="Resumo do produto"
-              >
+              <div class="hero-summary" aria-label="Resumo do produto">
                 <div>
                   <strong>Listas</strong>
                   <span>centralize pedidos e itens</span>
@@ -211,9 +183,9 @@
           </div>
         </section>
 
-        <section id="como-funciona" class="process-section container-fluid">
+        <section id="como-funciona" class="process-section">
           <div class="process-heading">
-            <h2 class="process-title mb-0">Em <span>3 passos</span> simples</h2>
+            <h2 class="process-title">Em <span>3 passos</span> simples</h2>
           </div>
 
           <div class="process-grid">
@@ -246,9 +218,9 @@
           </div>
         </section>
 
-        <section id="beneficios" class="benefits-section container-fluid">
+        <section id="beneficios" class="benefits-section">
           <div class="section-heading">
-            <h2 class="section-title mb-0">Mais controle para comprar com segurança</h2>
+            <h2 class="section-title">Mais controle para comprar com segurança</h2>
           </div>
 
           <div class="benefits-grid">
@@ -281,9 +253,9 @@
     }
 
     <footer class="app-footer">
-      <div class="app-footer-inner container-fluid">
+      <div class="app-footer-inner">
         <div class="footer-brand">
-          <span class="footer-logo d-inline-flex align-items-center gap-2">
+          <span class="footer-logo">
             <img
               class="brand-mark"
               src="/icons/brand-mascot.png"
@@ -294,9 +266,7 @@
             />
             Planejador de Compras
           </span>
-          <p class="mb-0">
-            Organize listas, compare cotações e escolha fornecedores com mais clareza.
-          </p>
+          <p>Organize listas, compare cotações e escolha fornecedores com mais clareza.</p>
         </div>
 
         <div class="footer-column">

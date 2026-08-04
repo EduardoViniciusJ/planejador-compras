@@ -4,6 +4,7 @@ import { effect, inject, Injectable, signal } from '@angular/core';
 export type AppTheme = 'light' | 'dark';
 
 const THEME_STORAGE_KEY = 'planejador-theme';
+const ZORRO_THEME_LINK_ID = 'zorro-theme';
 
 @Injectable({
   providedIn: 'root',
@@ -74,7 +75,30 @@ export class ThemeService {
   private applyTheme(theme: AppTheme): void {
     const root = this.document.documentElement;
 
-    root.setAttribute('data-bs-theme', theme);
+    root.setAttribute('data-app-theme', theme);
     root.style.colorScheme = theme;
+    this.loadZorroTheme(theme);
+  }
+
+  private loadZorroTheme(theme: AppTheme): void {
+    const href = theme === 'dark'
+      ? '/themes/ng-zorro-antd.dark.min.css'
+      : '/themes/ng-zorro-antd.min.css';
+    const currentLink = this.document.getElementById(
+      ZORRO_THEME_LINK_ID,
+    ) as HTMLLinkElement | null;
+
+    if (currentLink?.getAttribute('href') === href) {
+      return;
+    }
+
+    const link = currentLink ?? this.document.createElement('link');
+    link.id = ZORRO_THEME_LINK_ID;
+    link.rel = 'stylesheet';
+    link.href = href;
+
+    if (!currentLink) {
+      this.document.head.prepend(link);
+    }
   }
 }

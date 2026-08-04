@@ -1,5 +1,6 @@
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ThemeService } from './core/theme/theme.service';
@@ -142,7 +143,7 @@ const HERO_SCENE_STATES: Record<HeroStepId, HeroSceneState> = {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, AppIconComponent],
+  imports: [RouterOutlet, AppIconComponent, NzButtonModule],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

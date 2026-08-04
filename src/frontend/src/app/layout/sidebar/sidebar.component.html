@@ -25,6 +25,8 @@
       </span>
     </a>
     <button
+      nz-button
+      nzType="text"
       type="button"
       class="sidebar-collapse-button"
       aria-controls="app-sidebar"
@@ -38,23 +40,31 @@
   </div>
 
   <nav class="sidebar-navigation" aria-label="Menu principal">
+    <ul class="sidebar-menu">
     @for (item of navigationItems; track item.route) {
-      <a
-        class="sidebar-nav-link"
-        [routerLink]="item.route"
-        routerLinkActive="sidebar-nav-link-active"
-        [routerLinkActiveOptions]="{ exact: item.exact }"
-        [attr.title]="collapsed() ? item.label : null"
-        (click)="notifyNavigation()"
-      >
-        <app-icon [name]="item.icon" [size]="20" />
-        <span>{{ item.label }}</span>
-      </a>
+      <li>
+        <a
+          class="sidebar-nav-link"
+          [routerLink]="item.route"
+          routerLinkActive="sidebar-nav-link-active"
+          [routerLinkActiveOptions]="{ exact: item.exact }"
+          nz-tooltip
+          [nzTooltipTitle]="collapsed() ? item.label : null"
+          nzTooltipPlacement="right"
+          (click)="notifyNavigation()"
+        >
+          <app-icon [name]="item.icon" [size]="20" />
+          <span>{{ item.label }}</span>
+        </a>
+      </li>
     }
+    </ul>
   </nav>
 
   <div class="sidebar-footer">
     <button
+      nz-button
+      nzType="text"
       type="button"
       class="sidebar-utility-button"
       [attr.aria-label]="themeButtonLabel()"
@@ -68,6 +78,8 @@
 
     <div class="sidebar-profile-menu">
       <button
+        nz-button
+        nzType="text"
         type="button"
         class="sidebar-utility-button sidebar-profile-button"
         aria-controls="profile-menu"
@@ -98,6 +110,8 @@
           }
 
           <button
+            nz-button
+            nzDanger
             type="button"
             class="profile-menu-logout"
             [disabled]="isLoggingOut()"

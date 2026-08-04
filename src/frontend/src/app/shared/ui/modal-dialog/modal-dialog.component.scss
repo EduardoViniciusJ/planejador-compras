@@ -74,11 +74,15 @@
 }
 
 .app-modal-close {
-  flex: 0 0 2.5rem;
-  width: 2.5rem;
-  height: 2.5rem;
+  flex: 0 0 2rem;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: 1px solid var(--app-border-color);
-  border-radius: 50%;
+  border-radius: var(--app-control-radius);
   background: transparent;
   color: var(--app-text-muted);
 }

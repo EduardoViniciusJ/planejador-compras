@@ -68,9 +68,9 @@
 }
 
 .sidebar-collapse-button {
-  width: var(--app-control-height-sm);
-  height: var(--app-control-height-sm);
-  flex: 0 0 var(--app-control-height-sm);
+  width: var(--app-control-height);
+  height: var(--app-control-height);
+  flex: 0 0 var(--app-control-height);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -93,6 +93,18 @@
   padding: 1rem 0.65rem;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+.sidebar-menu {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-menu li {
+  min-width: 0;
 }
 
 .sidebar-nav-link {
@@ -118,7 +130,7 @@
 }
 
 .sidebar-nav-link:hover {
-  background: color-mix(in srgb, var(--bs-primary) 10%, var(--app-surface-bg));
+  background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-bg));
   color: var(--app-text-color);
 }
 

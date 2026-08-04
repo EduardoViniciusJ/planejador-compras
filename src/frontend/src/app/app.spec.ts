@@ -4,7 +4,7 @@ import { App } from './app';
 describe('App', () => {
   beforeEach(async () => {
     localStorage.clear();
-    document.documentElement.removeAttribute('data-bs-theme');
+    document.documentElement.removeAttribute('data-app-theme');
     document.documentElement.style.colorScheme = '';
 
     await TestBed.configureTestingModule({
@@ -14,7 +14,7 @@ describe('App', () => {
 
   afterEach(() => {
     localStorage.clear();
-    document.documentElement.removeAttribute('data-bs-theme');
+    document.documentElement.removeAttribute('data-app-theme');
     document.documentElement.style.colorScheme = '';
   });
 
@@ -32,6 +32,8 @@ describe('App', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('Planeje compras');
+    expect(compiled.querySelector('.hero-image')).toBeNull();
+    expect(compiled.querySelector('.hero-content')).not.toBeNull();
   });
 
   it('should apply and persist the selected theme', async () => {
@@ -46,7 +48,7 @@ describe('App', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(document.documentElement.getAttribute('data-bs-theme')).toBe('dark');
+    expect(document.documentElement.getAttribute('data-app-theme')).toBe('dark');
     expect(localStorage.getItem('planejador-theme')).toBe('dark');
   });
 });

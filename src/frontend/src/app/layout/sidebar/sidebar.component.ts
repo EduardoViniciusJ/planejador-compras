@@ -8,6 +8,8 @@ import {
   output,
 } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 import { CurrentUser } from '../../core/auth/models/current-user.model';
 import { AppTheme } from '../../core/theme/theme.service';
@@ -21,18 +23,22 @@ interface SidebarNavigationItem {
 }
 
 const PRIMARY_NAVIGATION: readonly SidebarNavigationItem[] = [
-  { icon: 'dashboard', label: 'Dashboard', route: '/app/dashboard', exact: false },
-  { icon: 'checklist', label: 'Listas de compras', route: '/app', exact: true },
-  { icon: 'table', label: 'Mapa de preços', route: '/app/price-map', exact: false },
+  { icon: 'checklist', label: 'Lista de compras', route: '/app', exact: true },
+  {
+    icon: 'file-type-pdf',
+    label: 'Solicitações',
+    route: '/app/quotation-requests',
+    exact: false,
+  },
   {
     icon: 'file-invoice',
-    label: 'Pedidos de compra',
+    label: 'Pedidos',
     route: '/app/purchase-orders',
     exact: false,
   },
   {
     icon: 'scale',
-    label: 'Equalizações',
+    label: 'Equalizações salvas',
     route: '/app/equalizations',
     exact: false,
   },
@@ -41,7 +47,13 @@ const PRIMARY_NAVIGATION: readonly SidebarNavigationItem[] = [
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive, AppIconComponent],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    AppIconComponent,
+    NzButtonModule,
+    NzTooltipModule,
+  ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
