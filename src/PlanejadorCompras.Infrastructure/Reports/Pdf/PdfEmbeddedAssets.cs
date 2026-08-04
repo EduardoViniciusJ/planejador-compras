@@ -7,8 +7,6 @@ internal static class PdfEmbeddedAssets
     private const string ResourcePrefix =
         "PlanejadorCompras.Infrastructure.Reports.Pdf.Assets";
 
-    private static readonly Lazy<byte[]> BrandMark =
-        new(() => LoadResource($"{ResourcePrefix}.brand-mark.png"));
     private static readonly Lazy<byte[]> RegularFont =
         new(() => LoadResource($"{ResourcePrefix}.Fonts.LiberationSans-Regular.ttf"));
     private static readonly Lazy<byte[]> BoldFont =
@@ -16,9 +14,6 @@ internal static class PdfEmbeddedAssets
 
     public static byte[] LiberationSansRegular => RegularFont.Value;
     public static byte[] LiberationSansBold => BoldFont.Value;
-
-    public static string BrandMarkMigraDocSource =>
-        $"base64:{Convert.ToBase64String(BrandMark.Value)}";
 
     private static byte[] LoadResource(string resourceName)
     {

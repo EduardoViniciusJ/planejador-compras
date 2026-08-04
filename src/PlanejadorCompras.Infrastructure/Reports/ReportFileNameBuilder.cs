@@ -24,6 +24,16 @@ internal static class ReportFileNameBuilder
             extension);
     }
 
+    public static string BuildQuotationRequestFileName(
+        string quotationRequestCode,
+        string extension)
+    {
+        return BuildFileName(
+            $"solicitacao-cotacao-{quotationRequestCode}",
+            "solicitacao-cotacao",
+            extension);
+    }
+
     private static string BuildFileName(
         string? value,
         string fallbackBaseName,

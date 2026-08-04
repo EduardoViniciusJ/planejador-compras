@@ -213,6 +213,9 @@ public sealed class PurchaseOrderPdfDocumentBuilder
         footer.Format.Alignment = ParagraphAlignment.Right;
         footer.Format.Font.Size = Unit.FromPoint(8);
         footer.Format.Font.Color = MutedColor;
+        footer.Format.Borders.Top.Width = Unit.FromPoint(0.5);
+        footer.Format.Borders.Top.Color = BorderColor;
+        footer.Format.SpaceBefore = Unit.FromPoint(3);
         footer.AddText("Página ");
         footer.AddPageField();
         footer.AddText(" de ");

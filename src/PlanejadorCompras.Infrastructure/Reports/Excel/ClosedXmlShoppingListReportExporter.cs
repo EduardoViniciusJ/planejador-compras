@@ -11,15 +11,14 @@ public sealed class ClosedXmlShoppingListReportExporter : IShoppingListExcelExpo
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private const string CurrencyFormat = "[$R$-pt-BR] #,##0.00";
     private const string DateTimeFormat = "dd/mm/yyyy hh:mm";
-    private const string PercentageFormat = "0.00%";
     private const string QuantityFormat = "0.###";
-    private const string HeaderColor = "#17365D";
-    private const string SectionColor = "#D9EAF7";
+    private const string HeaderColor = "#1F1F1F";
+    private const string SectionColor = "#F2F2F2";
     private const string BestPriceColor = "#E2F0D9";
     private const string BestPriceFontColor = "#006100";
     private const string MissingPriceColor = "#FFF2CC";
     private const string MissingPriceFontColor = "#9C6500";
-    private const string BorderColor = "#D9E1F2";
+    private const string BorderColor = "#D2D2D2";
 
     public Task<ExportedFileDto> ExportAsync(
         ShoppingListReportDataDto reportData,
@@ -34,12 +33,6 @@ public sealed class ClosedXmlShoppingListReportExporter : IShoppingListExcelExpo
         cancellationToken.ThrowIfCancellationRequested();
 
         BuildPriceMapWorksheet(workbook, reportData);
-        cancellationToken.ThrowIfCancellationRequested();
-
-        BuildQuotesWorksheet(workbook, reportData);
-        cancellationToken.ThrowIfCancellationRequested();
-
-        BuildPendingItemsWorksheet(workbook, reportData);
         cancellationToken.ThrowIfCancellationRequested();
 
         using var stream = new MemoryStream();
@@ -63,13 +56,15 @@ public sealed class ClosedXmlShoppingListReportExporter : IShoppingListExcelExpo
         var worksheet = workbook.Worksheets.Add("Resumo");
         ApplyWorksheetDefaults(worksheet);
 
-        worksheet.Range("A1:B1").Merge();
-        SetText(worksheet.Cell("A1"), "Relatório de equalização");
-        ApplyTitleStyle(worksheet.Range("A1:B1"));
+        worksheet.Range("A1:D1").Merge();
+        SetText(worksheet.Cell("A1"), "Equalização de preços");
+        ApplyTitleStyle(worksheet.Range("A1:D1"));
 
         SetText(worksheet.Cell("A3"), "Lista");
+        worksheet.Range("B3:D3").Merge();
         SetText(worksheet.Cell("B3"), reportData.Name);
         SetText(worksheet.Cell("A4"), "Descrição");
+        worksheet.Range("B4:D4").Merge();
         SetText(
             worksheet.Cell("B4"),
             string.IsNullOrWhiteSpace(reportData.Description)
@@ -77,112 +72,44 @@ public sealed class ClosedXmlShoppingListReportExporter : IShoppingListExcelExpo
                 : reportData.Description);
         worksheet.Cell("B4").Style.Alignment.WrapText = true;
 
-        SetText(worksheet.Cell("A5"), "Criada em");
-        SetDateTime(worksheet.Cell("B5"), reportData.CreatedAt);
-        SetText(worksheet.Cell("A6"), "Gerado em");
-        SetDateTime(worksheet.Cell("B6"), reportData.GeneratedAt.UtcDateTime);
+        SetText(worksheet.Cell("A5"), "Gerado em");
+        worksheet.Range("B5:D5").Merge();
+        SetDateTime(worksheet.Cell("B5"), reportData.GeneratedAt.UtcDateTime);
+        worksheet.Cell("B5").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        worksheet.Range("A3:A5").Style.Font.Bold = true;
 
-        worksheet.Range("A8:B8").Merge();
-        SetText(worksheet.Cell("A8"), "Resumo da equalização");
-        ApplySectionStyle(worksheet.Range("A8:B8"));
+        worksheet.Range("A7:D7").Merge();
+        SetText(worksheet.Cell("A7"), "Resultado");
+        ApplySectionStyle(worksheet.Range("A7:D7"));
 
-        SetSummaryValue(worksheet, 9, "Total de itens", reportData.Summary.TotalItems);
-        SetSummaryValue(
+        SetResultRow(
+            worksheet,
+            8,
+            "Menores preços por item",
+            reportData.Summary.BestChoiceTotal);
+        SetResultRow(
+            worksheet,
+            9,
+            "Melhor fornecedor completo",
+            reportData.Summary.BestCompleteSupplierName ?? "Não disponível");
+        SetResultRow(
             worksheet,
             10,
-            "Total de fornecedores",
-            reportData.Summary.TotalSuppliers);
-        SetSummaryValue(
+            "Total do fornecedor completo",
+            reportData.Summary.BestCompleteSupplierTotal);
+        SetResultRow(
             worksheet,
             11,
-            "Itens com ao menos uma cotação",
-            reportData.Summary.QuotedItems);
-        SetSummaryValue(
-            worksheet,
-            12,
-            "Cotações informadas",
-            reportData.Summary.QuotedPriceCount);
-        SetSummaryValue(
-            worksheet,
-            13,
-            "Cotações esperadas",
-            reportData.Summary.ExpectedPriceCount);
-
-        SetText(worksheet.Cell("A14"), "Cobertura");
-        SetPercentage(
-            worksheet.Cell("B14"),
-            reportData.Summary.CoveragePercentage / 100m);
-
-        SetText(worksheet.Cell("A15"), "Melhor combinação por item");
-        SetCurrency(worksheet.Cell("B15"), reportData.Summary.BestChoiceTotal);
-
-        SetText(worksheet.Cell("A16"), "Situação da combinação");
-        SetText(
-            worksheet.Cell("B16"),
-            reportData.Summary.HasCompleteBestChoice ? "Completa" : "Incompleta");
-        ApplyStatusStyle(
-            worksheet.Cell("B16"),
-            reportData.Summary.HasCompleteBestChoice);
-
-        SetText(worksheet.Cell("A17"), "Melhor fornecedor único");
-        SetText(
-            worksheet.Cell("B17"),
-            reportData.Summary.BestCompleteSupplierName ?? "Não disponível");
-        ApplyStatusStyle(
-            worksheet.Cell("B17"),
-            reportData.Summary.BestCompleteSupplierName is not null);
-
-        SetText(worksheet.Cell("A18"), "Total do melhor fornecedor");
-        SetOptionalCurrency(
-            worksheet.Cell("B18"),
-            reportData.Summary.BestCompleteSupplierTotal);
-
-        SetText(worksheet.Cell("A19"), "Economia potencial");
-        SetOptionalCurrency(
-            worksheet.Cell("B19"),
+            "Economia estimada",
             reportData.Summary.PotentialSavings);
 
-        const int supplierHeaderRow = 22;
-        SetText(worksheet.Cell(supplierHeaderRow, 1), "Fornecedor");
-        SetText(worksheet.Cell(supplierHeaderRow, 2), "Itens cotados");
-        SetText(worksheet.Cell(supplierHeaderRow, 3), "Itens pendentes");
-        SetText(worksheet.Cell(supplierHeaderRow, 4), "Cobertura completa");
-        SetText(worksheet.Cell(supplierHeaderRow, 5), "Total cotado");
-        ApplyHeaderStyle(worksheet.Range(supplierHeaderRow, 1, supplierHeaderRow, 5));
-
-        var row = supplierHeaderRow + 1;
-
-        if (reportData.Suppliers.Count == 0)
-        {
-            worksheet.Range(row, 1, row, 5).Merge();
-            SetText(worksheet.Cell(row, 1), "Nenhum fornecedor cadastrado.");
-            ApplyMissingStyle(worksheet.Range(row, 1, row, 5));
-        }
-        else
-        {
-            foreach (var supplier in reportData.Suppliers)
-            {
-                SetText(worksheet.Cell(row, 1), supplier.Name);
-                worksheet.Cell(row, 2).SetValue(supplier.QuotedItemCount);
-                worksheet.Cell(row, 3).SetValue(supplier.MissingItemCount);
-                SetText(
-                    worksheet.Cell(row, 4),
-                    supplier.HasCompleteCoverage ? "Sim" : "Não");
-                ApplyStatusStyle(
-                    worksheet.Cell(row, 4),
-                    supplier.HasCompleteCoverage);
-                SetCurrency(worksheet.Cell(row, 5), supplier.QuotedTotal);
-                row++;
-            }
-        }
-
-        worksheet.Column(1).Width = 32;
-        worksheet.Column(2).Width = 48;
-        worksheet.Columns(3, 4).Width = 18;
-        worksheet.Column(5).Width = 20;
+        worksheet.Column(1).Width = 30;
+        worksheet.Columns(2, 3).Width = 18;
+        worksheet.Column(4).Width = 22;
         worksheet.SheetView.FreezeRows(1);
-
-        ApplyUsedRangeBorders(worksheet);
+        ConfigurePrintLayout(worksheet, landscape: false);
+        ApplyRangeBorders(worksheet.Range("A3:D5"));
+        ApplyRangeBorders(worksheet.Range("A7:D11"));
     }
 
     private static void BuildPriceMapWorksheet(
@@ -196,14 +123,29 @@ public sealed class ClosedXmlShoppingListReportExporter : IShoppingListExcelExpo
         var lastColumn = suppliers.Count == 0
             ? 4
             : 3 + (suppliers.Count * 2);
+        const int headerRow = 6;
+        const int firstItemRow = headerRow + 1;
 
-        SetText(worksheet.Cell(1, 1), "Item");
-        SetText(worksheet.Cell(1, 2), "Quantidade");
-        SetText(worksheet.Cell(1, 3), "Unidade");
+        worksheet.Range(1, 1, 1, lastColumn).Merge();
+        SetText(worksheet.Cell(1, 1), "Mapa de preços");
+        ApplyTitleStyle(worksheet.Range(1, 1, 1, lastColumn));
+
+        SetText(worksheet.Cell(3, 1), "Lista");
+        worksheet.Range(3, 2, 3, lastColumn).Merge();
+        SetText(worksheet.Cell(3, 2), reportData.Name);
+        SetText(worksheet.Cell(4, 1), "Gerado em");
+        worksheet.Range(4, 2, 4, lastColumn).Merge();
+        SetDateTime(worksheet.Cell(4, 2), reportData.GeneratedAt.UtcDateTime);
+        worksheet.Cell(4, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        worksheet.Range(3, 1, 4, 1).Style.Font.Bold = true;
+
+        SetText(worksheet.Cell(headerRow, 1), "Item");
+        SetText(worksheet.Cell(headerRow, 2), "Quantidade");
+        SetText(worksheet.Cell(headerRow, 3), "Unidade");
 
         if (suppliers.Count == 0)
         {
-            SetText(worksheet.Cell(1, 4), "Situação");
+            SetText(worksheet.Cell(headerRow, 4), "Situação");
         }
         else
         {
@@ -213,17 +155,18 @@ public sealed class ClosedXmlShoppingListReportExporter : IShoppingListExcelExpo
                 var unitPriceColumn = 4 + (supplierIndex * 2);
 
                 SetText(
-                    worksheet.Cell(1, unitPriceColumn),
-                    $"{supplier.Name} - Preço unitário");
+                    worksheet.Cell(headerRow, unitPriceColumn),
+                    $"{supplier.Name}\nPreço unitário");
                 SetText(
-                    worksheet.Cell(1, unitPriceColumn + 1),
-                    $"{supplier.Name} - Preço total");
+                    worksheet.Cell(headerRow, unitPriceColumn + 1),
+                    $"{supplier.Name}\nTotal");
             }
         }
 
-        ApplyHeaderStyle(worksheet.Range(1, 1, 1, lastColumn));
+        ApplyHeaderStyle(worksheet.Range(headerRow, 1, headerRow, lastColumn));
+        worksheet.Row(headerRow).Height = 42;
 
-        var row = 2;
+        var row = firstItemRow;
 
         foreach (var item in reportData.Items)
         {
@@ -297,19 +240,21 @@ public sealed class ClosedXmlShoppingListReportExporter : IShoppingListExcelExpo
         worksheet.Range(totalRow, 1, totalRow, lastColumn)
             .Style.Border.TopBorder = XLBorderStyleValues.Double;
 
-        if (lastItemRow >= 2)
+        if (lastItemRow >= firstItemRow)
         {
-            worksheet.Range(1, 1, lastItemRow, lastColumn).SetAutoFilter();
+            worksheet.Range(headerRow, 1, lastItemRow, lastColumn).SetAutoFilter();
         }
 
         worksheet.Column(1).Width = 30;
         worksheet.Column(2).Width = 13;
         worksheet.Column(3).Width = 12;
         worksheet.Columns(4, lastColumn).Width = 20;
-        worksheet.SheetView.FreezeRows(1);
+        worksheet.SheetView.FreezeRows(headerRow);
         worksheet.SheetView.FreezeColumns(3);
 
-        ApplyUsedRangeBorders(worksheet);
+        ConfigurePrintLayout(worksheet, landscape: true);
+        ApplyRangeBorders(worksheet.Range(3, 1, 4, lastColumn));
+        ApplyRangeBorders(worksheet.Range(headerRow, 1, totalRow, lastColumn));
     }
 
     private static void WriteItemSupplierPrices(
@@ -352,141 +297,6 @@ public sealed class ClosedXmlShoppingListReportExporter : IShoppingListExcelExpo
                         totalPriceColumn));
             }
         }
-    }
-
-    private static void BuildQuotesWorksheet(
-        XLWorkbook workbook,
-        ShoppingListReportDataDto reportData)
-    {
-        var worksheet = workbook.Worksheets.Add("Cotações");
-        ApplyWorksheetDefaults(worksheet);
-
-        var headers = new[]
-        {
-            "Item",
-            "Quantidade",
-            "Unidade",
-            "Fornecedor",
-            "Preço unitário",
-            "Preço total",
-            "Melhor preço"
-        };
-
-        for (var column = 1; column <= headers.Length; column++)
-        {
-            SetText(worksheet.Cell(1, column), headers[column - 1]);
-        }
-
-        ApplyHeaderStyle(worksheet.Range(1, 1, 1, headers.Length));
-
-        var row = 2;
-
-        foreach (var item in reportData.Items)
-        {
-            foreach (var quote in item.Quotes)
-            {
-                SetText(worksheet.Cell(row, 1), item.Name);
-                worksheet.Cell(row, 2).SetValue(item.Quantity);
-                worksheet.Cell(row, 2).Style.NumberFormat.Format = QuantityFormat;
-                SetText(worksheet.Cell(row, 3), item.Unit);
-                SetText(worksheet.Cell(row, 4), quote.SupplierName);
-                SetCurrency(worksheet.Cell(row, 5), quote.UnitPrice);
-                SetCurrency(worksheet.Cell(row, 6), quote.TotalPrice);
-                SetText(worksheet.Cell(row, 7), quote.IsLowestPrice ? "Sim" : "Não");
-
-                if (quote.IsLowestPrice)
-                {
-                    ApplyBestPriceStyle(worksheet.Range(row, 5, row, 7));
-                }
-
-                row++;
-            }
-        }
-
-        var lastQuoteRow = row - 1;
-
-        if (lastQuoteRow < 2)
-        {
-            worksheet.Range(2, 1, 2, headers.Length).Merge();
-            SetText(worksheet.Cell(2, 1), "Nenhuma cotação informada.");
-            ApplyMissingStyle(worksheet.Range(2, 1, 2, headers.Length));
-        }
-        else
-        {
-            worksheet.Range(1, 1, lastQuoteRow, headers.Length).SetAutoFilter();
-        }
-
-        worksheet.Column(1).Width = 30;
-        worksheet.Column(2).Width = 13;
-        worksheet.Column(3).Width = 12;
-        worksheet.Column(4).Width = 28;
-        worksheet.Columns(5, 6).Width = 18;
-        worksheet.Column(7).Width = 15;
-        worksheet.SheetView.FreezeRows(1);
-
-        ApplyUsedRangeBorders(worksheet);
-    }
-
-    private static void BuildPendingItemsWorksheet(
-        XLWorkbook workbook,
-        ShoppingListReportDataDto reportData)
-    {
-        var worksheet = workbook.Worksheets.Add("Pendências");
-        ApplyWorksheetDefaults(worksheet);
-
-        SetText(worksheet.Cell(1, 1), "Item");
-        SetText(worksheet.Cell(1, 2), "Fornecedor pendente");
-        SetText(worksheet.Cell(1, 3), "Situação");
-        ApplyHeaderStyle(worksheet.Range(1, 1, 1, 3));
-
-        var row = 2;
-
-        foreach (var pendingItem in reportData.PendingItems)
-        {
-            if (pendingItem.MissingSupplierNames.Count > 0)
-            {
-                foreach (var supplierName in pendingItem.MissingSupplierNames)
-                {
-                    SetText(worksheet.Cell(row, 1), pendingItem.ItemName);
-                    SetText(worksheet.Cell(row, 2), supplierName);
-                    SetText(worksheet.Cell(row, 3), "Preço não informado");
-                    ApplyMissingStyle(worksheet.Range(row, 1, row, 3));
-                    row++;
-                }
-
-                continue;
-            }
-
-            SetText(worksheet.Cell(row, 1), pendingItem.ItemName);
-            SetText(worksheet.Cell(row, 2), "—");
-            SetText(
-                worksheet.Cell(row, 3),
-                reportData.Suppliers.Count == 0
-                    ? "Nenhum fornecedor cadastrado"
-                    : "Preço pendente");
-            ApplyMissingStyle(worksheet.Range(row, 1, row, 3));
-            row++;
-        }
-
-        var lastPendingRow = row - 1;
-
-        if (lastPendingRow < 2)
-        {
-            worksheet.Range(2, 1, 2, 3).Merge();
-            SetText(worksheet.Cell(2, 1), "Nenhuma pendência.");
-            ApplyBestPriceStyle(worksheet.Range(2, 1, 2, 3));
-        }
-        else
-        {
-            worksheet.Range(1, 1, lastPendingRow, 3).SetAutoFilter();
-        }
-
-        worksheet.Column(1).Width = 30;
-        worksheet.Column(2).Width = 30;
-        worksheet.Column(3).Width = 30;
-        worksheet.SheetView.FreezeRows(1);
-
-        ApplyUsedRangeBorders(worksheet);
     }
 
     private static void ApplyWorksheetDefaults(IXLWorksheet worksheet)
@@ -556,40 +366,40 @@ public sealed class ClosedXmlShoppingListReportExporter : IShoppingListExcelExpo
         range.Style.Font.FontColor = XLColor.FromHtml(MissingPriceFontColor);
     }
 
-    private static void ApplyStatusStyle(IXLCell cell, bool isPositive)
+    private static void ApplyRangeBorders(IXLRange range)
     {
-        if (isPositive)
-        {
-            ApplyBestPriceStyle(cell);
-            return;
-        }
+        range.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+        range.Style.Border.OutsideBorderColor = XLColor.FromHtml(BorderColor);
 
-        ApplyMissingStyle(cell);
+        foreach (var row in range.Rows())
+        {
+            row.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            row.Style.Border.BottomBorderColor = XLColor.FromHtml(BorderColor);
+        }
     }
 
-    private static void ApplyUsedRangeBorders(IXLWorksheet worksheet)
-    {
-        var usedRange = worksheet.RangeUsed();
-
-        if (usedRange is null)
-        {
-            return;
-        }
-
-        usedRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-        usedRange.Style.Border.InsideBorderColor = XLColor.FromHtml(BorderColor);
-        usedRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-        usedRange.Style.Border.OutsideBorderColor = XLColor.FromHtml(BorderColor);
-    }
-
-    private static void SetSummaryValue(
+    private static void SetResultRow(
         IXLWorksheet worksheet,
         int row,
         string label,
-        int value)
+        object? value)
     {
+        worksheet.Range(row, 1, row, 3).Merge();
         SetText(worksheet.Cell(row, 1), label);
-        worksheet.Cell(row, 2).SetValue(value);
+        worksheet.Cell(row, 1).Style.Font.Bold = true;
+
+        if (value is decimal currency)
+        {
+            SetCurrency(worksheet.Cell(row, 4), currency);
+        }
+        else if (value is null)
+        {
+            SetOptionalCurrency(worksheet.Cell(row, 4), null);
+        }
+        else
+        {
+            SetText(worksheet.Cell(row, 4), value?.ToString() ?? "Não disponível");
+        }
     }
 
     private static void SetOptionalCurrency(IXLCell cell, decimal? value)
@@ -610,10 +420,18 @@ public sealed class ClosedXmlShoppingListReportExporter : IShoppingListExcelExpo
         cell.Style.NumberFormat.Format = CurrencyFormat;
     }
 
-    private static void SetPercentage(IXLCell cell, decimal value)
+    private static void ConfigurePrintLayout(IXLWorksheet worksheet, bool landscape)
     {
-        cell.SetValue(value);
-        cell.Style.NumberFormat.Format = PercentageFormat;
+        worksheet.PageSetup.PageOrientation = landscape
+            ? XLPageOrientation.Landscape
+            : XLPageOrientation.Portrait;
+        worksheet.PageSetup.PaperSize = XLPaperSize.A4Paper;
+        worksheet.PageSetup.PagesWide = 1;
+        worksheet.PageSetup.PagesTall = 0;
+        worksheet.PageSetup.Margins.Top = 0.5;
+        worksheet.PageSetup.Margins.Bottom = 0.5;
+        worksheet.PageSetup.Margins.Left = 0.4;
+        worksheet.PageSetup.Margins.Right = 0.4;
     }
 
     private static void SetDateTime(IXLCell cell, DateTime value)

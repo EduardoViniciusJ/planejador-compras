@@ -12,9 +12,9 @@ public sealed class ShoppingListPdfDocumentBuilder
     private const int TableTextLimit = 80;
     private static readonly CultureInfo BrazilianCulture =
         CultureInfo.GetCultureInfo("pt-BR");
-    private static readonly Color DarkBlue = Color.FromRgb(23, 54, 93);
-    private static readonly Color BorderBlue = Color.FromRgb(217, 225, 242);
-    private static readonly Color LightBlue = Color.FromRgb(242, 246, 251);
+    private static readonly Color DarkBlue = Color.FromRgb(24, 24, 27);
+    private static readonly Color BorderBlue = Color.FromRgb(212, 212, 216);
+    private static readonly Color LightBlue = Color.FromRgb(244, 244, 245);
     private static readonly Color BestPriceBackground = Color.FromRgb(226, 240, 217);
     private static readonly Color BestPriceForeground = Color.FromRgb(0, 97, 0);
     private static readonly Color MissingPriceBackground = Color.FromRgb(255, 242, 204);
@@ -26,12 +26,9 @@ public sealed class ShoppingListPdfDocumentBuilder
 
         var document = CreateDocument(reportData);
         var supplierGroups = CreateSupplierGroups(reportData.Suppliers);
-        Section? lastPriceMapSection = null;
-
         for (var groupIndex = 0; groupIndex < supplierGroups.Count; groupIndex++)
         {
             var section = document.AddSection();
-            lastPriceMapSection = section;
             ConfigureSection(section);
             AddHeader(section, reportData);
             AddFooter(section);
@@ -50,18 +47,6 @@ public sealed class ShoppingListPdfDocumentBuilder
             AddPriceMapTable(section, reportData, supplierGroups[groupIndex]);
         }
 
-        if (reportData.PendingItems.Count == 0)
-        {
-            AddPendingItems(lastPriceMapSection!, reportData);
-            return document;
-        }
-
-        var pendingSection = document.AddSection();
-        ConfigureSection(pendingSection);
-        AddHeader(pendingSection, reportData);
-        AddFooter(pendingSection);
-        AddPendingItems(pendingSection, reportData);
-
         return document;
     }
 
@@ -70,7 +55,6 @@ public sealed class ShoppingListPdfDocumentBuilder
         var document = new Document();
         document.Info.Title = $"Equalização - {LimitText(reportData.Name, TableTextLimit)}";
         document.Info.Subject = "Relatório de equalização de preços";
-        document.Info.Author = "Planejador de Compras";
 
         var normalStyle = document.Styles[StyleNames.Normal]!;
         normalStyle.Font.Name = EmbeddedPdfFontResolver.FamilyName;
@@ -123,41 +107,28 @@ public sealed class ShoppingListPdfDocumentBuilder
         ShoppingListReportDataDto reportData)
     {
         var headerTable = section.Headers.Primary.AddTable();
-        headerTable.AddColumn(Unit.FromCentimeter(1.4));
-        headerTable.AddColumn(Unit.FromCentimeter(25.5));
+        headerTable.AddColumn(Unit.FromCentimeter(26.9));
         headerTable.Borders.Bottom.Width = Unit.FromPoint(0.8);
         headerTable.Borders.Bottom.Color = BorderBlue;
 
         var row = headerTable.AddRow();
         row.VerticalAlignment = VerticalAlignment.Center;
 
-        var image = row.Cells[0].AddImage(PdfEmbeddedAssets.BrandMarkMigraDocSource);
-        image.Width = Unit.FromCentimeter(0.9);
-        image.LockAspectRatio = true;
-
-        var brandParagraph = row.Cells[1].AddParagraph();
-        brandParagraph.Format.SpaceAfter = Unit.FromPoint(1);
-        var brandText = brandParagraph.AddFormattedText(
-            "Planejador de Compras",
-            TextFormat.Bold);
-        brandText.Font.Size = Unit.FromPoint(10);
-        brandText.Font.Color = DarkBlue;
-
-        var listParagraph = row.Cells[1].AddParagraph();
+        var listParagraph = row.Cells[0].AddParagraph();
         listParagraph.Format.SpaceAfter = Unit.FromPoint(1);
         listParagraph.AddFormattedText("Lista: ", TextFormat.Bold);
         listParagraph.AddText(LimitText(reportData.Name, TableTextLimit));
 
         if (!string.IsNullOrWhiteSpace(reportData.Description))
         {
-            var descriptionParagraph = row.Cells[1].AddParagraph();
+            var descriptionParagraph = row.Cells[0].AddParagraph();
             descriptionParagraph.Format.Font.Size = Unit.FromPoint(7.2);
             descriptionParagraph.Format.Font.Color = Colors.DimGray;
             descriptionParagraph.AddText(
                 LimitText(reportData.Description, HeaderDescriptionLimit));
         }
 
-        var generatedParagraph = row.Cells[1].AddParagraph();
+        var generatedParagraph = row.Cells[0].AddParagraph();
         generatedParagraph.Format.Font.Size = Unit.FromPoint(7.2);
         generatedParagraph.Format.Font.Color = Colors.DimGray;
         generatedParagraph.AddText(
@@ -173,7 +144,7 @@ public sealed class ShoppingListPdfDocumentBuilder
         footer.Format.Borders.Top.Width = Unit.FromPoint(0.5);
         footer.Format.Borders.Top.Color = BorderBlue;
         footer.Format.SpaceBefore = Unit.FromPoint(3);
-        footer.AddText("Planejador de Compras | Página ");
+        footer.AddText("Página ");
         footer.AddPageField();
         footer.AddText(" de ");
         footer.AddNumPagesField();
@@ -183,8 +154,8 @@ public sealed class ShoppingListPdfDocumentBuilder
         Section section,
         ShoppingListReportDataDto reportData)
     {
-        var title = section.AddParagraph("Relatório de equalização");
-        title.Format.Font.Size = Unit.FromPoint(17);
+        var title = section.AddParagraph("Equalização de preços");
+        title.Format.Font.Size = Unit.FromPoint(20);
         title.Format.Font.Bold = true;
         title.Format.Font.Color = DarkBlue;
         title.Format.SpaceAfter = Unit.FromPoint(3);
@@ -214,70 +185,36 @@ public sealed class ShoppingListPdfDocumentBuilder
         Section section,
         ShoppingListReportDataDto reportData)
     {
-        section.AddParagraph("Resumo", StyleNames.Heading1);
+        section.AddParagraph("Resumo da decisão", StyleNames.Heading1);
 
         var table = section.AddTable();
         table.Borders.Width = Unit.FromPoint(0.4);
         table.Borders.Color = BorderBlue;
 
-        for (var column = 0; column < 5; column++)
+        for (var column = 0; column < 4; column++)
         {
-            table.AddColumn(Unit.FromCentimeter(5.35));
+            table.AddColumn(Unit.FromCentimeter(6.68));
         }
 
         var firstRow = table.AddRow();
-        AddSummaryCell(firstRow.Cells[0], "Itens", reportData.Summary.TotalItems.ToString(BrazilianCulture));
         AddSummaryCell(
-            firstRow.Cells[1],
-            "Fornecedores",
-            reportData.Summary.TotalSuppliers.ToString(BrazilianCulture));
-        AddSummaryCell(
-            firstRow.Cells[2],
-            "Cobertura",
-            $"{reportData.Summary.CoveragePercentage.ToString("0.##", BrazilianCulture)}%");
-        AddSummaryCell(
-            firstRow.Cells[3],
-            "Cotações",
-            $"{reportData.Summary.QuotedPriceCount}/{reportData.Summary.ExpectedPriceCount}");
-        AddSummaryCell(
-            firstRow.Cells[4],
-            "Pendências",
-            reportData.PendingItems.Count.ToString(BrazilianCulture));
-
-        var secondRow = table.AddRow();
-        AddSummaryCell(
-            secondRow.Cells[0],
-            "Melhor combinação",
+            firstRow.Cells[0],
+            "Menores preços por item",
             FormatCurrency(reportData.Summary.BestChoiceTotal));
         AddSummaryCell(
-            secondRow.Cells[1],
-            "Fornecedor vencedor",
+            firstRow.Cells[1],
+            "Melhor fornecedor completo",
             LimitText(
                 reportData.Summary.BestCompleteSupplierName ?? "Não disponível",
                 42));
         AddSummaryCell(
-            secondRow.Cells[2],
-            "Total do vencedor",
+            firstRow.Cells[2],
+            "Total do fornecedor",
             FormatOptionalCurrency(reportData.Summary.BestCompleteSupplierTotal));
         AddSummaryCell(
-            secondRow.Cells[3],
-            "Economia",
+            firstRow.Cells[3],
+            "Economia estimada",
             FormatOptionalCurrency(reportData.Summary.PotentialSavings));
-        AddSummaryCell(
-            secondRow.Cells[4],
-            "Situação",
-            reportData.Summary.HasCompleteBestChoice ? "Completa" : "Incompleta");
-
-        if (reportData.Summary.HasCompleteBestChoice)
-        {
-            secondRow.Cells[4].Shading.Color = BestPriceBackground;
-            secondRow.Cells[4].Format.Font.Color = BestPriceForeground;
-        }
-        else
-        {
-            secondRow.Cells[4].Shading.Color = MissingPriceBackground;
-            secondRow.Cells[4].Format.Font.Color = MissingPriceForeground;
-        }
     }
 
     private static void AddSummaryCell(Cell cell, string label, string value)
@@ -510,38 +447,6 @@ public sealed class ShoppingListPdfDocumentBuilder
                 cell.Shading.Color = MissingPriceBackground;
                 cell.Format.Font.Color = MissingPriceForeground;
             }
-        }
-    }
-
-    private static void AddPendingItems(
-        Section section,
-        ShoppingListReportDataDto reportData)
-    {
-        section.AddParagraph("Pendências", StyleNames.Heading1);
-
-        if (reportData.PendingItems.Count == 0)
-        {
-            var complete = section.AddParagraph("Nenhuma pendência de preço.");
-            complete.Format.Shading.Color = BestPriceBackground;
-            complete.Format.Font.Color = BestPriceForeground;
-            complete.Format.LeftIndent = Unit.FromPoint(5);
-            return;
-        }
-
-        foreach (var pendingItem in reportData.PendingItems)
-        {
-            var supplierNames = pendingItem.MissingSupplierNames.Count == 0
-                ? "nenhum fornecedor cadastrado"
-                : string.Join(
-                    ", ",
-                    pendingItem.MissingSupplierNames.Select(name => LimitText(name, 42)));
-
-            var paragraph = section.AddParagraph();
-            paragraph.Format.LeftIndent = Unit.FromPoint(5);
-            paragraph.Format.FirstLineIndent = Unit.FromPoint(-5);
-            paragraph.Format.SpaceAfter = Unit.FromPoint(2);
-            paragraph.AddText(
-                $"- {LimitText(pendingItem.ItemName, TableTextLimit)}: {supplierNames}.");
         }
     }
 
