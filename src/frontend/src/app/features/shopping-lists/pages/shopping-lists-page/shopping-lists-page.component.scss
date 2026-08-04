@@ -7,9 +7,9 @@
 }
 
 .page-primary-action,
-.shopping-list-card-actions .btn,
-.page-state .btn,
-.confirmation-actions .btn {
+.shopping-list-card-actions .ant-btn,
+.page-state .ant-btn,
+.confirmation-actions .ant-btn {
   min-height: var(--app-control-height-sm);
   display: inline-flex;
   align-items: center;
@@ -157,7 +157,7 @@
 
 .shopping-lists-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 29rem), 1fr));
   align-items: stretch;
   gap: 0.85rem;
 }
@@ -206,10 +206,11 @@
   flex: 0 1 auto;
   align-items: center;
   justify-content: center;
+  gap: 0.3rem;
   min-height: 1.65rem;
   padding: 0.2rem 0.55rem;
   border: 1px solid transparent;
-  border-radius: var(--app-radius-pill);
+  border-radius: var(--app-control-radius);
   font-size: 0.72rem;
   font-weight: 800;
   line-height: 1.2;
@@ -218,15 +219,15 @@
 }
 
 .status-badge-draft {
-  border-color: color-mix(in srgb, var(--app-text-muted) 25%, transparent);
-  background: var(--app-surface-alt-bg);
-  color: var(--app-text-muted);
+  border-color: color-mix(in srgb, var(--app-info) 28%, transparent);
+  background: var(--app-info-soft);
+  color: var(--app-info-strong);
 }
 
 .status-badge-waiting {
-  border-color: color-mix(in srgb, var(--app-warning) 28%, transparent);
-  background: var(--app-warning-soft);
-  color: var(--app-warning-strong);
+  border-color: color-mix(in srgb, var(--app-brand-accent-strong) 34%, transparent);
+  background: var(--app-brand-accent-soft);
+  color: var(--app-brand-strong);
 }
 
 .status-badge-ready {
@@ -327,6 +328,11 @@
   gap: 0.45rem;
 }
 
+.primary-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .icon-action {
   width: var(--app-control-height-sm);
   height: var(--app-control-height-sm);
@@ -352,7 +358,7 @@
   color: var(--app-danger-strong);
 }
 
-.shopping-list-card-actions .btn {
+.shopping-list-card-actions .ant-btn {
   min-width: 0;
   padding-inline: 0.7rem;
   font-size: 0.78rem;
@@ -375,10 +381,10 @@
 
   .primary-actions {
     display: grid;
-    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    grid-template-columns: 1fr;
   }
 
-  .primary-actions .btn {
+  .primary-actions .ant-btn {
     width: 100%;
   }
 

@@ -1,0 +1,90 @@
+<section class="management-page quotation-requests-page">
+  <header class="management-page-header">
+    <div class="management-page-heading">
+      <span class="management-eyebrow">Comunicação com fornecedores</span>
+      <h1>Solicitações de cotação</h1>
+      <p>Consulte cada documento enviado sem depender das alterações posteriores na lista.</p>
+    </div>
+    <div class="management-actions">
+      <a nz-button nzType="primary" routerLink="/app">
+        <app-icon name="plus" [size]="18" /> Nova solicitação
+      </a>
+    </div>
+  </header>
+
+  <section class="requests-toolbar management-surface" aria-label="Busca de solicitações">
+    <div>
+      <span class="management-eyebrow">Histórico de documentos</span>
+      <h2>Documentos emitidos</h2>
+      <p>Pesquise pelo número, lista ou comprador responsável.</p>
+    </div>
+    <label class="request-search">
+      <app-icon name="search" [size]="18" />
+      <span class="visually-hidden">Buscar solicitação</span>
+      <input
+        nz-input
+        type="search"
+        placeholder="Buscar solicitação"
+        autocomplete="off"
+        [value]="searchTerm()"
+        (input)="updateSearch($event)"
+      />
+    </label>
+  </section>
+
+  @if (isLoading()) {
+    <div class="requests-state">
+      <nz-spin nzSimple />
+      <p>Carregando solicitações...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="requests-state" role="alert">
+      <span class="state-icon"><app-icon name="alert-triangle" [size]="24" /></span>
+      <h2>Solicitações indisponíveis</h2>
+      <p>{{ loadError() }}</p>
+      <button nz-button type="button" (click)="retry()">
+        <app-icon name="refresh" [size]="18" /> Tentar novamente
+      </button>
+    </div>
+  } @else if (filteredRequests().length === 0) {
+    <div class="requests-state">
+      @if (searchTerm()) {
+        <span class="state-icon"><app-icon name="search" [size]="24" /></span>
+        <h2>Nenhuma solicitação encontrada</h2>
+        <p>Revise os termos usados na pesquisa.</p>
+      } @else {
+        <app-mascot variant="02" size="medium" />
+        <h2>Nenhuma solicitação emitida</h2>
+        <p>Abra uma lista com itens e use “Solicitar cotação” para criar o primeiro documento.</p>
+        <a nz-button nzType="primary" routerLink="/app">Ver listas de compras</a>
+      }
+    </div>
+  } @else {
+    <div class="requests-grid">
+      @for (request of filteredRequests(); track request.id) {
+        <article class="request-card management-surface">
+          <header>
+            <div>
+              <strong>{{ request.code }}</strong>
+              <span>Emitida em {{ formatDateTime(request.createdAtUtc) }}</span>
+            </div>
+          </header>
+          <div class="request-content">
+            <span class="management-eyebrow">Lista de origem</span>
+            <h2>{{ request.shoppingListName }}</h2>
+            <p>Responsável: {{ request.buyerName }}</p>
+          </div>
+          <dl>
+            <div><dt>Itens</dt><dd>{{ request.itemCount }}</dd></div>
+            <div><dt>Responder até</dt><dd>{{ formatDate(request.responseDeadline) }}</dd></div>
+          </dl>
+          <footer class="management-card-actions">
+            <a nz-button class="management-card-action" [routerLink]="['/app/quotation-requests', request.id]">
+              <app-icon name="eye" [size]="18" /> Ver solicitação
+            </a>
+          </footer>
+        </article>
+      }
+    </div>
+  }
+</section>

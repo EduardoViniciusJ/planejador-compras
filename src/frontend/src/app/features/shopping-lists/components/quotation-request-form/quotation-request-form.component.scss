@@ -1,0 +1,47 @@
+:host {
+  display: block;
+}
+
+.quotation-request-intro {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1.25rem;
+  padding: 0.85rem;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-control-radius);
+  background: var(--app-surface-alt-bg);
+}
+
+.quotation-request-intro p {
+  margin: 0.2rem 0 0;
+  color: var(--app-text-muted);
+  font-size: 0.82rem;
+}
+
+.request-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  flex: 0 0 auto;
+  border-radius: var(--app-control-radius);
+  background: var(--app-brand-soft);
+  color: var(--app-brand-strong);
+  place-items: center;
+}
+
+nz-date-picker {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 560px) {
+  .form-actions {
+    display: grid;
+  }
+}

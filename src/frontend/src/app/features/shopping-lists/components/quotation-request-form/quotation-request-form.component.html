@@ -1,0 +1,84 @@
+<div class="quotation-request-intro">
+  <span class="request-icon"><app-icon name="file-invoice" [size]="22" /></span>
+  <div>
+    <strong>{{ listName() }}</strong>
+    <p>O PDF conterá os itens e as informações para o fornecedor responder à cotação.</p>
+  </div>
+</div>
+
+<form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="generate()">
+  <nz-form-item>
+    <nz-form-label nzFor="response-deadline">Responder até</nz-form-label>
+    <nz-form-control>
+      <nz-date-picker
+        id="response-deadline"
+        formControlName="responseDeadline"
+        nzFormat="dd/MM/yyyy"
+        nzPlaceHolder="Data limite opcional"
+        [nzDisabledDate]="disabledDate"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="delivery-address">Local de entrega</nz-form-label>
+    <nz-form-control nzExtra="Opcional. Informe somente se o fornecedor precisar considerar frete.">
+      <textarea
+        nz-input
+        id="delivery-address"
+        formControlName="deliveryAddress"
+        maxlength="500"
+        rows="2"
+        placeholder="Endereço ou referência para entrega"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="quotation-instructions">Orientações ao fornecedor</nz-form-label>
+    <nz-form-control nzExtra="Ex.: informar marca, prazo, frete, validade e forma de pagamento.">
+      <textarea
+        nz-input
+        id="quotation-instructions"
+        formControlName="instructions"
+        maxlength="2000"
+        rows="3"
+        placeholder="Condições que devem acompanhar a proposta"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  @if (errorMessage()) {
+    <nz-alert nzType="error" nzShowIcon [nzMessage]="errorMessage()!" />
+  }
+
+  @if (generated()) {
+    <nz-alert
+      nzType="success"
+      nzShowIcon
+      [nzMessage]="'Solicitação ' + (generatedCode() || '') + ' salva'"
+      nzDescription="A solicitação foi salva. Baixe o documento ou compartilhe o PDF com o fornecedor."
+    />
+  }
+
+  <div class="form-actions">
+    <button nz-button type="button" [disabled]="generating()" (click)="cancelRequested.emit()">
+      Fechar
+    </button>
+    @if (generated()) {
+      <button nz-button type="button" (click)="viewRequested.emit()">
+        <app-icon name="eye" [size]="17" /> Ver registro
+      </button>
+      <button nz-button type="button" (click)="downloadRequested.emit()">
+        <app-icon name="download" [size]="17" /> Baixar PDF
+      </button>
+      <button nz-button nzType="primary" type="button" (click)="shareRequested.emit()">
+        <app-icon name="brand-whatsapp" [size]="18" /> Compartilhar
+      </button>
+    } @else {
+      <button nz-button nzType="primary" type="submit" data-testid="generate-quotation-request" [nzLoading]="generating()">
+        <app-icon name="file-invoice" [size]="17" /> Gerar solicitação
+      </button>
+    }
+  </div>
+</form>

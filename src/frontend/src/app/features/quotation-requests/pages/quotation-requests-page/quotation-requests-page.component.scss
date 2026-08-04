@@ -1,0 +1,82 @@
+:host { display: block; }
+
+.requests-toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.requests-toolbar h2,
+.requests-toolbar p { margin: 0; }
+.requests-toolbar h2 { color: var(--app-text-color); font-size: 1rem; }
+.requests-toolbar p { margin-top: .2rem; color: var(--app-text-muted); font-size: .78rem; }
+
+.request-search {
+  width: min(100%, 22rem);
+  min-height: var(--app-control-height);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: 0 .75rem;
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-control-radius);
+  color: var(--app-text-muted);
+}
+
+.request-search input { flex: 1; min-width: 0; padding: 0; border: 0; background: transparent; }
+
+.requests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+  gap: .85rem;
+}
+
+.request-card { display: grid; grid-template-rows: auto 1fr auto auto; padding: 0; }
+.request-card > header {
+  min-height: 3.25rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--app-border-color);
+  background: var(--app-surface-alt-bg);
+}
+.request-card header strong,
+.request-card header span { display: block; }
+.request-card header strong { color: var(--app-text-color); font-size: .85rem; }
+.request-card header div span { margin-top: .2rem; color: var(--app-text-muted); font-size: .7rem; }
+.request-content { padding: 1rem; }
+.request-content h2, .request-content p { margin: 0; }
+.request-content h2 { color: var(--app-text-color); font-size: 1rem; overflow-wrap: anywhere; }
+.request-content p { margin-top: .35rem; color: var(--app-text-muted); font-size: .75rem; }
+.request-card dl { display: grid; grid-template-columns: .6fr 1.4fr; margin: 0; padding: 0 1rem 1rem; }
+.request-card dl div { min-width: 0; padding: 0 .75rem; border-left: 1px solid var(--app-border-color); }
+.request-card dl div:first-child { padding-left: 0; border-left: 0; }
+.request-card dt { color: var(--app-text-muted); font-size: .65rem; font-weight: 700; text-transform: uppercase; }
+.request-card dd { margin: .2rem 0 0; color: var(--app-text-color); font-size: .78rem; font-weight: 800; }
+.request-card footer { display: grid; grid-template-columns: minmax(0, 1fr); padding: .75rem 1rem; border-top: 1px solid var(--app-border-color); }
+.request-card footer .ant-btn { width: 100%; min-width: 0; }
+
+.requests-state {
+  min-height: 20rem;
+  display: grid;
+  align-content: center;
+  gap: .55rem;
+  padding: 2rem;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: var(--app-radius-md);
+  color: var(--app-text-muted);
+  text-align: center;
+  place-items: center;
+}
+.requests-state h2, .requests-state p { margin: 0; }
+.requests-state h2 { color: var(--app-text-color); font-size: 1rem; }
+.state-icon { width: 3rem; height: 3rem; display: grid; border-radius: var(--app-radius-sm); background: var(--app-brand-soft); color: var(--app-brand-strong); place-items: center; }
+
+@media (max-width: 720px) {
+  .requests-toolbar { align-items: stretch; flex-direction: column; }
+  .request-search { width: 100%; }
+}

@@ -1,0 +1,23 @@
+:host { display: block; }
+.back-link { display: inline-flex; align-items: center; gap: .35rem; margin-bottom: .75rem; color: var(--app-text-muted); font-weight: 700; text-decoration: none; }
+.detail-state { min-height: 22rem; display: grid; place-items: center; align-content: center; gap: .5rem; color: var(--app-text-muted); text-align: center; }
+.detail-state h1, .detail-state p { margin: 0; }
+.detail-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 1rem; }
+.detail-summary > div { min-width: 0; padding: 0 1rem; border-left: 1px solid var(--app-border-color); }
+.detail-summary > div:first-child { padding-left: 0; border-left: 0; }
+.detail-summary span, .detail-notes span { display: block; color: var(--app-text-muted); font-size: .68rem; font-weight: 750; text-transform: uppercase; }
+.detail-summary strong, .detail-summary small { display: block; overflow-wrap: anywhere; }
+.detail-summary strong { margin-top: .25rem; color: var(--app-text-color); }
+.detail-summary small { margin-top: .15rem; color: var(--app-text-muted); }
+.detail-section > header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--app-border-color); }
+.detail-section h2 { margin: 0; color: var(--app-text-color); font-size: 1rem; }
+.items-table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: .8rem 1rem; border-bottom: 1px solid var(--app-border-color); text-align: left; }
+th { background: var(--app-surface-alt-bg); color: var(--app-text-muted); font-size: .68rem; text-transform: uppercase; }
+td { color: var(--app-text-color); }
+.detail-notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 1rem; }
+.detail-notes > div { padding: 0 1rem; border-left: 1px solid var(--app-border-color); }
+.detail-notes > div:first-child { padding-left: 0; border-left: 0; }
+.detail-notes p { margin: .3rem 0 0; color: var(--app-text-color); white-space: pre-line; }
+@media (max-width: 720px) { .detail-summary { grid-template-columns: 1fr 1fr; gap: 1rem 0; } .detail-summary > div:nth-child(odd) { padding-left: 0; border-left: 0; } .detail-notes { grid-template-columns: 1fr; gap: 1rem; } .detail-notes > div { padding: 0; border-left: 0; } }

@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import { ShoppingListService } from '../../data-access/shopping-list.service';
+import { ShoppingItemService } from '../../../shopping-items/data-access/shopping-item.service';
+import { ReportFileDownloadService } from '../../../reports/services/report-file-download.service';
+import { QuotationRequestService } from '../../../quotation-requests/data-access/quotation-request.service';
 import { ShoppingList, ShoppingListsOverview } from '../../models/shopping-list.model';
 import { ShoppingListsPageComponent } from './shopping-lists-page.component';
 
@@ -47,8 +50,34 @@ describe('ShoppingListsPageComponent', () => {
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
+  const quotationRequestService = {
+    create: vi.fn(() =>
+      of({
+        id: 'request-1',
+        code: 'SC-2026-ABC123',
+        sourceShoppingListId: 'waiting-list',
+        shoppingListName: 'Equipamentos de TI',
+        description: null,
+        buyerName: 'Comprador',
+        buyerEmail: 'buyer@example.com',
+        responseDeadline: null,
+        deliveryAddress: null,
+        instructions: null,
+        createdAtUtc: '2026-08-04T12:00:00Z',
+        items: [],
+      }),
+    ),
+    downloadPdf: vi.fn(() =>
+      of({ content: new Blob(['pdf'], { type: 'application/pdf' }), fileName: 'solicitacao.pdf' }),
+    ),
+  };
+  const fileDownloadService = { download: vi.fn() };
+  const shoppingItemService = {
+    create: vi.fn(() => of(undefined)),
+  };
 
   beforeEach(async () => {
+    shoppingItemService.create.mockClear();
     service = {
       getOverview: vi.fn(() => of(OVERVIEW)),
       create: vi.fn(() => of(undefined)),
@@ -65,6 +94,9 @@ describe('ShoppingListsPageComponent', () => {
           useValue: { snapshot: { queryParamMap: { get: () => null } } },
         },
         { provide: ShoppingListService, useValue: service },
+        { provide: ShoppingItemService, useValue: shoppingItemService },
+        { provide: QuotationRequestService, useValue: quotationRequestService },
+        { provide: ReportFileDownloadService, useValue: fileDownloadService },
       ],
     }).compileComponents();
 
@@ -102,13 +134,37 @@ describe('ShoppingListsPageComponent', () => {
     expect(service.getOverview).toHaveBeenCalledTimes(2);
   });
 
-  it('should open the item form directly from the list action', () => {
-    const router = TestBed.inject(Router);
-    const navigate = vi.spyOn(router, 'navigate');
-
+  it('should add an item without leaving the shopping lists page', () => {
     clickElement(fixture, '[data-testid="add-item"]');
+    const unitSelect = getHost(fixture).querySelector(
+      'nz-select[formControlName="unit"]',
+    ) as HTMLElement | null;
+    expect(unitSelect).toBeTruthy();
+    expect(unitSelect?.parentElement?.tagName).toBe('DIV');
+    expect(unitSelect?.parentElement?.classList.contains('form-field')).toBe(true);
+    setInputValue(fixture, 'input[formControlName="name"]', 'Papel A4');
+    submitForm(fixture, '.feature-form');
 
-    expect(navigate).toHaveBeenCalledWith(['/app/price-map', 'draft-list', 'items', 'new']);
+    expect(shoppingItemService.create).toHaveBeenCalledWith({
+      shoppingListId: 'draft-list',
+      name: 'Papel A4',
+      quantity: 1,
+      unit: 'un',
+    });
+    expect(service.getOverview).toHaveBeenCalledTimes(2);
+  });
+
+  it('should generate a quotation request from a list with items', () => {
+    clickElement(fixture, '[data-testid="quotation-request-waiting-list"]');
+    clickElement(fixture, '[data-testid="generate-quotation-request"]');
+
+    expect(quotationRequestService.create).toHaveBeenCalledWith('waiting-list', {
+      responseDeadline: null,
+      deliveryAddress: null,
+      instructions: null,
+    });
+    expect(quotationRequestService.downloadPdf).toHaveBeenCalledWith('request-1');
+    expect(getHost(fixture).textContent).toContain('Solicitação SC-2026-ABC123 salva');
   });
 
   it('should edit a shopping list with the same form', () => {
@@ -193,8 +249,11 @@ function setSelectValue(
   fixture.detectChanges();
 }
 
-function submitForm(fixture: ComponentFixture<ShoppingListsPageComponent>): void {
-  const form = getHost(fixture).querySelector('.shopping-list-form') as HTMLFormElement | null;
+function submitForm(
+  fixture: ComponentFixture<ShoppingListsPageComponent>,
+  selector = '.shopping-list-form',
+): void {
+  const form = getHost(fixture).querySelector(selector) as HTMLFormElement | null;
   expect(form).toBeTruthy();
   form?.dispatchEvent(new Event('submit'));
   fixture.detectChanges();
