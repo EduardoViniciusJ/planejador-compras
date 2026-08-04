@@ -27,4 +27,8 @@ public interface ISavedEqualizationRepository
     Task AddAsync(
         SavedEqualization equalization,
         CancellationToken cancellationToken = default);
+
+    Task<bool> DeleteAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
 }

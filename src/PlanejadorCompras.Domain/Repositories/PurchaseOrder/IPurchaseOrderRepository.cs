@@ -25,4 +25,8 @@ public interface IPurchaseOrderRepository
     Task AddAsync(
         Entities.PurchaseOrder purchaseOrder,
         CancellationToken cancellationToken = default);
+
+    Task<bool> DeleteAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
 }
