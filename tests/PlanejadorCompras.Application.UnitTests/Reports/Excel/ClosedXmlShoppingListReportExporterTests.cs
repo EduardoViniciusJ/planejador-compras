@@ -39,46 +39,35 @@ public sealed class ClosedXmlShoppingListReportExporterTests
         using var workbook = new XLWorkbook(stream);
 
         Assert.Equal(
-            new[] { "Resumo", "Mapa de preços", "Cotações", "Pendências" },
+            new[] { "Resumo", "Mapa de preços" },
             workbook.Worksheets.Select(worksheet => worksheet.Name));
 
         var summary = workbook.Worksheet("Resumo");
         Assert.Equal("Compras para escritório", summary.Cell("B3").GetString());
         Assert.Equal(XLDataType.DateTime, summary.Cell("B5").DataType);
-        Assert.Equal(XLDataType.Number, summary.Cell("B14").DataType);
-        Assert.Equal(0.75m, summary.Cell("B14").GetValue<decimal>());
-        Assert.Equal(21m, summary.Cell("B15").GetValue<decimal>());
-        Assert.Equal(25m, summary.Cell("B18").GetValue<decimal>());
-        Assert.Equal(4m, summary.Cell("B19").GetValue<decimal>());
-        Assert.Contains("R$", summary.Cell("B15").Style.NumberFormat.Format);
+        Assert.Equal(21m, summary.Cell("D8").GetValue<decimal>());
+        Assert.Equal("Fornecedor A", summary.Cell("D9").GetString());
+        Assert.Equal(25m, summary.Cell("D10").GetValue<decimal>());
+        Assert.Equal(4m, summary.Cell("D11").GetValue<decimal>());
+        Assert.Contains("R$", summary.Cell("D8").Style.NumberFormat.Format);
+        Assert.Equal(XLPageOrientation.Portrait, summary.PageSetup.PageOrientation);
 
         var priceMap = workbook.Worksheet("Mapa de preços");
-        Assert.Equal("Fornecedor A - Preço unitário", priceMap.Cell("D1").GetString());
-        Assert.Equal("Fornecedor B - Preço total", priceMap.Cell("G1").GetString());
-        Assert.Equal(XLDataType.Number, priceMap.Cell("B2").DataType);
-        Assert.Equal(2m, priceMap.Cell("B2").GetValue<decimal>());
-        Assert.Equal(10m, priceMap.Cell("D2").GetValue<decimal>());
-        Assert.Equal(8m, priceMap.Cell("F2").GetValue<decimal>());
+        Assert.Equal("Fornecedor A\nPreço unitário", priceMap.Cell("D6").GetString());
+        Assert.Equal("Fornecedor B\nTotal", priceMap.Cell("G6").GetString());
+        Assert.Equal(XLDataType.Number, priceMap.Cell("B7").DataType);
+        Assert.Equal(2m, priceMap.Cell("B7").GetValue<decimal>());
+        Assert.Equal(10m, priceMap.Cell("D7").GetValue<decimal>());
+        Assert.Equal(8m, priceMap.Cell("F7").GetValue<decimal>());
         Assert.Equal(
             XLColor.FromHtml("#E2F0D9"),
-            priceMap.Cell("F2").Style.Fill.BackgroundColor);
-        Assert.Equal("Sem preço", priceMap.Cell("F3").GetString());
+            priceMap.Cell("F7").Style.Fill.BackgroundColor);
+        Assert.Equal("Sem preço", priceMap.Cell("F8").GetString());
         Assert.Equal(
             XLColor.FromHtml("#FFF2CC"),
-            priceMap.Cell("F3").Style.Fill.BackgroundColor);
+            priceMap.Cell("F8").Style.Fill.BackgroundColor);
         Assert.True(priceMap.AutoFilter.IsEnabled);
-
-        var quotes = workbook.Worksheet("Cotações");
-        Assert.Equal(3, quotes.RowsUsed().Count() - 1);
-        Assert.Equal(XLDataType.Number, quotes.Cell("E2").DataType);
-        Assert.Contains("R$", quotes.Cell("E2").Style.NumberFormat.Format);
-        Assert.True(quotes.AutoFilter.IsEnabled);
-
-        var pendingItems = workbook.Worksheet("Pendências");
-        Assert.Equal("Caneta", pendingItems.Cell("A2").GetString());
-        Assert.Equal("Fornecedor B", pendingItems.Cell("B2").GetString());
-        Assert.Equal("Preço não informado", pendingItems.Cell("C2").GetString());
-        Assert.True(pendingItems.AutoFilter.IsEnabled);
+        Assert.Equal(XLPageOrientation.Landscape, priceMap.PageSetup.PageOrientation);
     }
 
     [Fact]
@@ -109,14 +98,11 @@ public sealed class ClosedXmlShoppingListReportExporterTests
             workbook.Worksheet("Resumo").Cell("B4"),
             unsafeDescription);
         AssertTextWithoutFormula(
-            workbook.Worksheet("Mapa de preços").Cell("A2"),
+            workbook.Worksheet("Mapa de preços").Cell("A7"),
             unsafeItemName);
         AssertTextWithoutFormula(
-            workbook.Worksheet("Mapa de preços").Cell("D1"),
-            $"{unsafeSupplierName} - Preço unitário");
-        AssertTextWithoutFormula(
-            workbook.Worksheet("Cotações").Cell("D2"),
-            unsafeSupplierName);
+            workbook.Worksheet("Mapa de preços").Cell("D6"),
+            $"{unsafeSupplierName}\nPreço unitário");
     }
 
     [Fact]
@@ -179,17 +165,11 @@ public sealed class ClosedXmlShoppingListReportExporterTests
         using var workbook = new XLWorkbook(stream);
 
         Assert.Equal(
-            "Nenhum fornecedor cadastrado.",
-            workbook.Worksheet("Resumo").Cell("A23").GetString());
+            "Não disponível",
+            workbook.Worksheet("Resumo").Cell("D9").GetString());
         Assert.Equal(
             "Sem preços",
-            workbook.Worksheet("Mapa de preços").Cell("D2").GetString());
-        Assert.Equal(
-            "Nenhuma cotação informada.",
-            workbook.Worksheet("Cotações").Cell("A2").GetString());
-        Assert.Equal(
-            "Nenhuma pendência.",
-            workbook.Worksheet("Pendências").Cell("A2").GetString());
+            workbook.Worksheet("Mapa de preços").Cell("D7").GetString());
     }
 
     private static ShoppingListReportDataDto CreateReportData(

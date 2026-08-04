@@ -53,6 +53,73 @@ public sealed class SupplierUseCasesTests
     }
 
     [Fact]
+    public async Task Create_ShouldNormalizeAndPersistCommercialProfile()
+    {
+        SupplierEntity? persisted = null;
+        _repository
+            .Setup(repository => repository.AddAsync(It.IsAny<SupplierEntity>(), It.IsAny<CancellationToken>()))
+            .Callback<SupplierEntity, CancellationToken>((supplier, _) => persisted = supplier);
+        var useCase = new CreateSupplierUseCase(
+            _repository.Object,
+            _unitOfWork.Object,
+            _currentUser.Object);
+
+        var result = await useCase.ExecuteAsync(new SupplierRequestDto(
+            "  Papelaria Central  ",
+            "11.222.333/0001-81",
+            new SupplierAddressRequestDto(" Rua Central, 10 ", " Curitiba ", "80000-000"),
+            new SupplierContactRequestDto(" COMPRAS@CENTRAL.COM.BR ", "(41) 99999-9999")));
+
+        Assert.NotNull(persisted);
+        Assert.Equal("11222333000181", persisted.Cnpj);
+        Assert.Equal("Rua Central, 10", persisted.Address?.Street);
+        Assert.Equal("Curitiba", persisted.Address?.City);
+        Assert.Equal("80000000", persisted.Address?.PostalCode);
+        Assert.Equal("compras@central.com.br", persisted.Contact?.Email);
+        Assert.Equal("41999999999", persisted.Contact?.Phone);
+        Assert.Equal(persisted.Cnpj, result.Cnpj);
+        Assert.Equal(persisted.Address?.Street, result.Address?.Street);
+    }
+
+    [Fact]
+    public async Task Create_ShouldRejectInvalidCnpj()
+    {
+        var useCase = new CreateSupplierUseCase(
+            _repository.Object,
+            _unitOfWork.Object,
+            _currentUser.Object);
+
+        var exception = await Assert.ThrowsAsync<BadRequestException>(() =>
+            useCase.ExecuteAsync(new SupplierRequestDto("Papelaria Central", "11.111.111/1111-11")));
+
+        Assert.Equal("supplier_invalid_cnpj", exception.ErrorCode);
+        _unitOfWork.Verify(unit => unit.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Create_ShouldRejectDuplicateCnpj()
+    {
+        _repository
+            .Setup(repository => repository.ExistsByCnpjAsync(
+                _userId,
+                "11222333000181",
+                null,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+        var useCase = new CreateSupplierUseCase(
+            _repository.Object,
+            _unitOfWork.Object,
+            _currentUser.Object);
+
+        var exception = await Assert.ThrowsAsync<ConflictException>(() =>
+            useCase.ExecuteAsync(new SupplierRequestDto(
+                "Papelaria Central",
+                "11.222.333/0001-81")));
+
+        Assert.Equal("supplier_cnpj_already_exists", exception.ErrorCode);
+    }
+
+    [Fact]
     public async Task Create_ShouldRejectDuplicateName()
     {
         _repository

@@ -11,7 +11,6 @@ namespace PlanejadorCompras.Application.UnitTests.API.Controllers;
 public sealed class ShoppingListReportsControllerTests
 {
     private readonly Mock<IExportShoppingListReportUseCase> _exportReportUseCaseMock = new();
-
     [Fact]
     public async Task GetPdf_ShouldReturnDownloadablePdfAndForwardCancellation()
     {
@@ -77,7 +76,9 @@ public sealed class ShoppingListReportsControllerTests
     {
         var method = typeof(ShoppingListReportsController).GetMethod(methodName);
         Assert.NotNull(method);
-        Assert.Equal(route, method.GetCustomAttribute<HttpGetAttribute>()?.Template);
+        Assert.Equal(
+            route,
+            method.GetCustomAttribute<HttpGetAttribute>()?.Template);
 
         var documentedStatuses = method
             .GetCustomAttributes<ProducesResponseTypeAttribute>()
