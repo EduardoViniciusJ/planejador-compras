@@ -6,6 +6,7 @@ public interface ISupplierRepository
     Task<List<Entities.Supplier>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
     Task<List<Entities.Supplier>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<bool> ExistsByNameAsync(Guid userId, string name, Guid? excludingId = null, CancellationToken cancellationToken = default);
+    Task<bool> ExistsByCnpjAsync(Guid userId, string cnpj, Guid? excludingId = null, CancellationToken cancellationToken = default);
     Task<bool> HasQuotesAsync(Guid id, CancellationToken cancellationToken = default);
     Task AddAsync(Entities.Supplier supplier, CancellationToken cancellationToken = default);
     Task UpdateAsync(Entities.Supplier supplier, CancellationToken cancellationToken = default);
