@@ -11,6 +11,7 @@ using PlanejadorCompras.Domain.Repositories.Supplier;
 using PlanejadorCompras.Domain.Repositories.ShoppingListSupplier;
 using PlanejadorCompras.Domain.Repositories.PurchaseOrder;
 using PlanejadorCompras.Domain.Repositories.Equalization;
+using PlanejadorCompras.Domain.Repositories.QuotationRequest;
 using PlanejadorCompras.Infrastructure.Persistence;
 using PlanejadorCompras.Infrastructure.Queries;
 using PlanejadorCompras.Infrastructure.Reports.Excel;
@@ -58,6 +59,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IShoppingListSupplierRepository, ShoppingListSupplierRepository>();
         services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
         services.AddScoped<ISavedEqualizationRepository, SavedEqualizationRepository>();
+        services.AddScoped<IQuotationRequestRepository, QuotationRequestRepository>();
     }
 
     private static void AddUnitOfWork(IServiceCollection services)
@@ -83,6 +85,8 @@ public static class DependencyInjectionExtensions
         services.AddSingleton<PurchaseOrderPdfDocumentBuilder>();
         services.AddSingleton<IShoppingListExcelExporter, ClosedXmlShoppingListReportExporter>();
         services.AddSingleton<IShoppingListPdfExporter, PdfSharpShoppingListReportExporter>();
+        services.AddSingleton<QuotationRequestPdfDocumentBuilder>();
+        services.AddSingleton<IQuotationRequestPdfExporter, PdfSharpQuotationRequestExporter>();
         services.AddSingleton<IPurchaseOrderPdfExporter, PdfSharpPurchaseOrderExporter>();
     }
 

@@ -21,6 +21,10 @@ public sealed class PlanejadorComprasDbContext(DbContextOptions<PlanejadorCompra
 
     public DbSet<PurchaseOrderItem> PurchaseOrderItems => Set<PurchaseOrderItem>();
 
+    public DbSet<QuotationRequest> QuotationRequests => Set<QuotationRequest>();
+
+    public DbSet<QuotationRequestItem> QuotationRequestItems => Set<QuotationRequestItem>();
+
     public DbSet<SavedEqualization> SavedEqualizations => Set<SavedEqualization>();
 
     public DbSet<SavedEqualizationItem> SavedEqualizationItems => Set<SavedEqualizationItem>();
