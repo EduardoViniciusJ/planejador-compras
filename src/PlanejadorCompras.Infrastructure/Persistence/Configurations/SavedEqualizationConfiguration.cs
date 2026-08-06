@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlanejadorCompras.Domain.Entities;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Infrastructure.Persistence.Configurations;
 
@@ -14,21 +15,21 @@ public sealed class SavedEqualizationConfiguration
 
         builder.Property(equalization => equalization.Code)
             .IsRequired()
-            .HasMaxLength(32);
+            .HasMaxLength(EqualizationRules.CodeMaxLength);
         builder.Property(equalization => equalization.ShoppingListName)
             .IsRequired()
-            .HasMaxLength(150);
+            .HasMaxLength(EqualizationRules.ShoppingListNameMaxLength);
         builder.Property(equalization => equalization.CreatedByName)
             .IsRequired()
-            .HasMaxLength(150);
+            .HasMaxLength(EqualizationRules.CreatedByNameMaxLength);
         builder.Property(equalization => equalization.CreatedByEmail)
             .IsRequired()
-            .HasMaxLength(320);
+            .HasMaxLength(EqualizationRules.CreatedByEmailMaxLength);
         builder.Property(equalization => equalization.BestChoiceTotal)
             .HasPrecision(18, 2)
             .IsRequired();
         builder.Property(equalization => equalization.BestCompleteSupplierName)
-            .HasMaxLength(200);
+            .HasMaxLength(EqualizationRules.SupplierNameMaxLength);
         builder.Property(equalization => equalization.BestCompleteSupplierTotal)
             .HasPrecision(18, 2);
         builder.Property(equalization => equalization.EstimatedEconomy)

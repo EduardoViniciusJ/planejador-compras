@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlanejadorCompras.Domain.Entities;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Infrastructure.Persistence.Configurations;
 
@@ -14,10 +15,10 @@ public sealed class ShoppingListConfiguration : IEntityTypeConfiguration<Shoppin
 
         builder.Property(list => list.Name)
             .IsRequired()
-            .HasMaxLength(150);
+            .HasMaxLength(ShoppingListRules.NameMaxLength);
 
         builder.Property(list => list.Description)
-            .HasMaxLength(500);
+            .HasMaxLength(ShoppingListRules.DescriptionMaxLength);
 
         builder.Property(list => list.CreatedAt)
             .IsRequired();

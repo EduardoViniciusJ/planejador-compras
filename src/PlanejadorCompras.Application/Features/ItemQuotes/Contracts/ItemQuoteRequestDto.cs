@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Application.Features.ItemQuotes.Contracts;
 
@@ -8,5 +9,8 @@ public sealed record ItemQuoteRequestDto(
     [Required]
     Guid SupplierId,
     [Required]
-    [Range(0, double.MaxValue)]
+    [Range(
+        typeof(decimal),
+        ItemQuoteRules.MinimumUnitPriceText,
+        ItemQuoteRules.MaximumUnitPriceText)]
     decimal UnitPrice);

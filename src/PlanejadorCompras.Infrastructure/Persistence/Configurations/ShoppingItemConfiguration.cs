@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlanejadorCompras.Domain.Entities;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Infrastructure.Persistence.Configurations;
 
@@ -14,13 +15,16 @@ public sealed class ShoppingItemConfiguration : IEntityTypeConfiguration<Shoppin
 
         builder.Property(item => item.Name)
             .IsRequired()
-            .HasMaxLength(100);
+            .HasMaxLength(ShoppingItemRules.NameMaxLength);
 
         builder.Property(item => item.Unit)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(ShoppingItemRules.UnitMaxLength);
 
         builder.Property(item => item.Quantity)
-            .HasPrecision(18, 2);
+            .HasPrecision(
+                ShoppingItemRules.QuantityPrecision,
+                ShoppingItemRules.QuantityScale);
 
         builder.Property(item => item.CreatedAt)
             .IsRequired();

@@ -1,3 +1,5 @@
+using PlanejadorCompras.Domain.Rules;
+
 namespace PlanejadorCompras.Domain.Entities;
 
 public sealed class ItemQuote
@@ -26,15 +28,14 @@ public sealed class ItemQuote
 
     public DateTime CreatedAt { get; private set; }
 
-    public static ItemQuote Create(Guid shoppingItemId, Guid supplierId, decimal unitPrice)
+    public static ItemQuote Create(
+        Guid shoppingItemId,
+        Guid supplierId,
+        decimal unitPrice)
     {
         ArgumentOutOfRangeException.ThrowIfEqual(shoppingItemId, Guid.Empty);
         ArgumentOutOfRangeException.ThrowIfEqual(supplierId, Guid.Empty);
-
-        if (unitPrice < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(unitPrice), "Unit price cannot be negative.");
-        }
+        EnsureValidUnitPrice(unitPrice);
 
         return new ItemQuote(
             Guid.NewGuid(),
@@ -44,18 +45,29 @@ public sealed class ItemQuote
             DateTime.UtcNow);
     }
 
-    public void Update(Guid shoppingItemId, Guid supplierId, decimal unitPrice)
+    public void Update(
+        Guid shoppingItemId,
+        Guid supplierId,
+        decimal unitPrice)
     {
         ArgumentOutOfRangeException.ThrowIfEqual(shoppingItemId, Guid.Empty);
         ArgumentOutOfRangeException.ThrowIfEqual(supplierId, Guid.Empty);
-
-        if (unitPrice < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(unitPrice), "Unit price cannot be negative.");
-        }
+        EnsureValidUnitPrice(unitPrice);
 
         ShoppingItemId = shoppingItemId;
         SupplierId = supplierId;
         UnitPrice = unitPrice;
+    }
+
+    private static void EnsureValidUnitPrice(decimal unitPrice)
+    {
+        if (unitPrice < ItemQuoteRules.MinimumUnitPrice
+            || unitPrice > ItemQuoteRules.MaximumUnitPrice)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(unitPrice),
+                $"Unit price must be between {ItemQuoteRules.MinimumUnitPrice} "
+                + $"and {ItemQuoteRules.MaximumUnitPrice}.");
+        }
     }
 }

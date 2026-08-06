@@ -1,3 +1,6 @@
+using PlanejadorCompras.Domain.Rules;
+using PlanejadorCompras.Domain.Validation;
+
 namespace PlanejadorCompras.Domain.Entities;
 
 public sealed class Supplier
@@ -46,13 +49,11 @@ public sealed class Supplier
         SupplierContact? contact = null)
     {
         ArgumentOutOfRangeException.ThrowIfEqual(userId, Guid.Empty);
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-
         return new Supplier(
             Guid.NewGuid(),
             userId,
-            name.Trim(),
-            Normalize(cnpj),
+            DomainText.Required(name, SupplierRules.NameMaxLength, nameof(name)),
+            DomainText.Optional(cnpj, SupplierRules.CnpjLength, nameof(cnpj)),
             address,
             contact,
             DateTime.UtcNow);
@@ -64,13 +65,9 @@ public sealed class Supplier
         SupplierAddress? address = null,
         SupplierContact? contact = null)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        Name = name.Trim();
-        Cnpj = Normalize(cnpj);
+        Name = DomainText.Required(name, SupplierRules.NameMaxLength, nameof(name));
+        Cnpj = DomainText.Optional(cnpj, SupplierRules.CnpjLength, nameof(cnpj));
         Address = address;
         Contact = contact;
     }
-
-    private static string? Normalize(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

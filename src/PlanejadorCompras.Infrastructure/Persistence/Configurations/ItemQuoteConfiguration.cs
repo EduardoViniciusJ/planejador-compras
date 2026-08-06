@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlanejadorCompras.Domain.Entities;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Infrastructure.Persistence.Configurations;
 
@@ -13,7 +14,9 @@ public sealed class ItemQuoteConfiguration : IEntityTypeConfiguration<ItemQuote>
         builder.HasKey(quote => quote.Id);
 
         builder.Property(quote => quote.UnitPrice)
-            .HasPrecision(18, 2);
+            .HasPrecision(
+                ItemQuoteRules.UnitPricePrecision,
+                ItemQuoteRules.UnitPriceScale);
 
         builder.Property(quote => quote.CreatedAt)
             .IsRequired();

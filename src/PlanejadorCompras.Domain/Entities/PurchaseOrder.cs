@@ -1,3 +1,6 @@
+using PlanejadorCompras.Domain.Rules;
+using PlanejadorCompras.Domain.Validation;
+
 namespace PlanejadorCompras.Domain.Entities;
 
 public sealed class PurchaseOrder
@@ -129,15 +132,33 @@ public sealed class PurchaseOrder
             userId,
             sourceShoppingListId,
             supplierId,
-            code.Trim(),
-            shoppingListName.Trim(),
-            supplierName.Trim(),
-            buyerName.Trim(),
-            NormalizeOptional(buyerEmail),
+            DomainText.Required(code, PurchaseOrderRules.CodeMaxLength, nameof(code)),
+            DomainText.Required(
+                shoppingListName,
+                PurchaseOrderRules.ShoppingListNameMaxLength,
+                nameof(shoppingListName)),
+            DomainText.Required(
+                supplierName,
+                PurchaseOrderRules.SupplierNameMaxLength,
+                nameof(supplierName)),
+            DomainText.Required(
+                buyerName,
+                PurchaseOrderRules.BuyerNameMaxLength,
+                nameof(buyerName)),
+            DomainText.Optional(
+                buyerEmail,
+                PurchaseOrderRules.BuyerEmailMaxLength,
+                nameof(buyerEmail)),
             expectedDeliveryDate,
-            NormalizeOptional(deliveryAddress),
-            NormalizeOptional(paymentTerms),
-            NormalizeOptional(notes),
+            DomainText.Optional(
+                deliveryAddress,
+                PurchaseOrderRules.DeliveryAddressMaxLength,
+                nameof(deliveryAddress)),
+            DomainText.Optional(
+                paymentTerms,
+                PurchaseOrderRules.PaymentTermsMaxLength,
+                nameof(paymentTerms)),
+            DomainText.Optional(notes, PurchaseOrderRules.NotesMaxLength, nameof(notes)),
             createdAtUtc,
             sourceEqualizationId);
 
@@ -173,7 +194,4 @@ public sealed class PurchaseOrder
                 "Only issued purchase orders can be completed or cancelled.");
         }
     }
-
-    private static string? NormalizeOptional(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

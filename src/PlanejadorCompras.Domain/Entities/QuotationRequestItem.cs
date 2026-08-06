@@ -1,3 +1,6 @@
+using PlanejadorCompras.Domain.Rules;
+using PlanejadorCompras.Domain.Validation;
+
 namespace PlanejadorCompras.Domain.Entities;
 
 public sealed class QuotationRequestItem
@@ -49,8 +52,14 @@ public sealed class QuotationRequestItem
             quotationRequestId,
             snapshot.SourceShoppingItemId,
             position,
-            snapshot.Name.Trim(),
+            DomainText.Required(
+                snapshot.Name,
+                QuotationRequestRules.ItemNameMaxLength,
+                nameof(snapshot.Name)),
             snapshot.Quantity,
-            snapshot.Unit.Trim());
+            DomainText.Required(
+                snapshot.Unit,
+                QuotationRequestRules.ItemUnitMaxLength,
+                nameof(snapshot.Unit)));
     }
 }

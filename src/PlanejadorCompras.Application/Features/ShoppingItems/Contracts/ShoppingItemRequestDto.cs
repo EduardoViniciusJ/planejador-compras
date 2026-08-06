@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Application.Features.ShoppingItems.Contracts;
 
@@ -7,12 +8,15 @@ public sealed record ShoppingItemRequestDto(
     Guid ShoppingListId,
     [Required]
     [MinLength(1)]
-    [MaxLength(100)]
+    [MaxLength(ShoppingItemRules.NameMaxLength)]
     string Name,
     [Required]
-    [Range(0.01, double.MaxValue)]
+    [Range(
+        typeof(decimal),
+        ShoppingItemRules.MinimumQuantityText,
+        ShoppingItemRules.MaximumQuantityText)]
     decimal Quantity,
     [Required]
     [MinLength(1)]
-    [MaxLength(20)]
+    [MaxLength(ShoppingItemRules.UnitMaxLength)]
     string Unit);

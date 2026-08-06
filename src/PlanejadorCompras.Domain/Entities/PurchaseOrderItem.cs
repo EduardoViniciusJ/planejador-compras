@@ -1,3 +1,6 @@
+using PlanejadorCompras.Domain.Rules;
+using PlanejadorCompras.Domain.Validation;
+
 namespace PlanejadorCompras.Domain.Entities;
 
 public sealed class PurchaseOrderItem
@@ -53,20 +56,26 @@ public sealed class PurchaseOrderItem
                 "Purchase order item quantity must be greater than zero.");
         }
 
-        if (snapshot.UnitPrice < 0)
+        if (snapshot.UnitPrice < ItemQuoteRules.MinimumUnitPrice)
         {
             throw new ArgumentOutOfRangeException(
                 nameof(snapshot),
-                "Purchase order item unit price cannot be negative.");
+                $"Purchase order item unit price must be at least {ItemQuoteRules.MinimumUnitPrice}.");
         }
 
         return new PurchaseOrderItem(
             Guid.NewGuid(),
             purchaseOrderId,
             snapshot.SourceShoppingItemId,
-            snapshot.Name.Trim(),
+            DomainText.Required(
+                snapshot.Name,
+                PurchaseOrderRules.ItemNameMaxLength,
+                nameof(snapshot.Name)),
             snapshot.Quantity,
-            snapshot.Unit.Trim(),
+            DomainText.Required(
+                snapshot.Unit,
+                PurchaseOrderRules.ItemUnitMaxLength,
+                nameof(snapshot.Unit)),
             snapshot.UnitPrice);
     }
 }

@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Application.Features.ShoppingLists.Contracts;
 
 public sealed record ShoppingListRequestDto(
     [Required]
     [MinLength(1)]
-    [MaxLength(100)]
+    [MaxLength(ShoppingListRules.NameMaxLength)]
     string Name,
     [MinLength(1)]
-    [MaxLength(500)]
+    [MaxLength(ShoppingListRules.DescriptionMaxLength)]
     string? Description);

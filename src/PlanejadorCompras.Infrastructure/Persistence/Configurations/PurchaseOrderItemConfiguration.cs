@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlanejadorCompras.Domain.Entities;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Infrastructure.Persistence.Configurations;
 
@@ -14,15 +15,19 @@ public sealed class PurchaseOrderItemConfiguration
 
         builder.Property(item => item.Name)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasMaxLength(PurchaseOrderRules.ItemNameMaxLength);
         builder.Property(item => item.Quantity)
-            .HasPrecision(18, 3)
+            .HasPrecision(
+                ShoppingItemRules.QuantityPrecision,
+                ShoppingItemRules.QuantityScale)
             .IsRequired();
         builder.Property(item => item.Unit)
             .IsRequired()
-            .HasMaxLength(50);
+            .HasMaxLength(PurchaseOrderRules.ItemUnitMaxLength);
         builder.Property(item => item.UnitPrice)
-            .HasPrecision(18, 2)
+            .HasPrecision(
+                ItemQuoteRules.UnitPricePrecision,
+                ItemQuoteRules.UnitPriceScale)
             .IsRequired();
 
         builder.Ignore(item => item.TotalPrice);

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlanejadorCompras.Domain.Entities;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Infrastructure.Persistence.Configurations;
 
@@ -14,15 +15,17 @@ public sealed class SavedEqualizationItemConfiguration
 
         builder.Property(item => item.Name)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasMaxLength(EqualizationRules.ItemNameMaxLength);
         builder.Property(item => item.Position)
             .IsRequired();
         builder.Property(item => item.Quantity)
-            .HasPrecision(18, 3)
+            .HasPrecision(
+                ShoppingItemRules.QuantityPrecision,
+                ShoppingItemRules.QuantityScale)
             .IsRequired();
         builder.Property(item => item.Unit)
             .IsRequired()
-            .HasMaxLength(50);
+            .HasMaxLength(EqualizationRules.ItemUnitMaxLength);
 
         builder.HasIndex(item => item.SavedEqualizationId);
         builder.HasIndex(item => new

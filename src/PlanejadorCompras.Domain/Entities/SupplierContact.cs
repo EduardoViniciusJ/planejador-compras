@@ -1,3 +1,6 @@
+using PlanejadorCompras.Domain.Rules;
+using PlanejadorCompras.Domain.Validation;
+
 namespace PlanejadorCompras.Domain.Entities;
 
 public sealed class SupplierContact
@@ -8,8 +11,9 @@ public sealed class SupplierContact
 
     private SupplierContact(string? email, string? phone)
     {
-        Email = Normalize(email)?.ToLowerInvariant();
-        Phone = Normalize(phone);
+        Email = DomainText.Optional(email, SupplierRules.EmailMaxLength, nameof(email))?
+            .ToLowerInvariant();
+        Phone = DomainText.Optional(phone, SupplierRules.PhoneMaxLength, nameof(phone));
     }
 
     public string? Email { get; private set; }
@@ -25,7 +29,4 @@ public sealed class SupplierContact
 
         return new SupplierContact(email, phone);
     }
-
-    private static string? Normalize(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

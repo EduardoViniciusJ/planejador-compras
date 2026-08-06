@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlanejadorCompras.Domain.Entities;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Infrastructure.Persistence.Configurations;
 
@@ -13,26 +14,26 @@ public sealed class PurchaseOrderConfiguration : IEntityTypeConfiguration<Purcha
 
         builder.Property(order => order.Code)
             .IsRequired()
-            .HasMaxLength(32);
+            .HasMaxLength(PurchaseOrderRules.CodeMaxLength);
         builder.Property(order => order.ShoppingListName)
             .IsRequired()
-            .HasMaxLength(150);
+            .HasMaxLength(PurchaseOrderRules.ShoppingListNameMaxLength);
         builder.Property(order => order.SupplierName)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasMaxLength(PurchaseOrderRules.SupplierNameMaxLength);
         builder.Property(order => order.BuyerName)
             .IsRequired()
-            .HasMaxLength(150);
+            .HasMaxLength(PurchaseOrderRules.BuyerNameMaxLength);
         builder.Property(order => order.BuyerEmail)
-            .HasMaxLength(320);
+            .HasMaxLength(PurchaseOrderRules.BuyerEmailMaxLength);
         builder.Property(order => order.ExpectedDeliveryDate)
             .HasColumnType("date");
         builder.Property(order => order.DeliveryAddress)
-            .HasMaxLength(500);
+            .HasMaxLength(PurchaseOrderRules.DeliveryAddressMaxLength);
         builder.Property(order => order.PaymentTerms)
-            .HasMaxLength(200);
+            .HasMaxLength(PurchaseOrderRules.PaymentTermsMaxLength);
         builder.Property(order => order.Notes)
-            .HasMaxLength(1000);
+            .HasMaxLength(PurchaseOrderRules.NotesMaxLength);
         builder.Property(order => order.Status)
             .IsRequired();
         builder.Property(order => order.CreatedAtUtc)

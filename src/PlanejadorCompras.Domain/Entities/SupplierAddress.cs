@@ -1,3 +1,6 @@
+using PlanejadorCompras.Domain.Rules;
+using PlanejadorCompras.Domain.Validation;
+
 namespace PlanejadorCompras.Domain.Entities;
 
 public sealed class SupplierAddress
@@ -8,9 +11,12 @@ public sealed class SupplierAddress
 
     private SupplierAddress(string? street, string? city, string? postalCode)
     {
-        Street = Normalize(street);
-        City = Normalize(city);
-        PostalCode = Normalize(postalCode);
+        Street = DomainText.Optional(street, SupplierRules.StreetMaxLength, nameof(street));
+        City = DomainText.Optional(city, SupplierRules.CityMaxLength, nameof(city));
+        PostalCode = DomainText.Optional(
+            postalCode,
+            SupplierRules.PostalCodeLength,
+            nameof(postalCode));
     }
 
     public string? Street { get; private set; }
@@ -30,7 +36,4 @@ public sealed class SupplierAddress
 
         return new SupplierAddress(street, city, postalCode);
     }
-
-    private static string? Normalize(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

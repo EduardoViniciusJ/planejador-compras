@@ -2,6 +2,7 @@ using PlanejadorCompras.Application.Features.Suppliers.Contracts;
 using System.Net.Mail;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Domain.Entities;
+using PlanejadorCompras.Domain.Rules;
 
 namespace PlanejadorCompras.Application.UseCases.Supplier;
 
@@ -17,7 +18,7 @@ internal static class SupplierRequestNormalizer
         var phone = NormalizePhone(request.Contact?.Phone);
         var email = NormalizeOptional(request.Contact?.Email)?.ToLowerInvariant();
 
-        if (name.Length is < 1 or > 100)
+        if (name.Length is < 1 or > SupplierRules.NameMaxLength)
         {
             throw new BadRequestException(
                 "Informe um nome de fornecedor com ate 100 caracteres.",
@@ -31,7 +32,7 @@ internal static class SupplierRequestNormalizer
                 "supplier_invalid_cnpj");
         }
 
-        if (postalCode is not null && postalCode.Length != 8)
+        if (postalCode is not null && postalCode.Length != SupplierRules.PostalCodeLength)
         {
             throw new BadRequestException(
                 "Informe um CEP com 8 digitos.",
@@ -47,7 +48,7 @@ internal static class SupplierRequestNormalizer
                 "supplier_invalid_email");
         }
 
-        if (phone is not null && (phone.Length is < 10 or > 13))
+        if (phone is not null && (phone.Length is < 10 or > SupplierRules.PhoneMaxLength))
         {
             throw new BadRequestException(
                 "Informe um telefone com DDD.",
@@ -78,7 +79,7 @@ internal static class SupplierRequestNormalizer
 
     private static bool IsValidCnpj(string cnpj)
     {
-        if (cnpj.Length != 14 || cnpj.Distinct().Count() == 1)
+        if (cnpj.Length != SupplierRules.CnpjLength || cnpj.Distinct().Count() == 1)
         {
             return false;
         }

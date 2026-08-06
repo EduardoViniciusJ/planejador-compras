@@ -1,3 +1,6 @@
+using PlanejadorCompras.Domain.Rules;
+using PlanejadorCompras.Domain.Validation;
+
 namespace PlanejadorCompras.Domain.Entities;
 
 public sealed class QuotationRequest
@@ -26,13 +29,31 @@ public sealed class QuotationRequest
         UserId = userId;
         SourceShoppingListId = sourceShoppingListId;
         Code = code;
-        ShoppingListName = shoppingListName;
-        Description = Normalize(description);
-        BuyerName = buyerName;
-        BuyerEmail = buyerEmail;
+        ShoppingListName = DomainText.Required(
+            shoppingListName,
+            QuotationRequestRules.ShoppingListNameMaxLength,
+            nameof(shoppingListName));
+        Description = DomainText.Optional(
+            description,
+            QuotationRequestRules.DescriptionMaxLength,
+            nameof(description));
+        BuyerName = DomainText.Required(
+            buyerName,
+            QuotationRequestRules.BuyerNameMaxLength,
+            nameof(buyerName));
+        BuyerEmail = DomainText.Required(
+            buyerEmail,
+            QuotationRequestRules.BuyerEmailMaxLength,
+            nameof(buyerEmail));
         ResponseDeadline = responseDeadline;
-        DeliveryAddress = Normalize(deliveryAddress);
-        Instructions = Normalize(instructions);
+        DeliveryAddress = DomainText.Optional(
+            deliveryAddress,
+            QuotationRequestRules.DeliveryAddressMaxLength,
+            nameof(deliveryAddress));
+        Instructions = DomainText.Optional(
+            instructions,
+            QuotationRequestRules.InstructionsMaxLength,
+            nameof(instructions));
         CreatedAtUtc = createdAtUtc;
     }
 
@@ -78,9 +99,9 @@ public sealed class QuotationRequest
             userId,
             sourceShoppingListId,
             code,
-            shoppingListName.Trim(),
+            shoppingListName,
             description,
-            buyerName.Trim(),
+            buyerName,
             buyerEmail.Trim().ToLowerInvariant(),
             responseDeadline,
             deliveryAddress,
@@ -96,9 +117,6 @@ public sealed class QuotationRequest
 
         return request;
     }
-
-    private static string? Normalize(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }
 
 public sealed record QuotationRequestItemSnapshot(
