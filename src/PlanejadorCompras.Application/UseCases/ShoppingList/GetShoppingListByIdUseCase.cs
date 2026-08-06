@@ -1,4 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.ShoppingLists.Contracts;
 using PlanejadorCompras.Application.Services.Interfaces;
 
 namespace PlanejadorCompras.Application.UseCases.ShoppingList;

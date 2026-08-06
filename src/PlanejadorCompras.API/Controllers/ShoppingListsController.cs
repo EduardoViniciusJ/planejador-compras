@@ -1,7 +1,8 @@
+using PlanejadorCompras.Application.Features.Suppliers.Contracts;
+using PlanejadorCompras.Application.Features.ShoppingLists.Contracts;
+using PlanejadorCompras.Application.Features.Equalizations.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.UseCases.Interfaces;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
 using PlanejadorCompras.Application.UseCases.ShoppingList.Create;

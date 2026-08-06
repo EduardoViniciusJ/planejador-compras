@@ -1,5 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.ItemQuotes.Contracts;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories.ItemQuote;

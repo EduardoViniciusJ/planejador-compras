@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.Authentication.Contracts;
 using Microsoft.Extensions.Configuration;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Infrastructure.Services;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.Auth.JwtToken;

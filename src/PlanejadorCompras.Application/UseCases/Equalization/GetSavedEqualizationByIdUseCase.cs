@@ -1,4 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.Equalizations.Contracts;
 using PlanejadorCompras.Application.Services.Interfaces;
 
 namespace PlanejadorCompras.Application.UseCases.Equalization;

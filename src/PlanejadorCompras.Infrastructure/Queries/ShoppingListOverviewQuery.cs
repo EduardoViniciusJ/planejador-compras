@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.ShoppingLists.Contracts;
 using Microsoft.EntityFrameworkCore;
-using PlanejadorCompras.Application.Common.Dtos.Models;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Infrastructure.Persistence;
 

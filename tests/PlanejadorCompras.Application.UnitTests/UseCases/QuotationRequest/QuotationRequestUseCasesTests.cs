@@ -1,8 +1,7 @@
+using PlanejadorCompras.Application.Features.ShoppingLists.Contracts;
+using PlanejadorCompras.Application.Features.Reports.Contracts;
+using PlanejadorCompras.Application.Features.QuotationRequests.Contracts;
 using Moq;
-using PlanejadorCompras.Application.Common.Dtos.Models;
-using PlanejadorCompras.Application.Common.Dtos.Reports;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.UseCases.QuotationRequest;

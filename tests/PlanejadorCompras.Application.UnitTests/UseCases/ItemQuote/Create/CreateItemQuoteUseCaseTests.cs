@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.ItemQuotes.Contracts;
 using Moq;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.UseCases.ItemQuote.Create;
 using ItemQuoteEntity = PlanejadorCompras.Domain.Entities.ItemQuote;

@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.ItemQuotes.Contracts;
 using Moq;
-using PlanejadorCompras.Application.Common.Dtos.Models;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.UseCases.ItemQuote;
 using Xunit;

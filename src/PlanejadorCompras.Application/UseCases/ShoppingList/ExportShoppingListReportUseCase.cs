@@ -1,4 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Reports;
+using PlanejadorCompras.Application.Features.Reports.Contracts;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.UseCases.Interfaces;
 

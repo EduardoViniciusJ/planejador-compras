@@ -1,7 +1,7 @@
+using PlanejadorCompras.Application.Features.Equalizations.Contracts;
+using PlanejadorCompras.Application.Common.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.UseCases.Equalization;
 
 namespace PlanejadorCompras.API.Controllers;

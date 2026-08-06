@@ -1,4 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Models;
+using PlanejadorCompras.Application.Features.PurchaseOrders.Contracts;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Entities;

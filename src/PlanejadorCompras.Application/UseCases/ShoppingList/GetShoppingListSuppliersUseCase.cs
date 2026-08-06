@@ -1,4 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.Suppliers.Contracts;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.UseCases.Supplier;
 using PlanejadorCompras.Domain.Repositories.ShoppingListSupplier;

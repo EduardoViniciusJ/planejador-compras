@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.Reports.Contracts;
 using Moq;
-using PlanejadorCompras.Application.Common.Dtos.Reports;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.UseCases.Interfaces;
 using PlanejadorCompras.Application.UseCases.ShoppingList;

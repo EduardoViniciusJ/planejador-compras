@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.Reports.Contracts;
 using MigraDoc.Rendering;
-using PlanejadorCompras.Application.Common.Dtos.Reports;
 using PlanejadorCompras.Application.Services.Interfaces;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;

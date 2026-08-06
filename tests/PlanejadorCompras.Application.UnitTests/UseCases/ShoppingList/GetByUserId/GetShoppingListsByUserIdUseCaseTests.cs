@@ -1,3 +1,4 @@
+using PlanejadorCompras.Application.Features.ShoppingLists.Contracts;
 using Moq;
 using PlanejadorCompras.Application.UseCases.ShoppingList;
 
@@ -20,7 +21,7 @@ public sealed class GetShoppingListsByUserIdUseCaseTests
     public async Task ExecuteAsync_ShouldReturnShoppingLists_WhenUserHasLists()
     {
         var userId = GetShoppingListsByUserIdTestHelper.DefaultUserId;
-        var shoppingLists = new List<PlanejadorCompras.Application.Common.Dtos.Models.ShoppingListOverviewDto>
+        var shoppingLists = new List<ShoppingListOverviewDto>
         {
             GetShoppingListsByUserIdTestHelper.CreateOverview("Monthly Shopping List"),
             GetShoppingListsByUserIdTestHelper.CreateOverview("Office Setup List", 2, 1, 120m),
@@ -48,7 +49,7 @@ public sealed class GetShoppingListsByUserIdUseCaseTests
         var userId = GetShoppingListsByUserIdTestHelper.DefaultUserId;
         _helper.ShoppingListOverviewQueryMock
             .Setup(x => x.GetByUserIdAsync(userId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Array.Empty<PlanejadorCompras.Application.Common.Dtos.Models.ShoppingListOverviewDto>());
+            .ReturnsAsync(Array.Empty<ShoppingListOverviewDto>());
 
         var response = await _handler.ExecuteAsync();
 
@@ -64,7 +65,7 @@ public sealed class GetShoppingListsByUserIdUseCaseTests
         var userId = GetShoppingListsByUserIdTestHelper.DefaultUserId;
         _helper.ShoppingListOverviewQueryMock
             .Setup(x => x.GetByUserIdAsync(userId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Array.Empty<PlanejadorCompras.Application.Common.Dtos.Models.ShoppingListOverviewDto>());
+            .ReturnsAsync(Array.Empty<ShoppingListOverviewDto>());
 
         await _handler.ExecuteAsync();
 

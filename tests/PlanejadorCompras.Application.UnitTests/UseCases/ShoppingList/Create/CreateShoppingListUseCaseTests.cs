@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.ShoppingLists.Contracts;
 using Moq;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.UseCases.ShoppingList.Create;
 using ShoppingListEntity = PlanejadorCompras.Domain.Entities.ShoppingList;
 

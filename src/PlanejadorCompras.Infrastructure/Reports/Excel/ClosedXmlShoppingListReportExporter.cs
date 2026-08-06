@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.Reports.Contracts;
 using ClosedXML.Excel;
-using PlanejadorCompras.Application.Common.Dtos.Reports;
 using PlanejadorCompras.Application.Services.Interfaces;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Excel;

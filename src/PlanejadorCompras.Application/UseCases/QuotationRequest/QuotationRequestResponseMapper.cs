@@ -1,5 +1,5 @@
-using PlanejadorCompras.Application.Common.Dtos.Reports;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.Reports.Contracts;
+using PlanejadorCompras.Application.Features.QuotationRequests.Contracts;
 using QuotationRequestEntity = PlanejadorCompras.Domain.Entities.QuotationRequest;
 
 namespace PlanejadorCompras.Application.UseCases.QuotationRequest;

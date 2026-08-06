@@ -1,4 +1,6 @@
-using PlanejadorCompras.Application.Common.Dtos.Reports;
+using PlanejadorCompras.Application.Features.Equalizations.Contracts;
+using PlanejadorCompras.Application.Features.Reports.Contracts;
+using PlanejadorCompras.Application.Features.ShoppingLists.Contracts;
 using PlanejadorCompras.Application.Services;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.UseCases.Interfaces;
@@ -88,7 +90,7 @@ public sealed class GetShoppingListReportDataUseCase : IGetShoppingListReportDat
     }
 
     private static ShoppingListReportItemDto MapItem(
-        Common.Dtos.Models.EqualizationItemRowDto item,
+        EqualizationItemRowDto item,
         IReadOnlyDictionary<string, Domain.Entities.Supplier> supplierByName)
     {
         var lowestUnitPrice = item.Quotes.Any()
@@ -173,7 +175,7 @@ public sealed class GetShoppingListReportDataUseCase : IGetShoppingListReportDat
     private static ShoppingListReportSummaryDto BuildSummary(
         IReadOnlyCollection<ShoppingListReportItemDto> items,
         IReadOnlyCollection<ShoppingListReportSupplierDto> suppliers,
-        Common.Dtos.Responses.BestSupplierBudgetResponseDto bestSupplierBudget)
+        BestSupplierBudgetResponseDto bestSupplierBudget)
     {
         var quotedItems = items.Count(item => item.Quotes.Count > 0);
         var quotedPriceCount = items.Sum(item => item.Quotes.Count);

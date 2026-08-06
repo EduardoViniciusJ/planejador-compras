@@ -1,4 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.PurchaseOrders.Contracts;
 using PlanejadorCompras.Application.Services;
 
 namespace PlanejadorCompras.Application.UseCases.PurchaseOrder;

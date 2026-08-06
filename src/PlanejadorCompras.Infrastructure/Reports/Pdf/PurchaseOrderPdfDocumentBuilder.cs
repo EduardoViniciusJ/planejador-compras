@@ -1,7 +1,7 @@
+using PlanejadorCompras.Application.Features.Reports.Contracts;
 using System.Globalization;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
-using PlanejadorCompras.Application.Common.Dtos.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 

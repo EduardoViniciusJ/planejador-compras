@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.Reports.Contracts;
 using PlanejadorCompras.Application.Exceptions;
-using PlanejadorCompras.Application.Common.Dtos.Reports;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories.QuotationRequest;
 

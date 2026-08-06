@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.Reports.Contracts;
 using ClosedXML.Excel;
-using PlanejadorCompras.Application.Common.Dtos.Reports;
 using PlanejadorCompras.Infrastructure.Reports.Excel;
 
 namespace PlanejadorCompras.Application.UnitTests.Reports.Excel;

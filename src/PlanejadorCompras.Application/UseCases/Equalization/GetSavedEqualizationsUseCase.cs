@@ -1,4 +1,5 @@
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.Equalizations.Contracts;
+using PlanejadorCompras.Application.Common.Pagination;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories.Equalization;

@@ -1,7 +1,6 @@
+using PlanejadorCompras.Application.Features.ShoppingItems.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.UseCases.ShoppingItem;
 using PlanejadorCompras.Application.UseCases.ShoppingItem.Create;
 

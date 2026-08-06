@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Infrastructure.Services;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.Auth.JwtToken;

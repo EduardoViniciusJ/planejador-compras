@@ -1,4 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.Equalizations.Contracts;
 using PlanejadorCompras.Domain.Entities;
 
 namespace PlanejadorCompras.Application.UseCases.Equalization;

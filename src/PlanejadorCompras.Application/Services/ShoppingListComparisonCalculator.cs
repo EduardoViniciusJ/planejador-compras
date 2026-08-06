@@ -1,5 +1,5 @@
-using PlanejadorCompras.Application.Common.Dtos.Models;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.ShoppingLists.Contracts;
+using PlanejadorCompras.Application.Features.Equalizations.Contracts;
 using ItemQuoteEntity = PlanejadorCompras.Domain.Entities.ItemQuote;
 using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
 

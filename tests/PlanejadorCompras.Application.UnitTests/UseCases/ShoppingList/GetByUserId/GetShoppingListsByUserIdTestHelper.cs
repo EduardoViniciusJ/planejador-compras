@@ -1,6 +1,6 @@
+using PlanejadorCompras.Application.Features.ShoppingLists.Contracts;
 using Moq;
 using PlanejadorCompras.Application.Services.Interfaces;
-using PlanejadorCompras.Application.Common.Dtos.Models;
 
 namespace PlanejadorCompras.Application.UnitTests.UseCases.ShoppingList.GetByUserId;
 

@@ -1,5 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.ItemQuotes.Contracts;
 
 namespace PlanejadorCompras.Application.Services.Interfaces;
 

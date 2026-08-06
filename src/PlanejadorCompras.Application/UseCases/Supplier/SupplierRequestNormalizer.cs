@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.Suppliers.Contracts;
 using System.Net.Mail;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Domain.Entities;
 

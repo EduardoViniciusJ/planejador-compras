@@ -1,6 +1,5 @@
+using PlanejadorCompras.Application.Features.Authentication.Contracts;
 using Moq;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.UseCases.Auth;
 using PlanejadorCompras.Domain.Entities;

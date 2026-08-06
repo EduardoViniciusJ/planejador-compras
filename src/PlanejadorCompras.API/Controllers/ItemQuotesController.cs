@@ -1,7 +1,6 @@
+using PlanejadorCompras.Application.Features.ItemQuotes.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.UseCases.ItemQuote;
 using PlanejadorCompras.Application.UseCases.ItemQuote.Create;
 

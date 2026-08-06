@@ -1,4 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Responses;
+using PlanejadorCompras.Application.Features.Suppliers.Contracts;
 using SupplierEntity = PlanejadorCompras.Domain.Entities.Supplier;
 
 namespace PlanejadorCompras.Application.UseCases.Supplier;

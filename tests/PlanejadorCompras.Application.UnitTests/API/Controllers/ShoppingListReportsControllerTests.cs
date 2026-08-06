@@ -1,9 +1,9 @@
+using PlanejadorCompras.Application.Features.Reports.Contracts;
 using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PlanejadorCompras.API.Controllers;
-using PlanejadorCompras.Application.Common.Dtos.Reports;
 using PlanejadorCompras.Application.UseCases.Interfaces;
 
 namespace PlanejadorCompras.Application.UnitTests.API.Controllers;

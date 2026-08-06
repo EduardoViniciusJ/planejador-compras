@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.Suppliers.Contracts;
 using Moq;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.UseCases.Supplier;

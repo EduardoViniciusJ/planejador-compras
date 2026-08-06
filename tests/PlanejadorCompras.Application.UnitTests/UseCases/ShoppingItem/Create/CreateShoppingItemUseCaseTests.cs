@@ -1,5 +1,5 @@
+using PlanejadorCompras.Application.Features.ShoppingItems.Contracts;
 using Moq;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
 using PlanejadorCompras.Application.UseCases.ShoppingItem.Create;
 using ShoppingItemEntity = PlanejadorCompras.Domain.Entities.ShoppingItem;
 

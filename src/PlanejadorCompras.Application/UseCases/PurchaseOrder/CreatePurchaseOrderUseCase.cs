@@ -1,6 +1,5 @@
+using PlanejadorCompras.Application.Features.PurchaseOrders.Contracts;
 using System.Net.Mail;
-using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Responses;
 using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.Services;
 using PlanejadorCompras.Application.Services.Interfaces;

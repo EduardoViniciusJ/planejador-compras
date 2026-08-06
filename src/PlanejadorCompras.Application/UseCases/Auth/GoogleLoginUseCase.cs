@@ -1,5 +1,4 @@
-using PlanejadorCompras.Application.Common.Dtos.Requests;
-using PlanejadorCompras.Application.Common.Dtos.Results;
+using PlanejadorCompras.Application.Features.Authentication.Contracts;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Entities;
 using PlanejadorCompras.Domain.Repositories;

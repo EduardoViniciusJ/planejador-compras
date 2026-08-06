@@ -1,6 +1,6 @@
+using PlanejadorCompras.Application.Features.Reports.Contracts;
 using System.Text;
 using PdfSharp.Pdf.IO;
-using PlanejadorCompras.Application.Common.Dtos.Reports;
 using PlanejadorCompras.Infrastructure.Reports.Pdf;
 
 namespace PlanejadorCompras.Application.UnitTests.Reports.Pdf;
