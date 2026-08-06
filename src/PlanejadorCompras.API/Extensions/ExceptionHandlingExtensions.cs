@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+using PlanejadorCompras.API.ErrorHandling;
 using PlanejadorCompras.Application.Exceptions;
 
 namespace PlanejadorCompras.API.Extensions;
@@ -20,21 +20,24 @@ public static class ExceptionHandlingExtensions
             {
                 var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
                 var (statusCode, title, errorCode) = MapException(exception);
+                var logger = context.RequestServices
+                    .GetRequiredService<ILoggerFactory>()
+                    .CreateLogger("ApiExceptionHandler");
 
-                context.Response.StatusCode = statusCode;
-                context.Response.ContentType = "application/problem+json";
-
-                var problemDetails = new ProblemDetails
+                if (exception is not null && exception is not AppException)
                 {
-                    Status = statusCode,
-                    Title = title,
-                    Instance = context.Request.Path
-                };
+                    logger.LogError(
+                        exception,
+                        "Unhandled API exception. TraceId: {TraceId}",
+                        context.TraceIdentifier);
+                }
 
-                problemDetails.Extensions["errorCode"] = errorCode;
-                problemDetails.Extensions["traceId"] = context.TraceIdentifier;
-
-                await context.Response.WriteAsJsonAsync(problemDetails);
+                await ApiProblemDetailsWriter.WriteAsync(
+                    context,
+                    statusCode,
+                    title,
+                    errorCode,
+                    context.RequestAborted);
             });
         });
 
