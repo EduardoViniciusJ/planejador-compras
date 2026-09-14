@@ -1,0 +1,221 @@
+fail: Microsoft.Extensions.Hosting.Internal.Host[11]
+      Hosting failed to start
+      System.IO.IOException: Failed to bind to address http://127.0.0.1:5005: address already in use.
+       ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+       ---> System.Net.Sockets.SocketException (10048): Only one usage of eacwarn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: System.Net.Http.HttpClient.IGoogleAuthorizationCodeExchanger.LogicalHandler[100]
+      Start processing HTTP request POST https://oauth2.googleapis.com/token
+info: System.Net.Http.HttpClient.IGoogleAuthorizationCodeExchanger.ClientHandler[100]
+      Sending HTTP request POST https://oauth2.googleapis.com/token
+info: System.Net.Http.HttpClient.IGoogleAuthorizationCodeExchanger.ClientHandler[101]
+      Received HTTP response headers after 447.8541ms - 200
+info: System.Net.Http.HttpClient.IGoogleAuthorizationCodeExchanger.LogicalHandler[101]
+      End processing HTTP request after 456.428ms - 200
+warn: Microsoft.EntityFrameworkCore.Model.Validation[20606]
+      The entity type 'SupplierAddress' is an optional dependent using table sharing without any required non shared property that could be used to identify whether the entity exists. If all nullable properties contain a null value in database then an object instance won't be created in the query. Add a required property to create instances with null values for other properties or mark the incoming navigation as required to always create an instance.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[20606]
+      The entity type 'SupplierContact' is an optional dependent using table sharing without any required non shared property that could be used to identify whether the entity exists. If all nullable properties contain a null value in database then an object instance won't be created in the query. Add a required property to create instances with null values for other properties or mark the incoming navigation as required to always create an instance.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (32ms) [Parameters=[@__googleId_0='?'], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."CreatedAt", u."Email", u."GoogleId"
+      FROM "Users" AS u
+      WHERE u."GoogleId" = @__googleId_0
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."CreatedAt", s."Description", s."Name", s."UserId"
+      FROM "ShoppingLists" AS s
+      WHERE s."UserId" = @__userId_0
+      ORDER BY s."CreatedAt" DESC
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (42ms) [Parameters=[@__listIds_0='?' (DbType = Object)], CommandType='Text', CommandTimeout='30']
+      SELECT s."ShoppingListId", s."Quantity", (
+          SELECT min(i."UnitPrice")
+          FROM "ItemQuotes" AS i
+          WHERE i."ShoppingItemId" = s."Id" AND EXISTS (
+              SELECT 1
+              FROM "ShoppingListSuppliers" AS s0
+              WHERE s0."ShoppingListId" = s."ShoppingListId" AND s0."SupplierId" = i."SupplierId")) AS "MinimumUnitPrice"
+      FROM "ShoppingItems" AS s
+      WHERE s."ShoppingListId" = ANY (@__listIds_0)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."CreatedAt", s."Description", s."Name", s."UserId"
+      FROM "ShoppingLists" AS s
+      WHERE s."Id" = @__id_0
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (28ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?', @p3='?' (DbType = Decimal), @p4='?' (DbType = Guid), @p5='?'], CommandType='Text', CommandTimeout='30']
+      INSERT INTO "ShoppingItems" ("Id", "CreatedAt", "Name", "Quantity", "ShoppingListId", "Unit")
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."CreatedAt", s."Description", s."Name", s."UserId"
+      FROM "ShoppingLists" AS s
+      WHERE s."UserId" = @__userId_0
+      ORDER BY s."CreatedAt" DESC
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__listIds_0='?' (DbType = Object)], CommandType='Text', CommandTimeout='30']
+      SELECT s."ShoppingListId", s."Quantity", (
+          SELECT min(i."UnitPrice")
+          FROM "ItemQuotes" AS i
+          WHERE i."ShoppingItemId" = s."Id" AND EXISTS (
+              SELECT 1
+              FROM "ShoppingListSuppliers" AS s0
+              WHERE s0."ShoppingListId" = s."ShoppingListId" AND s0."SupplierId" = i."SupplierId")) AS "MinimumUnitPrice"
+      FROM "ShoppingItems" AS s
+      WHERE s."ShoppingListId" = ANY (@__listIds_0)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT q."Id", q."BuyerEmail", q."BuyerName", q."Code", q."CreatedAtUtc", q."DeliveryAddress", q."Description", q."Instructions", q."ResponseDeadline", q."ShoppingListName", q."SourceShoppingListId", q."UserId", q0."Id", q0."Name", q0."Position", q0."Quantity", q0."QuotationRequestId", q0."SourceShoppingItemId", q0."Unit"
+      FROM "QuotationRequests" AS q
+      LEFT JOIN "QuotationRequestItems" AS q0 ON q."Id" = q0."QuotationRequestId"
+      WHERE q."UserId" = @__userId_0
+      ORDER BY q."CreatedAtUtc" DESC, q."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."CreatedAt", s."Description", s."Name", s."UserId"
+      FROM "ShoppingLists" AS s
+      WHERE s."UserId" = @__userId_0
+      ORDER BY s."CreatedAt" DESC
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__listIds_0='?' (DbType = Object)], CommandType='Text', CommandTimeout='30']
+      SELECT s."ShoppingListId", s."Quantity", (
+          SELECT min(i."UnitPrice")
+          FROM "ItemQuotes" AS i
+          WHERE i."ShoppingItemId" = s."Id" AND EXISTS (
+              SELECT 1
+              FROM "ShoppingListSuppliers" AS s0
+              WHERE s0."ShoppingListId" = s."ShoppingListId" AND s0."SupplierId" = i."SupplierId")) AS "MinimumUnitPrice"
+      FROM "ShoppingItems" AS s
+      WHERE s."ShoppingListId" = ANY (@__listIds_0)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."CreatedAt", s."Description", s."Name", s."UserId"
+      FROM "ShoppingLists" AS s
+      WHERE s."UserId" = @__userId_0
+      ORDER BY s."CreatedAt" DESC
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__listIds_0='?' (DbType = Object)], CommandType='Text', CommandTimeout='30']
+      SELECT s."ShoppingListId", s."Quantity", (
+          SELECT min(i."UnitPrice")
+          FROM "ItemQuotes" AS i
+          WHERE i."ShoppingItemId" = s."Id" AND EXISTS (
+              SELECT 1
+              FROM "ShoppingListSuppliers" AS s0
+              WHERE s0."ShoppingListId" = s."ShoppingListId" AND s0."SupplierId" = i."SupplierId")) AS "MinimumUnitPrice"
+      FROM "ShoppingItems" AS s
+      WHERE s."ShoppingListId" = ANY (@__listIds_0)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT i."Id", s0."Id", s0."Name", s."Id", s."Name", s."Quantity", s."Unit", s1."Id", s1."Name", i."UnitPrice", i."CreatedAt"
+      FROM "ItemQuotes" AS i
+      INNER JOIN "ShoppingItems" AS s ON i."ShoppingItemId" = s."Id"
+      INNER JOIN "ShoppingLists" AS s0 ON s."ShoppingListId" = s0."Id"
+      INNER JOIN "Suppliers" AS s1 ON i."SupplierId" = s1."Id"
+      WHERE s0."UserId" = @__userId_0
+      ORDER BY i."CreatedAt" DESC
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."Cnpj", s."CreatedAt", s."Name", s."UserId", s."AddressCity", s."AddressPostalCode", s."AddressStreet", s."ContactEmail", s."ContactPhone"
+      FROM "Suppliers" AS s
+      WHERE s."UserId" = @__userId_0
+      ORDER BY s."Name"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."CreatedAt", s."Description", s."Name", s."UserId"
+      FROM "ShoppingLists" AS s
+      WHERE s."Id" = @__id_0
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__shoppingListId_0='?' (DbType = Guid), @__userId_1='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."Name", s."Description", s."CreatedAt"
+      FROM "ShoppingLists" AS s
+      WHERE s."Id" = @__shoppingListId_0 AND s."UserId" = @__userId_1
+      LIMIT 2
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__shoppingListId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s0."Id", s0."Cnpj", s0."CreatedAt", s0."Name", s0."UserId", s0."AddressCity", s0."AddressPostalCode", s0."AddressStreet", s0."ContactEmail", s0."ContactPhone"
+      FROM "ShoppingListSuppliers" AS s
+      INNER JOIN "Suppliers" AS s0 ON s."SupplierId" = s0."Id"
+      WHERE s."ShoppingListId" = @__shoppingListId_0
+      ORDER BY s0."Name"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[@__shoppingListId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."Name", s."Quantity", s."Unit", s."CreatedAt", (
+          SELECT count(*)::int
+          FROM "ItemQuotes" AS i
+          WHERE i."ShoppingItemId" = s."Id" AND EXISTS (
+              SELECT 1
+              FROM "ShoppingListSuppliers" AS s0
+              WHERE s0."ShoppingListId" = @__shoppingListId_0 AND s0."SupplierId" = i."SupplierId")), (
+          SELECT min(i0."UnitPrice")
+          FROM "ItemQuotes" AS i0
+          WHERE i0."ShoppingItemId" = s."Id" AND EXISTS (
+              SELECT 1
+              FROM "ShoppingListSuppliers" AS s1
+              WHERE s1."ShoppingListId" = @__shoppingListId_0 AND s1."SupplierId" = i0."SupplierId"))
+      FROM "ShoppingItems" AS s
+      WHERE s."ShoppingListId" = @__shoppingListId_0
+      ORDER BY s."CreatedAt"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."CreatedAt", s."Description", s."Name", s."UserId"
+      FROM "ShoppingLists" AS s
+      WHERE s."Id" = @__id_0
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__shoppingListId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."CreatedAt", s."Name", s."Quantity", s."ShoppingListId", s."Unit"
+      FROM "ShoppingItems" AS s
+      WHERE s."ShoppingListId" = @__shoppingListId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__shoppingListId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT i."Id", i."CreatedAt", i."ShoppingItemId", i."SupplierId", i."UnitPrice"
+      FROM "ItemQuotes" AS i
+      WHERE EXISTS (
+          SELECT 1
+          FROM "ShoppingItems" AS s
+          WHERE s."Id" = i."ShoppingItemId" AND s."ShoppingListId" = @__shoppingListId_0) AND EXISTS (
+          SELECT 1
+          FROM "ShoppingListSuppliers" AS s0
+          WHERE s0."ShoppingListId" = @__shoppingListId_0 AND s0."SupplierId" = i."SupplierId")
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__shoppingListId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s0."Id", s0."Cnpj", s0."CreatedAt", s0."Name", s0."UserId", s0."AddressCity", s0."AddressPostalCode", s0."AddressStreet", s0."ContactEmail", s0."ContactPhone"
+      FROM "ShoppingListSuppliers" AS s
+      INNER JOIN "Suppliers" AS s0 ON s."SupplierId" = s0."Id"
+      WHERE s."ShoppingListId" = @__shoppingListId_0
+      ORDER BY s0."Name"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT q."Id", q."BuyerEmail", q."BuyerName", q."Code", q."CreatedAtUtc", q."DeliveryAddress", q."Description", q."Instructions", q."ResponseDeadline", q."ShoppingListName", q."SourceShoppingListId", q."UserId", q0."Id", q0."Name", q0."Position", q0."Quantity", q0."QuotationRequestId", q0."SourceShoppingItemId", q0."Unit"
+      FROM "QuotationRequests" AS q
+      LEFT JOIN "QuotationRequestItems" AS q0 ON q."Id" = q0."QuotationRequestId"
+      WHERE q."UserId" = @__userId_0
+      ORDER BY q."CreatedAtUtc" DESC, q."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."CreatedAt", s."Description", s."Name", s."UserId"
+      FROM "ShoppingLists" AS s
+      WHERE s."UserId" = @__userId_0
+      ORDER BY s."CreatedAt" DESC
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__listIds_0='?' (DbType = Object)], CommandType='Text', CommandTimeout='30']
+      SELECT s."ShoppingListId", s."Quantity", (
+          SELECT min(i."UnitPrice")
+          FROM "ItemQuotes" AS i
+          WHERE i."ShoppingItemId" = s."Id" AND EXISTS (
+              SELECT 1
+              FROM "ShoppingListSuppliers" AS s0
+              WHERE s0."ShoppingListId" = s."ShoppingListId" AND s0."SupplierId" = i."SupplierId")) AS "MinimumUnitPrice"
+      FROM "ShoppingItems" AS s
+      WHERE s."ShoppingListId" = ANY (@__listIds_0)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT p."Id", p."BuyerEmail", p."BuyerName", p."CancelledAtUtc", p."Code", p."CompletedAtUtc", p."CreatedAtUtc", p."DeliveryAddress", p."ExpectedDeliveryDate", p."Notes", p."PaymentTerms", p."ShoppingListName", p."SourceEqualizationId", p."SourceShoppingListId", p."Status", p."SupplierId", p."SupplierName", p."UpdatedAtUtc", p."UserId", p0."Id", p0."Name", p0."PurchaseOrderId", p0."Quantity", p0."SourceShoppingItemId", p0."Unit", p0."UnitPrice"
+      FROM "PurchaseOrders" AS p
+      LEFT JOIN "PurchaseOrderItems" AS p0 ON p."Id" = p0."PurchaseOrderId"
+      WHERE p."UserId" = @__userId_0
+      ORDER BY p."CreatedAtUtc" DESC, p."Id"

@@ -53,7 +53,7 @@ public sealed class PurchaseOrderConfiguration : IEntityTypeConfiguration<Purcha
             })
             .IsUnique()
             .HasFilter(
-                "[Status] <> 3 AND [SourceShoppingListId] IS NOT NULL AND [SupplierId] IS NOT NULL");
+                "\"Status\" <> 3 AND \"SourceShoppingListId\" IS NOT NULL AND \"SupplierId\" IS NOT NULL");
         builder.HasIndex(order => new { order.UserId, order.CreatedAtUtc });
         builder.HasIndex(order => order.SourceEqualizationId);
 
@@ -64,7 +64,7 @@ public sealed class PurchaseOrderConfiguration : IEntityTypeConfiguration<Purcha
 
         // Source IDs are audit references rather than aggregate relationships.
         // The validated snapshots keep an issued order readable after its list or
-        // supplier is deleted, without creating SQL Server cascade paths.
+        // supplier is deleted, without introducing unnecessary cascade relationships.
         builder.HasMany(order => order.Items)
             .WithOne()
             .HasForeignKey(item => item.PurchaseOrderId)

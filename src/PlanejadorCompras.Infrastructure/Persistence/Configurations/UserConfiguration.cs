@@ -18,6 +18,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(user => user.Email)
             .IsRequired()
+            .HasColumnType("citext")
             .HasMaxLength(320);
 
         builder.Property(user => user.CreatedAt)

@@ -72,8 +72,13 @@ docs/
 # Local secrets (do not commit)
 .env
 .env.*
+!.env.example
 **/appsettings.Development.json
 **/appsettings.*.Development.json
 **/appsettings.Local.json
 **/appsettings.*.Local.json
 **/*secrets*.json
+.dotnet-home/
+**/.npm-cache/
+**/node_modules/
+

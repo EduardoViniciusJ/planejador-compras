@@ -25,7 +25,7 @@ public static class DependencyInjectionExtensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        AddDbContextSqlServer(services, configuration);
+        AddDbContextPostgreSql(services, configuration);
         AddRepositories(services);
         AddUnitOfWork(services);
         AddApplicationServices(services);
@@ -35,7 +35,7 @@ public static class DependencyInjectionExtensions
         return services;
     }
 
-    private static void AddDbContextSqlServer(IServiceCollection services, IConfiguration configuration)
+    private static void AddDbContextPostgreSql(IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -46,7 +46,7 @@ public static class DependencyInjectionExtensions
         }
 
         services.AddDbContext<PlanejadorComprasDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            options.UseNpgsql(connectionString));
     }
 
     private static void AddRepositories(IServiceCollection services)

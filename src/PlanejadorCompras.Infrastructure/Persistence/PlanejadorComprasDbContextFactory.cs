@@ -37,7 +37,7 @@ public sealed class PlanejadorComprasDbContextFactory : IDesignTimeDbContextFact
         }
 
         var optionsBuilder = new DbContextOptionsBuilder<PlanejadorComprasDbContext>();
-        optionsBuilder.UseSqlServer(connectionString);
+        optionsBuilder.UseNpgsql(connectionString);
 
         return new PlanejadorComprasDbContext(optionsBuilder.Options);
     }

@@ -14,7 +14,8 @@ public sealed record ShoppingItemRequestDto(
     [Range(
         typeof(decimal),
         ShoppingItemRules.MinimumQuantityText,
-        ShoppingItemRules.MaximumQuantityText)]
+        ShoppingItemRules.MaximumQuantityText,
+        ParseLimitsInInvariantCulture = true)]
     decimal Quantity,
     [Required]
     [MinLength(1)]

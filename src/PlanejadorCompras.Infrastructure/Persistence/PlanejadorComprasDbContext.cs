@@ -33,6 +33,7 @@ public sealed class PlanejadorComprasDbContext(DbContextOptions<PlanejadorCompra
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasPostgresExtension("citext");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PlanejadorComprasDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }

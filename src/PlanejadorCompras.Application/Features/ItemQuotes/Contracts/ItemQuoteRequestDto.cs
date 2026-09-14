@@ -12,5 +12,6 @@ public sealed record ItemQuoteRequestDto(
     [Range(
         typeof(decimal),
         ItemQuoteRules.MinimumUnitPriceText,
-        ItemQuoteRules.MaximumUnitPriceText)]
+        ItemQuoteRules.MaximumUnitPriceText,
+        ParseLimitsInInvariantCulture = true)]
     decimal UnitPrice);
