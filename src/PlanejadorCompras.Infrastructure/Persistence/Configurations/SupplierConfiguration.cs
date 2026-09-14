@@ -14,6 +14,7 @@ public sealed class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 
         builder.Property(supplier => supplier.Name)
             .IsRequired()
+            .HasColumnType("citext")
             .HasMaxLength(SupplierRules.NameMaxLength);
 
         builder.Property(supplier => supplier.Cnpj)
@@ -27,7 +28,7 @@ public sealed class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 
         builder.HasIndex(supplier => new { supplier.UserId, supplier.Cnpj })
             .IsUnique()
-            .HasFilter("[Cnpj] IS NOT NULL");
+            .HasFilter("\"Cnpj\" IS NOT NULL");
 
         builder.OwnsOne(supplier => supplier.Address, address =>
         {
