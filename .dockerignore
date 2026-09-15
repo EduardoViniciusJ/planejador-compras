@@ -1,0 +1,15 @@
+**
+!src/
+!src/PlanejadorCompras.API/**
+!src/PlanejadorCompras.Application/**
+!src/PlanejadorCompras.Domain/**
+!src/PlanejadorCompras.Infrastructure/**
+**/bin/
+**/obj/
+**/*.csproj.user
+**/appsettings.Development.json
+**/appsettings.*.Development.json
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+**/*secrets*.json
+**/.env*
