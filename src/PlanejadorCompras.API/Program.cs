@@ -4,6 +4,12 @@ using PlanejadorCompras.API.Security;
 using PlanejadorCompras.Application;
 using PlanejadorCompras.Infrastructure;
 
+if (args.Contains("--migrate-only", StringComparer.Ordinal))
+{
+    Environment.ExitCode = await DatabaseMigrationCommand.RunAsync();
+    return;
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();
