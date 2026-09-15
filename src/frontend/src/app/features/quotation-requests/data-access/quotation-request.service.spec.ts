@@ -19,6 +19,13 @@ describe('QuotationRequestService', () => {
 
   afterEach(() => httpTesting.verify());
 
+  it('should delete the selected request', () => {
+    service.delete('request-1').subscribe();
+    const request = httpTesting.expectOne(buildApiUrl('/api/quotation-requests/request-1'));
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null, { status: 204, statusText: 'No Content' });
+  });
+
   it('should persist a request before downloading its PDF', () => {
     const payload = {
       responseDeadline: '2026-08-15',

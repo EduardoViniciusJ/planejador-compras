@@ -55,6 +55,8 @@ public static class DependencyInjectionExtensions
 
         // ShoppingItem
         services.AddScoped<CreateShoppingItemUseCase>();
+        services.AddScoped<CreateShoppingItemsUseCase>();
+        services.AddScoped<DeleteShoppingItemsUseCase>();
         services.AddScoped<GetShoppingItemByIdUseCase>();
         services.AddScoped<GetShoppingItemsByShoppingListIdUseCase>();
         services.AddScoped<UpdateShoppingItemUseCase>();
@@ -92,6 +94,7 @@ public static class DependencyInjectionExtensions
 
         // Quotation requests
         services.AddScoped<CreateQuotationRequestUseCase>();
+        services.AddScoped<DeleteQuotationRequestUseCase>();
         services.AddScoped<GetQuotationRequestsUseCase>();
         services.AddScoped<GetQuotationRequestByIdUseCase>();
         services.AddScoped<ExportSavedQuotationRequestPdfUseCase>();

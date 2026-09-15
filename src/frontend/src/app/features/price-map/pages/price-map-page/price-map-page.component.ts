@@ -14,6 +14,7 @@ import { ItemQuoteService } from '../../../quotes/data-access/item-quote.service
 import { ItemQuoteRequestDto } from '../../../quotes/dtos/item-quote.dto';
 import { ItemQuote } from '../../../quotes/models/item-quote.model';
 import { ShoppingListReportExportComponent } from '../../../reports/components/shopping-list-report-export/shopping-list-report-export.component';
+import { ShoppingItemBatchFormComponent } from '../../../shopping-items/components/shopping-item-batch-form/shopping-item-batch-form.component';
 import { ShoppingItemFormComponent } from '../../../shopping-items/components/shopping-item-form/shopping-item-form.component';
 import { ShoppingItemService } from '../../../shopping-items/data-access/shopping-item.service';
 import { ShoppingItemRequestDto } from '../../../shopping-items/dtos/shopping-item.dto';
@@ -72,6 +73,7 @@ const resultColumnWidth = 144;
     ModalDialogComponent,
     ShoppingListFormComponent,
     ShoppingItemFormComponent,
+    ShoppingItemBatchFormComponent,
     SupplierFormComponent,
     ItemQuoteFormComponent,
     AppIconComponent,
@@ -443,6 +445,15 @@ export class PriceMapPageComponent implements OnInit {
           this.formError.set('Não foi possível criar a lista agora.');
         },
       });
+  }
+
+  protected saveItems(requests: readonly ShoppingItemRequestDto[]): void {
+    if (this.isSaving()) return;
+    this.isSaving.set(true); this.formError.set(null);
+    this.itemService.createBatch(requests).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => { this.isSaving.set(false); this.activeDialog.set(null); this.feedback.set(requests.length + ' itens adicionados à lista.'); this.loadPage(false); },
+      error: () => { this.isSaving.set(false); this.formError.set('Não foi possível adicionar os itens. Revise os dados e tente novamente.'); },
+    });
   }
 
   protected saveItem(request: ShoppingItemRequestDto): void {

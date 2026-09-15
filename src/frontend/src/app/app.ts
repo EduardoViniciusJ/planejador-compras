@@ -68,9 +68,9 @@ const HERO_SCENE_STATES: Record<HeroStepId, HeroSceneState> = {
       { id: 'date', label: 'Data' },
     ],
     rows: [
-      { id: 'notebook', values: ['Notebook', 'un', '2', '13/07'], isHighlighted: true },
-      { id: 'cadeira', values: ['Cadeira ergonomica', 'un', '4', '12/07'] },
-      { id: 'monitor', values: ['Monitor 24"', 'un', '2', '13/07'] },
+      { id: 'notebook', values: ['Cimento CP II', 'sc', '20', '13/07'], isHighlighted: true },
+      { id: 'cadeira', values: ['Areia média', 'm³', '4', '12/07'] },
+      { id: 'monitor', values: ['Vergalhão 10 mm', 'un', '30', '13/07'] },
     ],
     footerIcon: 'list-check',
     footerLabel: 'Lista organizada',

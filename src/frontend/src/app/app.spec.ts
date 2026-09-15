@@ -44,11 +44,13 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const themeToggle = compiled.querySelector<HTMLButtonElement>('.theme-toggle');
 
+    expect(document.documentElement.getAttribute('data-app-theme')).toBe('dark');
+
     themeToggle?.click();
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(document.documentElement.getAttribute('data-app-theme')).toBe('dark');
-    expect(localStorage.getItem('planejador-theme')).toBe('dark');
+    expect(document.documentElement.getAttribute('data-app-theme')).toBe('light');
+    expect(localStorage.getItem('planejador-theme')).toBe('light');
   });
 });

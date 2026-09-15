@@ -15,6 +15,20 @@ export class ShoppingItemService {
       .pipe(map(() => undefined));
   }
 
+  createBatch(requests: readonly ShoppingItemRequestDto[]): Observable<readonly string[]> {
+    return this.http.post<readonly string[]>(
+      buildApiUrl(`/api/shopping-lists/${requests[0].shoppingListId}/items/batch`),
+      requests,
+    );
+  }
+
+  deleteBatch(listId: string, ids: readonly string[]): Observable<void> {
+    return this.http.post<void>(
+      buildApiUrl(`/api/shopping-lists/${listId}/items/batch-delete`),
+      ids,
+    );
+  }
+
   update(id: string, request: ShoppingItemRequestDto): Observable<void> {
     return this.http
       .put<ShoppingItemResponseDto>(buildApiUrl(`/api/shopping-items/${id}`), request)

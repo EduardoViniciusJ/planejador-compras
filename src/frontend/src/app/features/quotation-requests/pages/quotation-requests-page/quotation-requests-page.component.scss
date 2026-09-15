@@ -1,5 +1,9 @@
 :host { display: block; }
 
+.quotation-requests-page {
+  max-width: var(--app-content-wide-max-width);
+}
+
 .requests-toolbar {
   display: flex;
   align-items: end;
@@ -15,17 +19,40 @@
 
 .request-search {
   width: min(100%, 22rem);
-  min-height: var(--app-control-height);
+  height: 2.625rem;
   display: flex;
   align-items: center;
-  gap: .5rem;
-  padding: 0 .75rem;
-  border: 1px solid var(--app-border-color);
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--app-border);
   border-radius: var(--app-control-radius);
+  background: var(--app-input-bg);
   color: var(--app-text-muted);
-}
+  transition:
+    border-color var(--app-transition-fast),
+    box-shadow var(--app-transition-fast);
 
-.request-search input { flex: 1; min-width: 0; padding: 0; border: 0; background: transparent; }
+  &:focus-within {
+    border-color: var(--app-border-strong);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--app-brand-accent) 25%, transparent);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--app-text-primary);
+    font: inherit;
+    font-size: 0.8rem;
+
+    &::placeholder {
+      color: var(--app-text-soft);
+    }
+  }
+}
 
 .requests-grid {
   display: grid;
@@ -68,6 +95,7 @@
   padding: 2rem;
   border: 1px dashed var(--app-border-strong);
   border-radius: var(--app-radius-md);
+  background: var(--app-surface-bg);
   color: var(--app-text-muted);
   text-align: center;
   place-items: center;

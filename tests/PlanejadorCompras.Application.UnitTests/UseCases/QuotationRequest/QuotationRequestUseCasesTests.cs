@@ -146,6 +146,26 @@ public sealed class QuotationRequestUseCasesTests
         Assert.Equal("Mouse", Assert.Single(exported.Items).Name);
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Delete_ShouldCommitOnlyWhenRequestBelongsToCurrentUser(bool found)
+    {
+        var id = Guid.NewGuid();
+        _repository.Setup(repository => repository.DeleteForUserAsync(id, _userId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(found);
+        var useCase = new DeleteQuotationRequestUseCase(_repository.Object, _currentUser.Object, _unitOfWork.Object);
+        if (found)
+            await useCase.ExecuteAsync(id);
+        else
+        {
+            var exception = await Assert.ThrowsAsync<NotFoundException>(() => useCase.ExecuteAsync(id));
+            Assert.Equal("quotation_request_not_found", exception.ErrorCode);
+        }
+        _repository.Verify(repository => repository.DeleteForUserAsync(id, _userId, It.IsAny<CancellationToken>()), Times.Once);
+        _unitOfWork.Verify(unit => unit.CommitAsync(It.IsAny<CancellationToken>()), found ? Times.Once() : Times.Never());
+    }
+
     private CreateQuotationRequestUseCase CreateUseCase() =>
         new(
             new GetShoppingListDetailUseCase(

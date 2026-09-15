@@ -202,6 +202,7 @@
               </div>
 
               <div class="primary-actions">
+                <button nz-button type="button" data-testid="view-items" (click)="viewItems(list)">Ver itens ({{ list.itemCount }})</button>
                 <button
                   nz-button
                   type="button"
@@ -210,7 +211,7 @@
                   (click)="addItem(list)"
                 >
                   <app-icon name="plus" [size]="17" />
-                  Adicionar item
+                  Adicionar vários itens
                 </button>
                 <button
                   nz-button
@@ -261,20 +262,12 @@
 
 @if (itemList(); as list) {
   <app-modal-dialog
-    title="Adicionar item"
+    title="Adicionar vários itens" width="large"
     [eyebrow]="list.name"
     [closeDisabled]="isSavingItem()"
     (closeRequested)="closeItemForm()"
   >
-    <app-shopping-item-form
-      mode="create"
-      [shoppingListId]="list.id"
-      [item]="null"
-      [submitting]="isSavingItem()"
-      [serverError]="itemError()"
-      (saveRequested)="saveItem($event)"
-      (cancelRequested)="closeItemForm()"
-    />
+    <app-shopping-item-batch-form [shoppingListId]="list.id" [submitting]="isSavingItem()" [serverError]="itemError()" (saveRequested)="saveItems($event)" (cancelRequested)="closeItemForm()" />
   </app-modal-dialog>
 }
 
@@ -348,4 +341,8 @@
       </button>
     </div>
   </section>
+}
+
+@if (viewingItems(); as list) {
+  <app-shopping-list-items-dialog [list]="list" [addedIds]="addedItemIds()" (changed)="itemsChanged()" (closeRequested)="viewingItems.set(null)" />
 }

@@ -11,6 +11,8 @@ public interface IQuotationRequestRepository
         Guid userId,
         CancellationToken cancellationToken = default);
 
+    Task<bool> DeleteForUserAsync(Guid id, Guid userId, CancellationToken cancellationToken = default);
+
     Task AddAsync(
         Entities.QuotationRequest request,
         CancellationToken cancellationToken = default);

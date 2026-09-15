@@ -42,6 +42,25 @@ public sealed class ShoppingItemsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
+    [HttpPost("/api/shopping-lists/{shoppingListId:guid}/items/batch")]
+    [ProducesResponseType(typeof(IReadOnlyList<Guid>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateBatch(Guid shoppingListId,
+        [FromBody] List<ShoppingItemRequestDto> requests,
+        [FromServices] CreateShoppingItemsUseCase useCase, CancellationToken cancellationToken)
+    {
+        return Ok(await useCase.ExecuteAsync(shoppingListId, requests, cancellationToken));
+    }
+
+    [HttpPost("/api/shopping-lists/{shoppingListId:guid}/items/batch-delete")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteBatch(Guid shoppingListId,
+        [FromBody] List<Guid> ids,
+        [FromServices] DeleteShoppingItemsUseCase useCase, CancellationToken cancellationToken)
+    {
+        await useCase.ExecuteAsync(shoppingListId, ids, cancellationToken);
+        return NoContent();
+    }
+
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ShoppingItemResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

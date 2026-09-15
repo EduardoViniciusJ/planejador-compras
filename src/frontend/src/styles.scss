@@ -1,14 +1,14 @@
 :root {
   color-scheme: light;
-  --app-primary: #17213a;
-  --app-brand-ink: #17213a;
-  --app-brand-muted: #596176;
-  --app-brand-accent: #ffd400;
-  --app-brand-accent-strong: #f2c700;
-  --app-brand-accent-contrast: #17213a;
-  --app-brand-accent-soft: #fff8cc;
+  --app-primary: #0c0c0e;
+  --app-brand-ink: #0c0c0e;
+  --app-brand-muted: #52525b;
+  --app-brand-accent: #0c0c0e;
+  --app-brand-accent-strong: #3f3f46;
+  --app-brand-accent-contrast: #ffffff;
+  --app-brand-accent-soft: #f4f4f5;
   --app-brand: var(--app-brand-accent);
-  --app-brand-strong: #806a00;
+  --app-brand-strong: #27272a;
   --app-brand-soft: var(--app-brand-accent-soft);
   --app-success: #16803c;
   --app-success-rgb: 22, 128, 60;
@@ -17,7 +17,7 @@
   --app-success-soft: #e8f5ec;
   --app-warning: #d4aa00;
   --app-warning-strong: #705a00;
-  --app-warning-soft: #fff8cc;
+  --app-warning-soft: #f4f4f5;
   --app-danger: #dc2626;
   --app-danger-strong: #b91c1c;
   --app-danger-soft: #feecec;
@@ -28,13 +28,14 @@
   --app-violet-strong: #6d28d9;
   --app-violet-soft: #f5f3ff;
   --app-font-family:
-    'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont,
+    'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --app-font-weight-regular: 400;
+  --app-font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', Consolas, monospace;
   --app-font-weight-medium: 500;
   --app-font-weight-semibold: 600;
-  --app-font-weight-heading: 650;
+  --app-font-weight-heading: 500;
   --app-font-size-caption: 12px;
   --app-font-size-base: 14px;
   --app-font-size-table: 14px;
@@ -57,8 +58,8 @@
   --app-header-bg: rgba(245, 245, 244, 0.92);
   --app-sidebar-bg: rgba(255, 255, 255, 0.98);
   --app-overlay-bg: rgba(23, 33, 58, 0.56);
-  --app-text-color: #17213a;
-  --app-text-muted: #596176;
+  --app-text-color: #0c0c0e;
+  --app-text-muted: #52525b;
   --app-text-soft: #7a8191;
   --app-text-primary: var(--app-text-color);
   --app-text-secondary: var(--app-text-muted);
@@ -67,16 +68,16 @@
   --app-border: var(--app-border-color);
   --app-subtle-bg: var(--app-surface-alt-bg);
   --app-input-bg: var(--app-surface-bg);
-  --app-contrast-bg: #17213a;
+  --app-contrast-bg: #0c0c0e;
   --app-contrast-text: #ffffff;
   --app-shadow-sm: 0 1px 2px rgba(23, 33, 58, 0.06);
   --app-shadow-md: 0 8px 24px rgba(23, 33, 58, 0.1);
   --app-shadow-lg: 0 18px 48px rgba(23, 33, 58, 0.15);
-  --app-radius-xs: 6px;
-  --app-radius-sm: 8px;
-  --app-radius-md: 12px;
-  --app-radius-lg: 16px;
-  --app-radius-xl: 20px;
+  --app-radius-xs: 11px;
+  --app-radius-sm: 11px;
+  --app-radius-md: 11px;
+  --app-radius-lg: 11px;
+  --app-radius-xl: 11px;
   --app-radius-pill: 999px;
   --app-page-padding-x: clamp(1rem, 2.2vw, 1.75rem);
   --app-page-padding-y: clamp(1rem, 2vw, 1.5rem);
@@ -88,7 +89,7 @@
   --app-control-height-sm: 2.25rem;
   --app-control-height-lg: 3.25rem;
   --app-action-button-min-width: 10.5rem;
-  --app-control-radius: 0.625rem;
+  --app-control-radius: 11px;
   --app-surface-padding: clamp(1rem, 2vw, 1.5rem);
   --app-surface-padding-lg: clamp(1.25rem, 2.5vw, 2rem);
   --app-header-height: 4.5rem;
@@ -101,15 +102,15 @@
 
 [data-app-theme='dark'] {
   color-scheme: dark;
-  --app-primary: #ffd400;
-  --app-brand-ink: #f8f7f5;
-  --app-brand-muted: #b5b7b5;
-  --app-brand-accent: #ffd400;
-  --app-brand-accent-strong: #ffe45c;
-  --app-brand-accent-contrast: #17213a;
-  --app-brand-accent-soft: rgba(255, 212, 0, 0.16);
+  --app-primary: #ffffff;
+  --app-brand-ink: #ffffff;
+  --app-brand-muted: #a1a1aa;
+  --app-brand-accent: #ffffff;
+  --app-brand-accent-strong: #e4e4e7;
+  --app-brand-accent-contrast: #0c0c0e;
+  --app-brand-accent-soft: rgba(255, 255, 255, 0.08);
   --app-brand: var(--app-brand-accent);
-  --app-brand-strong: #ffe45c;
+  --app-brand-strong: #e4e4e7;
   --app-brand-soft: var(--app-brand-accent-soft);
   --app-success: #34d399;
   --app-success-rgb: 52, 211, 153;
@@ -128,27 +129,27 @@
   --app-violet: #a78bfa;
   --app-violet-strong: #c4b5fd;
   --app-violet-soft: rgba(167, 139, 250, 0.14);
-  --app-page-bg: #0d1425;
-  --app-page-alt-bg: #111a2f;
-  --app-surface-bg: #17213a;
-  --app-surface-alt-bg: #1c2947;
-  --app-surface-elevated-bg: rgba(23, 33, 58, 0.96);
-  --app-surface-inset-bg: #223052;
-  --app-header-bg: rgba(13, 20, 37, 0.92);
-  --app-sidebar-bg: rgba(13, 20, 37, 0.98);
+  --app-page-bg: #0c0c0e;
+  --app-page-alt-bg: #101012;
+  --app-surface-bg: #18181b;
+  --app-surface-alt-bg: #202023;
+  --app-surface-elevated-bg: rgba(24, 24, 27, 0.96);
+  --app-surface-inset-bg: #27272a;
+  --app-header-bg: rgba(12, 12, 14, 0.92);
+  --app-sidebar-bg: rgba(12, 12, 14, 0.98);
   --app-overlay-bg: rgba(5, 9, 18, 0.72);
-  --app-text-color: #f7f8fb;
-  --app-text-muted: #bac0ce;
-  --app-text-soft: #8f98ab;
+  --app-text-color: #ffffff;
+  --app-text-muted: #a1a1aa;
+  --app-text-soft: #a1a1aa;
   --app-text-primary: var(--app-text-color);
   --app-text-secondary: var(--app-text-muted);
-  --app-border-color: rgba(207, 215, 232, 0.2);
-  --app-border-strong: rgba(207, 215, 232, 0.34);
+  --app-border-color: #27272a;
+  --app-border-strong: #71717a;
   --app-border: var(--app-border-color);
   --app-subtle-bg: var(--app-surface-alt-bg);
   --app-input-bg: var(--app-surface-bg);
-  --app-contrast-bg: #f7f8fb;
-  --app-contrast-text: #17213a;
+  --app-contrast-bg: #ffffff;
+  --app-contrast-text: #0c0c0e;
   --app-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --app-shadow-md: 0 12px 32px rgba(0, 0, 0, 0.35);
   --app-shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.45);
@@ -158,10 +159,10 @@
 /* NG-ZORRO: linguagem visual da estacao de trabalho do comprador. */
 :root,
 [data-app-theme='light'] {
-  --ant-primary-color: #ffd400;
-  --ant-primary-color-hover: #f2c700;
-  --ant-primary-color-active: #ddb600;
-  --ant-primary-color-outline: rgba(255, 212, 0, 0.2);
+  --ant-primary-color: var(--app-brand-accent);
+  --ant-primary-color-hover: var(--app-brand-accent-strong);
+  --ant-primary-color-active: #d4d4d8;
+  --ant-primary-color-outline: rgba(255, 255, 255, 0.2);
 }
 
 .ant-btn,
@@ -354,12 +355,12 @@ body {
 }
 
 .app-layout {
-  --app-radius-xs: 3px;
-  --app-radius-sm: 4px;
-  --app-radius-md: 6px;
-  --app-radius-lg: 8px;
-  --app-radius-xl: 10px;
-  --app-control-radius: 4px;
+  --app-radius-xs: 11px;
+  --app-radius-sm: 11px;
+  --app-radius-md: 11px;
+  --app-radius-lg: 11px;
+  --app-radius-xl: 11px;
+  --app-control-radius: 11px;
   font-family: var(--app-font-family);
   font-size: var(--app-font-size-base);
   line-height: var(--app-line-height-body);
@@ -478,6 +479,35 @@ button,
   font-weight: var(--app-font-weight-medium) !important;
 }
 
+label,
+.ant-form-item-label > label,
+[class*='eyebrow'],
+.management-kpi-label,
+.management-kpi strong,
+.ant-table,
+table,
+.combo-comparison,
+.combo-panel-header,
+.combo-panel-footer,
+.combo-flow-step > span {
+  font-family: var(--app-font-mono) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.ant-btn-default:hover,
+.ant-btn-default:focus-visible {
+  color: var(--app-text-color);
+  border-color: var(--app-border-strong);
+  background: var(--app-surface-alt-bg);
+}
+
+.ant-btn-primary:disabled,
+.ant-btn-primary:disabled:hover {
+  color: var(--app-text-muted);
+  background: var(--app-surface-alt-bg);
+  border-color: var(--app-border-color);
+}
+
 h1 {
   font-size: var(--app-font-size-page-title);
   line-height: var(--app-line-height-page-title);
@@ -537,12 +567,12 @@ svg {
 }
 
 ::selection {
-  background: color-mix(in srgb, #2563eb 32%, transparent);
+  background: color-mix(in srgb, var(--app-text-color) 24%, transparent);
   color: var(--app-text-color);
 }
 
 ::-moz-selection {
-  background: color-mix(in srgb, #2563eb 32%, transparent);
+  background: color-mix(in srgb, var(--app-text-color) 24%, transparent);
   color: var(--app-text-color);
 }
 
@@ -853,3 +883,12 @@ a:focus-visible,
     white-space: normal;
   }
 }
+
+/* Native menus and overlay options follow the active theme. */
+select { color-scheme: inherit; }
+select option, select optgroup { background-color: var(--app-surface-bg); color: var(--app-text-color); }
+.ant-select-dropdown { background-color: var(--app-surface-bg) !important; }
+.ant-select-item { color: var(--app-text-color) !important; }
+.ant-select-item-option-active:not(.ant-select-item-option-disabled),
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) { background-color: var(--app-surface-inset-bg) !important; color: var(--app-text-color) !important; }
+.ant-select-item-option-disabled { color: var(--app-text-soft) !important; }
