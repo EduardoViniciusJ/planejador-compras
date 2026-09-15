@@ -79,4 +79,60 @@ public sealed class AuthController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPost("register")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Register(
+        [FromBody] RegisterRequestDto request,
+        [FromServices] RegisterUseCase useCase,
+        CancellationToken cancellationToken)
+    {
+        await useCase.ExecuteAsync(request, cancellationToken);
+        return Ok(new { message = "Usuário registrado com sucesso. Por favor, verifique seu e-mail para confirmar a conta." });
+    }
+
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login(
+        [FromBody] LoginRequestDto request,
+        [FromServices] LoginUseCase useCase,
+        CancellationToken cancellationToken)
+    {
+        var result = await useCase.ExecuteAsync(request, cancellationToken);
+        _authCookieService.AppendAccessToken(HttpContext, result.AccessToken, result.ExpiresAtUtc);
+        return Ok(new { message = "Login realizado com sucesso." });
+    }
+
+    [HttpPost("confirm-email")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ConfirmEmail(
+        [FromBody] ConfirmEmailRequestDto request,
+        [FromServices] ConfirmEmailUseCase useCase,
+        CancellationToken cancellationToken)
+    {
+        await useCase.ExecuteAsync(request, cancellationToken);
+        return Ok(new { message = "E-mail confirmado com sucesso." });
+    }
+
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ForgotPassword(
+        [FromBody] ForgotPasswordRequestDto request,
+        [FromServices] ForgotPasswordUseCase useCase,
+        CancellationToken cancellationToken)
+    {
+        await useCase.ExecuteAsync(request, cancellationToken);
+        return Ok(new { message = "Se o e-mail existir em nossa base, você receberá um link para redefinir sua senha." });
+    }
+
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword(
+        [FromBody] ResetPasswordRequestDto request,
+        [FromServices] ResetPasswordUseCase useCase,
+        CancellationToken cancellationToken)
+    {
+        await useCase.ExecuteAsync(request, cancellationToken);
+        return Ok(new { message = "Senha redefinida com sucesso." });
+    }
 }

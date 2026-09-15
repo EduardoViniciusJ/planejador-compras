@@ -6,6 +6,7 @@ namespace PlanejadorCompras.Infrastructure.Persistence;
 public sealed class PlanejadorComprasDbContext(DbContextOptions<PlanejadorComprasDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
+    public DbSet<UserToken> UserTokens => Set<UserToken>();
 
     public DbSet<ShoppingList> ShoppingLists => Set<ShoppingList>();
 

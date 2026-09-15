@@ -60,6 +60,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
         services.AddScoped<ISavedEqualizationRepository, SavedEqualizationRepository>();
         services.AddScoped<IQuotationRequestRepository, QuotationRequestRepository>();
+        services.AddScoped<IUserTokenRepository, UserTokenRepository>();
     }
 
     private static void AddUnitOfWork(IServiceCollection services)
@@ -102,5 +103,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddSingleton<IPurchaseOrderCodeGenerator, PurchaseOrderCodeGenerator>();
         services.AddSingleton<ISavedEqualizationCodeGenerator, SavedEqualizationCodeGenerator>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IEmailService, ResendEmailService>();
     }
 }

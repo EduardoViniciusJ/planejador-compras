@@ -13,8 +13,15 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(user => user.Id);
 
         builder.Property(user => user.GoogleId)
-            .IsRequired()
+            .IsRequired(false)
             .HasMaxLength(255);
+
+        builder.Property(user => user.PasswordHash)
+            .IsRequired(false)
+            .HasMaxLength(255);
+
+        builder.Property(user => user.IsEmailConfirmed)
+            .IsRequired();
 
         builder.Property(user => user.Email)
             .IsRequired()

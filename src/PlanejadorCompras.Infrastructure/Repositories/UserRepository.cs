@@ -23,4 +23,14 @@ public sealed class UserRepository : IUserRepository
     {
         return await _context.Users.FirstOrDefaultAsync(x => x.GoogleId == googleId, cancellationToken);
     }
+
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    {
+        return await _context.Users.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+    }
+
+    public void Update(User user)
+    {
+        _context.Users.Update(user);
+    }
 }
