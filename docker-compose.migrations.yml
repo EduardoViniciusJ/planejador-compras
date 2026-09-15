@@ -1,0 +1,15 @@
+services:
+  migrations:
+    build:
+      context: .
+      dockerfile: src/PlanejadorCompras.API/Dockerfile
+      target: migrations
+    environment:
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection:?Configure the production database connection in Dokploy}
+    restart: "no"
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
