@@ -1,0 +1,92 @@
+.toolbar,
+.selection-bar,
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.toolbar {
+  margin-bottom: 1rem;
+}
+.toolbar input {
+  flex: 1;
+}
+.selection-bar {
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  color: var(--app-text-muted);
+  font-size: 0.85rem;
+}
+.selection-bar span {
+  margin-right: auto;
+}
+.table-scroll {
+  overflow-x: auto;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 640px;
+}
+td,
+th {
+  padding: 0.75rem 0.4rem;
+  border-bottom: 1px solid var(--app-border-color);
+  text-align: left;
+}
+th {
+  font-weight: 500;
+}
+td:nth-child(2) {
+  width: 40%;
+  overflow-wrap: anywhere;
+}
+td:nth-child(3),
+td:nth-child(4) {
+  width: 15%;
+}
+input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--app-text-color);
+  cursor: pointer;
+}
+small {
+  display: block;
+  color: var(--app-text-muted);
+}
+.new-item {
+  background: var(--app-success-soft);
+}
+.badge {
+  color: var(--app-success-strong);
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+}
+.feedback {
+  padding: 0.75rem;
+  background: var(--app-success-soft);
+  color: var(--app-success-strong);
+  border-radius: var(--app-radius-sm);
+}
+.error,
+.warning {
+  color: var(--app-danger-strong);
+}
+.delete-preview {
+  max-height: 16rem;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+}
+.footer {
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+@media (max-width: 600px) {
+  .toolbar {
+    flex-wrap: wrap;
+  }
+  .toolbar input {
+    flex-basis: 100%;
+  }
+}

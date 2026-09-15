@@ -31,16 +31,10 @@ const PRIMARY_NAVIGATION: readonly SidebarNavigationItem[] = [
     exact: false,
   },
   {
-    icon: 'file-invoice',
-    label: 'Pedidos',
-    route: '/app/purchase-orders',
-    exact: false,
+    icon: 'scale', label: 'Equalizações', route: '/app/equalizations', exact: false,
   },
   {
-    icon: 'scale',
-    label: 'Equalizações salvas',
-    route: '/app/equalizations',
-    exact: false,
+    icon: 'file-invoice', label: 'Pedidos', route: '/app/purchase-orders', exact: false,
   },
   { icon: 'buildings', label: 'Fornecedores', route: '/app/suppliers', exact: false },
 ];

@@ -83,3 +83,6 @@ docs/
 **/.npm-cache/
 **/node_modules/
 
+# Local academic references
+Atividade/
+

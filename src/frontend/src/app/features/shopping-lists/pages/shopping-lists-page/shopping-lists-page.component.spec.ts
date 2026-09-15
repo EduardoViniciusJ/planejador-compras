@@ -3,6 +3,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import { ShoppingListService } from '../../data-access/shopping-list.service';
+import { ShoppingListDetailService } from '../../data-access/shopping-list-detail.service';
 import { ShoppingItemService } from '../../../shopping-items/data-access/shopping-item.service';
 import { ReportFileDownloadService } from '../../../reports/services/report-file-download.service';
 import { QuotationRequestService } from '../../../quotation-requests/data-access/quotation-request.service';
@@ -73,11 +74,13 @@ describe('ShoppingListsPageComponent', () => {
   };
   const fileDownloadService = { download: vi.fn() };
   const shoppingItemService = {
+    createBatch: vi.fn(() => of(['new-item'])),
     create: vi.fn(() => of(undefined)),
   };
 
   beforeEach(async () => {
     shoppingItemService.create.mockClear();
+    shoppingItemService.createBatch.mockClear();
     service = {
       getOverview: vi.fn(() => of(OVERVIEW)),
       create: vi.fn(() => of(undefined)),
@@ -94,6 +97,7 @@ describe('ShoppingListsPageComponent', () => {
           useValue: { snapshot: { queryParamMap: { get: () => null } } },
         },
         { provide: ShoppingListService, useValue: service },
+        { provide: ShoppingListDetailService, useValue: { getDetail: vi.fn(() => of({ items: [] })) } },
         { provide: ShoppingItemService, useValue: shoppingItemService },
         { provide: QuotationRequestService, useValue: quotationRequestService },
         { provide: ReportFileDownloadService, useValue: fileDownloadService },
@@ -134,23 +138,16 @@ describe('ShoppingListsPageComponent', () => {
     expect(service.getOverview).toHaveBeenCalledTimes(2);
   });
 
-  it('should add an item without leaving the shopping lists page', () => {
+  it('should add multiple items without leaving the shopping lists page', async () => {
     clickElement(fixture, '[data-testid="add-item"]');
-    const unitSelect = getHost(fixture).querySelector(
-      'nz-select[formControlName="unit"]',
-    ) as HTMLElement | null;
-    expect(unitSelect).toBeTruthy();
-    expect(unitSelect?.parentElement?.tagName).toBe('DIV');
-    expect(unitSelect?.parentElement?.classList.contains('form-field')).toBe(true);
-    setInputValue(fixture, 'input[formControlName="name"]', 'Papel A4');
-    submitForm(fixture, '.feature-form');
-
-    expect(shoppingItemService.create).toHaveBeenCalledWith({
-      shoppingListId: 'draft-list',
-      name: 'Papel A4',
-      quantity: 1,
-      unit: 'un',
-    });
+    await fixture.whenStable();
+    setInputValue(fixture, 'input[aria-label="Item da linha 1"]', 'Papel A4');
+    setInputValue(fixture, 'input[aria-label="Item da linha 2"]', 'Caneta');
+    clickElement(fixture, 'app-shopping-item-batch-form .actions button:last-child');
+    expect(shoppingItemService.createBatch).toHaveBeenCalledWith([
+      { shoppingListId: 'draft-list', name: 'Papel A4', quantity: 1, unit: 'un' },
+      { shoppingListId: 'draft-list', name: 'Caneta', quantity: 1, unit: 'un' },
+    ]);
     expect(service.getOverview).toHaveBeenCalledTimes(2);
   });
 

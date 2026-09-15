@@ -27,6 +27,10 @@ export class QuotationRequestService {
     );
   }
 
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(buildApiUrl(`/api/quotation-requests/${id}`));
+  }
+
   create(
     shoppingListId: string,
     request: CreateQuotationRequestDto,

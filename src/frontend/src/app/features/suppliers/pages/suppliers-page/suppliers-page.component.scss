@@ -2,6 +2,10 @@
   display: block;
 }
 
+.suppliers-page {
+  max-width: var(--app-content-wide-max-width);
+}
+
 .suppliers-page,
 .suppliers-surface,
 .suppliers-surface nz-table {
@@ -33,8 +37,44 @@
   font-size: 0.78rem;
 }
 
-.suppliers-toolbar nz-input-group {
+.suppliers-filters {
   width: min(100%, 24rem);
+}
+
+.supplier-search {
+  height: 2.625rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-control-radius);
+  background: var(--app-input-bg);
+  color: var(--app-text-muted);
+  transition:
+    border-color var(--app-transition-fast),
+    box-shadow var(--app-transition-fast);
+
+  &:focus-within {
+    border-color: var(--app-border-strong);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--app-brand-accent) 25%, transparent);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--app-text-primary);
+    font: inherit;
+    font-size: 0.8rem;
+
+    &::placeholder {
+      color: var(--app-text-soft);
+    }
+  }
 }
 
 .suppliers-surface {
@@ -88,6 +128,31 @@
   gap: 0.75rem;
   padding: 2rem;
   text-align: center;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: var(--app-radius-md);
+  background: var(--app-surface-bg);
+  color: var(--app-text-muted);
+
+  h2,
+  p {
+    margin: 0;
+  }
+
+  h2 {
+    color: var(--app-text-primary);
+    font-size: 1rem;
+  }
+}
+
+.state-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0.25rem;
+  border-radius: var(--app-radius-sm);
+  background: var(--app-brand-soft);
+  color: var(--app-brand-strong);
+  place-items: center;
 }
 
 .dialog-backdrop {
@@ -137,7 +202,7 @@
     flex-direction: column;
   }
 
-  .suppliers-toolbar nz-input-group {
+  .suppliers-filters {
     width: 100%;
   }
 }

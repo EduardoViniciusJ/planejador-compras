@@ -31,7 +31,7 @@ export class ThemeService {
   }
 
   private resolveInitialTheme(): AppTheme {
-    return this.readStoredTheme() ?? (this.prefersDarkTheme() ? 'dark' : 'light');
+    return this.readStoredTheme() ?? 'dark';
   }
 
   private readStoredTheme(): AppTheme | null {
@@ -60,16 +60,6 @@ export class ThemeService {
     } catch {
       return null;
     }
-  }
-
-  private prefersDarkTheme(): boolean {
-    const browserWindow = this.document.defaultView;
-
-    if (!browserWindow || typeof browserWindow.matchMedia !== 'function') {
-      return false;
-    }
-
-    return browserWindow.matchMedia('(prefers-color-scheme: dark)').matches;
   }
 
   private applyTheme(theme: AppTheme): void {

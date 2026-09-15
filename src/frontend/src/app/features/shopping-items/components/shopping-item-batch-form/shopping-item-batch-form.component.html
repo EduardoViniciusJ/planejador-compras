@@ -1,0 +1,18 @@
+<p>Preencha as linhas ou cole do Excel as colunas <strong>Item, Quantidade e Unidade</strong> no campo do item. Use Tab para avançar e Enter na unidade para ir à próxima linha. Até 200 itens por vez.</p>
+<fieldset [disabled]="submitting()">
+  <div class="table-scroll"><table>
+    <thead><tr><th>Item</th><th>Quantidade</th><th>Unidade</th><th>Ações</th></tr></thead>
+    <tbody>@for (row of rows(); track row; let i = $index) {
+      <tr [class.invalid]="attempted() && invalid(row) && !isEmpty(row)">
+        <td><input nz-input data-name [attr.aria-label]="'Item da linha ' + (i + 1)" [attr.aria-invalid]="attempted() && invalid(row) && !isEmpty(row)" [(ngModel)]="row.name" (paste)="paste($event, i)" placeholder="Ex.: Cimento CP II 50 kg" /></td>
+        <td><input nz-input inputmode="decimal" [attr.aria-label]="'Quantidade da linha ' + (i + 1)" [(ngModel)]="row.quantity" /></td>
+        <td><input nz-input [attr.aria-label]="'Unidade da linha ' + (i + 1)" [(ngModel)]="row.unit" (keydown.enter)="nextRow($event, i)" /></td>
+        <td><div class="row-actions"><button nz-button type="button" (click)="add(row)" [disabled]="rows().length >= 200" [attr.aria-label]="'Duplicar linha ' + (i + 1)">Duplicar</button><button nz-button nzDanger type="button" (click)="remove(i)" [attr.aria-label]="'Remover linha ' + (i + 1)">Remover</button></div></td>
+      </tr>
+    }</tbody>
+  </table></div>
+  <button nz-button type="button" (click)="add()" [disabled]="rows().length >= 200">+ Adicionar linha</button>
+</fieldset>
+@if (attempted()) { <p class="hint">Preencha ao menos um item. Cada linha precisa de nome (até 100 caracteres), quantidade maior que zero com até 3 casas decimais e unidade (até 20 caracteres). Linhas vazias são ignoradas.</p> }
+@if (pasteError() || serverError()) { <p class="error" role="alert">{{ pasteError() || serverError() }}</p> }
+<div class="actions"><button nz-button type="button" [disabled]="submitting()" (click)="cancelRequested.emit()">Cancelar</button><button nz-button nzType="primary" type="button" [nzLoading]="submitting()" [disabled]="submitting()" (click)="submit()">Adicionar itens à lista</button></div>

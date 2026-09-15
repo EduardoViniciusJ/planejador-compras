@@ -1,0 +1,238 @@
+<app-modal-dialog
+  [title]="adding() ? 'Adicionar vários itens' : 'Itens da lista'"
+  [eyebrow]="list().name"
+  width="large"
+  [closeDisabled]="busy()"
+  (closeRequested)="close()"
+>
+  @if (adding()) {
+    <app-shopping-item-batch-form
+      [shoppingListId]="list().id"
+      [submitting]="busy()"
+      [serverError]="error()"
+      (saveRequested)="saveBatch($event)"
+      (cancelRequested)="adding.set(false); error.set(null)"
+    />
+  } @else if (pendingDelete().length) {
+    <section aria-label="Confirmar exclusão">
+      <h3>Excluir {{ pendingDelete().length }} item(ns)?</h3>
+      <p>Esta ação é permanente.</p>
+      <ul class="delete-preview">
+        @for (item of pendingDelete(); track item.id) {
+          <li>{{ item.name }} — {{ item.quantity }} {{ item.unit }}</li>
+        }
+      </ul>
+      @if (hasQuotes()) {
+        <p class="warning">As cotações vinculadas a estes itens também serão removidas.</p>
+      }
+      @if (error()) {
+        <p class="error" role="alert">{{ error() }}</p>
+      }
+      <div class="actions">
+        <button nz-button type="button" [disabled]="busy()" (click)="close()">Cancelar</button
+        ><button
+          nz-button
+          nzDanger
+          nzType="primary"
+          type="button"
+          data-testid="confirm-delete-items"
+          [nzLoading]="busy()"
+          [disabled]="busy()"
+          (click)="confirmDelete()"
+        >
+          Excluir itens
+        </button>
+      </div>
+    </section>
+  } @else {
+    @if (feedback()) {
+      <p class="feedback" role="status">{{ feedback() }}</p>
+    }
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    @if (loading()) {
+      <p role="status">Carregando itens...</p>
+    } @else if (loadError()) {
+      <button nz-button type="button" (click)="load()">Tentar novamente</button>
+    } @else {
+      <div class="toolbar">
+        <input
+          nz-input
+          type="search"
+          aria-label="Buscar item"
+          placeholder="Buscar item pelo nome"
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
+          [disabled]="busy() || !!editing()"
+        />
+        <button
+          nz-button
+          type="button"
+          [disabled]="busy() || !!editing()"
+          (click)="adding.set(true); error.set(null)"
+        >
+          Adicionar vários itens
+        </button>
+      </div>
+      <div class="selection-bar">
+        <span>{{ items().length }} itens · {{ selected().size }} selecionados (máximo 200)</span>
+        @if (selected().size) {
+          <button
+            nz-button
+            type="button"
+            [disabled]="busy() || !!editing()"
+            (click)="clearSelection()"
+          >
+            Limpar seleção
+          </button>
+          <button
+            nz-button
+            nzDanger
+            type="button"
+            [disabled]="busy() || !!editing()"
+            (click)="askDelete()"
+          >
+            Excluir selecionados
+          </button>
+        }
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  aria-label="Selecionar itens visíveis (até 200)"
+                  [checked]="allVisibleSelected()"
+                  [disabled]="busy() || !!editing() || !visibleItems().length"
+                  (change)="toggleVisible()"
+                />
+              </th>
+              <th>Item</th>
+              <th>Quantidade</th>
+              <th>Unidade</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of visibleItems(); track item.id) {
+              <tr [class.new-item]="highlighted().has(item.id)">
+                <td>
+                  <input
+                    type="checkbox"
+                    [attr.aria-label]="'Selecionar ' + item.name"
+                    [checked]="selected().has(item.id)"
+                    [disabled]="
+                      busy() || !!editing() || (selected().size >= 200 && !selected().has(item.id))
+                    "
+                    (change)="toggle(item.id)"
+                  />
+                </td>
+                @if (editing() === item.id) {
+                  <td>
+                    <input
+                      nz-input
+                      aria-label="Nome do item"
+                      [(ngModel)]="draft.name"
+                      [disabled]="busy()"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      nz-input
+                      aria-label="Quantidade"
+                      inputmode="decimal"
+                      [(ngModel)]="draft.quantity"
+                      [disabled]="busy()"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      nz-input
+                      aria-label="Unidade"
+                      [(ngModel)]="draft.unit"
+                      [disabled]="busy()"
+                      (keydown.enter)="save()"
+                    />
+                  </td>
+                  <td>
+                    <div class="actions">
+                      <button
+                        nz-button
+                        nzType="primary"
+                        type="button"
+                        [disabled]="busy()"
+                        [nzLoading]="busy()"
+                        (click)="save()"
+                      >
+                        Salvar</button
+                      ><button
+                        nz-button
+                        type="button"
+                        [disabled]="busy()"
+                        (click)="editing.set(null); error.set(null)"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </td>
+                } @else {
+                  <td>
+                    {{ item.name }}
+                    @if (highlighted().has(item.id)) {
+                      <span class="badge">Novo</span>
+                    }
+                    @if (item.quoteCount) {
+                      <small>{{ item.quoteCount }} cotação(ões)</small>
+                    }
+                  </td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.unit }}</td>
+                  <td>
+                    <div class="actions">
+                      <button
+                        nz-button
+                        type="button"
+                        [disabled]="busy() || !!editing()"
+                        [attr.aria-label]="'Editar ' + item.name"
+                        (click)="edit(item)"
+                      >
+                        Editar</button
+                      ><button
+                        nz-button
+                        nzDanger
+                        type="button"
+                        [disabled]="busy() || !!editing()"
+                        [attr.aria-label]="'Excluir ' + item.name"
+                        (click)="askDelete(item)"
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </td>
+                }
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5">
+                  {{
+                    search()
+                      ? 'Nenhum item encontrado para esta busca.'
+                      : 'Esta lista ainda não tem itens.'
+                  }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+    <div class="actions footer">
+      <button nz-button type="button" [disabled]="busy()" (click)="close()">
+        {{ editing() ? 'Cancelar edição' : 'Fechar' }}
+      </button>
+    </div>
+  }
+</app-modal-dialog>

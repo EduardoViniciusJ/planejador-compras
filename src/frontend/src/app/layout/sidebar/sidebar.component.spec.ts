@@ -53,8 +53,8 @@ describe('SidebarComponent', () => {
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
       '/app',
       '/app/quotation-requests',
-      '/app/purchase-orders',
       '/app/equalizations',
+      '/app/purchase-orders',
       '/app/suppliers',
     ]);
     expect(links[0]?.textContent).toContain('Lista de compras');

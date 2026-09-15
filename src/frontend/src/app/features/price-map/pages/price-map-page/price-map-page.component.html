@@ -618,12 +618,12 @@
 
 @if (activeDialog() === 'item') {
   <app-modal-dialog
-    [title]="editingItem()?.name ?? 'Adicionar item'"
+    [title]="editingItem()?.name ?? 'Adicionar vários itens'" [width]="editingItem() ? 'medium' : 'large'"
     [eyebrow]="editingItem() ? 'Editar item' : 'Novo item'"
     [closeDisabled]="isSaving()"
     (closeRequested)="closeDialog()"
   >
-    <app-shopping-item-form
+    @if (editingItem()) { <app-shopping-item-form
       [mode]="editingItem() ? 'edit' : 'create'"
       [shoppingListId]="listId()"
       [item]="editingItem()"
@@ -631,7 +631,7 @@
       [serverError]="formError()"
       (saveRequested)="saveItem($event)"
       (cancelRequested)="closeDialog()"
-    />
+    /> } @else { <app-shopping-item-batch-form [shoppingListId]="listId()" [submitting]="isSaving()" [serverError]="formError()" (saveRequested)="saveItems($event)" (cancelRequested)="closeDialog()" /> }
   </app-modal-dialog>
 }
 

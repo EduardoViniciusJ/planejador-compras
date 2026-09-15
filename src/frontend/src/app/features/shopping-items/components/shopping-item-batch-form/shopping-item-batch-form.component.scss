@@ -1,0 +1,15 @@
+:host { display: block; }
+p { color: var(--app-text-muted); }
+fieldset { border: 0; padding: 0; min-width: 0; }
+.table-scroll { overflow-x: auto; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; min-width: 640px; }
+th { text-align: left; font-weight: 500; }
+td, th { padding: .5rem .3rem; }
+td:first-child { width: 45%; }
+td:nth-child(2) { width: 16%; }
+td:nth-child(3) { width: 12%; }
+.row-actions, .actions { display: flex; gap: .5rem; }
+.actions { justify-content: flex-end; margin-top: 1.5rem; flex-wrap: wrap; }
+.invalid input { border-color: var(--app-danger); }
+.error { color: var(--app-danger); }
+.hint { font-size: 12px; }

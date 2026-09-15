@@ -10,6 +10,7 @@ namespace PlanejadorCompras.API.Controllers;
 [Route("api/quotation-requests")]
 public sealed class QuotationRequestsController(
     CreateQuotationRequestUseCase createUseCase,
+    DeleteQuotationRequestUseCase deleteUseCase,
     GetQuotationRequestsUseCase getAllUseCase,
     GetQuotationRequestByIdUseCase getByIdUseCase,
     ExportSavedQuotationRequestPdfUseCase exportPdfUseCase)
@@ -44,6 +45,15 @@ public sealed class QuotationRequestsController(
             request,
             cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await deleteUseCase.ExecuteAsync(id, cancellationToken);
+        return NoContent();
     }
 
     [HttpGet("{id:guid}/pdf")]
