@@ -13,3 +13,6 @@
 **/appsettings.*.Local.json
 **/*secrets*.json
 **/.env*
+src/frontend/node_modules/
+src/frontend/dist/
+src/frontend/.angular/
