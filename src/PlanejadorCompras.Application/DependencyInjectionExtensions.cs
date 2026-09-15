@@ -33,6 +33,11 @@ public static class DependencyInjectionExtensions
         // Auth
         services.AddScoped<GoogleLoginUseCase>();
         services.AddScoped<GoogleAuthorizationCodeLoginUseCase>();
+        services.AddScoped<RegisterUseCase>();
+        services.AddScoped<ConfirmEmailUseCase>();
+        services.AddScoped<LoginUseCase>();
+        services.AddScoped<ForgotPasswordUseCase>();
+        services.AddScoped<ResetPasswordUseCase>();
         // ShoppingList
         services.AddScoped<CreateShoppingListUseCase>();
         services.AddScoped<GetShoppingListByIdUseCase>();

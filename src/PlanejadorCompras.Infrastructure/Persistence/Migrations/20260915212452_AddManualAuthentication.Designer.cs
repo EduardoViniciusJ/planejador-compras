@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PlanejadorCompras.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using PlanejadorCompras.Infrastructure.Persistence;
 namespace PlanejadorCompras.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PlanejadorComprasDbContext))]
-    partial class PlanejadorComprasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260915212452_AddManualAuthentication")]
+    partial class AddManualAuthentication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

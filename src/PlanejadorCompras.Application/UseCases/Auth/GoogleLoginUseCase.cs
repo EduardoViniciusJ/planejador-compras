@@ -32,12 +32,28 @@ public sealed class GoogleLoginUseCase
         ArgumentException.ThrowIfNullOrWhiteSpace(request.IdToken);
 
         var googleUser = await _googleTokenValidator.ValidateAsync(request.IdToken, cancellationToken);
+        
+        // First try to find by GoogleId
         var user = await _userRepository.GetByGoogleIdAsync(googleUser.GoogleId, cancellationToken);
 
         if (user is null)
         {
-            user = User.Create(googleUser.GoogleId, googleUser.Email);
-            await _userRepository.AddAsync(user, cancellationToken);
+            // If not found by GoogleId, try to find by Email (Account Unification / Scenario A)
+            user = await _userRepository.GetByEmailAsync(googleUser.Email, cancellationToken);
+
+            if (user is not null)
+            {
+                // User exists but with password or another method, link the Google Account
+                user.LinkGoogleAccount(googleUser.GoogleId);
+                _userRepository.Update(user);
+            }
+            else
+            {
+                // Create a completely new user
+                user = User.CreateGoogleUser(googleUser.GoogleId, googleUser.Email);
+                await _userRepository.AddAsync(user, cancellationToken);
+            }
+            
             await _unitOfWork.CommitAsync(cancellationToken);
         }
 
