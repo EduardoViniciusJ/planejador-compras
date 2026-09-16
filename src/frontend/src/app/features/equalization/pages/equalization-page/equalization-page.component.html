@@ -7,9 +7,14 @@
   } @else if (loadError()) {
     <div class="page-state" role="alert">
       <app-icon name="alert-triangle" [size]="24" />
-      <h1>Nao foi possivel calcular</h1>
+      <h1>Nao foi possivel gerar a equalizacao</h1>
       <p>{{ loadError() }}</p>
-      <button nz-button (click)="retry()">Tentar novamente</button>
+      <div class="page-state-actions">
+        <button nz-button (click)="retry()">Tentar novamente</button>
+        <a nz-button nzType="primary" [routerLink]="['/app/price-map', listId]">
+          Voltar ao mapa de precos
+        </a>
+      </div>
     </div>
   } @else if (detail(); as list) {
     @if (equalization(); as matrix) {

@@ -184,7 +184,7 @@ describe('PriceMapPageComponent', () => {
     expect(toolbar?.querySelector('.map-title')).toBeNull();
     expect(toolbar?.textContent).toContain('Mapa de preços');
     expect(toolbar?.querySelector('.equalization-action')?.textContent).toContain(
-      'Ver equalização',
+      'Gerar equalização',
     );
     expect(toolbar?.querySelector('.equalization-action.mascot-hover-action')).toBeNull();
     expect(toolbar?.textContent).toContain('Adicionar fornecedor');

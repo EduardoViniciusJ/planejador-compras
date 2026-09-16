@@ -31,6 +31,12 @@ const PRIMARY_NAVIGATION: readonly SidebarNavigationItem[] = [
     exact: false,
   },
   {
+    icon: 'table',
+    label: 'Mapa de preços',
+    route: '/app/price-map',
+    exact: false,
+  },
+  {
     icon: 'scale', label: 'Equalizações', route: '/app/equalizations', exact: false,
   },
   {

@@ -146,6 +146,32 @@ public sealed class CalculateBestSupplierBudgetUseCaseTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_ShouldIgnoreQuote_WhenSupplierWasRemoved()
+    {
+        var listId = Guid.NewGuid();
+        var item = CalculateBestSupplierBudgetTestHelper.CreateShoppingItem(listId, "Item", 2m);
+
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CalculateBestSupplierBudgetTestHelper.CreateShoppingList());
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByShoppingListIdAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ShoppingItemEntity> { item });
+        _helper.ItemQuoteRepositoryMock
+            .Setup(x => x.GetByShoppingListIdAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ItemQuoteEntity>
+            {
+                ItemQuoteEntity.Create(item.Id, Guid.NewGuid(), 10m)
+            });
+
+        var result = await _handler.ExecuteAsync(listId);
+
+        Assert.Null(result.BestSupplierName);
+        Assert.Equal(0m, result.TotalPrice);
+        Assert.Empty(result.Items);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_ShouldThrowNotFoundException_WhenAccessServiceThrows()
     {
         var listId = Guid.NewGuid();

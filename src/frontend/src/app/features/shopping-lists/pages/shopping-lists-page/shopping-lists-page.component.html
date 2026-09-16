@@ -343,6 +343,3 @@
   </section>
 }
 
-@if (viewingItems(); as list) {
-  <app-shopping-list-items-dialog [list]="list" [addedIds]="addedItemIds()" (changed)="itemsChanged()" (closeRequested)="viewingItems.set(null)" />
-}

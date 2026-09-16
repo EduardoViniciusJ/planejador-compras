@@ -38,8 +38,18 @@ public sealed class ShoppingListComparisonCalculator
                 emptyItemRows);
         }
 
-        var suppliers = quotes
-            .Select(quote => supplierNames[quote.SupplierId])
+        var quotesWithSupplierNames = quotes
+            .Select(quote => new
+            {
+                Quote = quote,
+                SupplierName = supplierNames.TryGetValue(quote.SupplierId, out var supplierName)
+                    ? supplierName
+                    : "Fornecedor removido"
+            })
+            .ToList();
+
+        var suppliers = quotesWithSupplierNames
+            .Select(quote => quote.SupplierName)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
             .ToList();
@@ -47,15 +57,15 @@ public sealed class ShoppingListComparisonCalculator
         var itemRows = items
             .Select(item =>
             {
-                var itemQuotes = quotes
-                    .Where(quote => quote.ShoppingItemId == item.Id)
-                    .GroupBy(quote => quote.SupplierId)
-                    .Select(group => group.MinBy(quote => quote.UnitPrice)!)
+                var itemQuotes = quotesWithSupplierNames
+                    .Where(quote => quote.Quote.ShoppingItemId == item.Id)
+                    .GroupBy(quote => quote.Quote.SupplierId)
+                    .Select(group => group.MinBy(quote => quote.Quote.UnitPrice)!)
                     .Select(quote => new EqualizationQuoteDto(
-                        quote.SupplierId,
-                        supplierNames[quote.SupplierId],
-                        quote.UnitPrice,
-                        quote.UnitPrice * item.Quantity))
+                        quote.Quote.SupplierId,
+                        quote.SupplierName,
+                        quote.Quote.UnitPrice,
+                        quote.Quote.UnitPrice * item.Quantity))
                     .OrderBy(quote => quote.SupplierName, StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
@@ -90,6 +100,7 @@ public sealed class ShoppingListComparisonCalculator
 
         var bestSupplierData = quotes
             .Where(quote => itemIds.Contains(quote.ShoppingItemId))
+            .Where(quote => supplierNames.ContainsKey(quote.SupplierId))
             .GroupBy(quote => quote.SupplierId)
             .Select(supplierGroup =>
             {

@@ -17,7 +17,6 @@ import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { ModalDialogComponent } from '../../../../shared/ui/modal-dialog/modal-dialog.component';
 import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
 import { MascotComponent } from '../../../../shared/ui/mascot/mascot.component';
-import { ShoppingListItemsDialogComponent } from '../../../shopping-items/components/shopping-list-items-dialog/shopping-list-items-dialog.component';
 import { ShoppingItemBatchFormComponent } from '../../../shopping-items/components/shopping-item-batch-form/shopping-item-batch-form.component';
 import { ShoppingItemService } from '../../../shopping-items/data-access/shopping-item.service';
 import { ShoppingItemRequestDto } from '../../../shopping-items/dtos/shopping-item.dto';
@@ -70,7 +69,6 @@ const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
   imports: [
     ShoppingListFormComponent,
     ShoppingItemBatchFormComponent,
-    ShoppingListItemsDialogComponent,
     QuotationRequestFormComponent,
     ModalDialogComponent,
     AppIconComponent,
@@ -119,8 +117,6 @@ export class ShoppingListsPageComponent implements OnInit {
   protected readonly editingList = signal<ShoppingList | null>(null);
   protected readonly formError = signal<string | null>(null);
   protected readonly isSaving = signal(false);
-  protected readonly viewingItems = signal<ShoppingList | null>(null);
-  protected readonly addedItemIds = signal<readonly string[]>([]);
   protected readonly itemList = signal<ShoppingList | null>(null);
   protected readonly itemError = signal<string | null>(null);
   protected readonly isSavingItem = signal(false);
@@ -257,10 +253,8 @@ export class ShoppingListsPageComponent implements OnInit {
   }
 
   protected viewItems(list: ShoppingList): void {
-    this.addedItemIds.set([]); this.viewingItems.set(list);
+    this.openPriceMap(list);
   }
-
-  protected itemsChanged(): void { this.loadOverview(false); }
 
   protected addItem(list: ShoppingList): void {
     this.feedbackMessage.set(null);
@@ -281,7 +275,7 @@ export class ShoppingListsPageComponent implements OnInit {
     if (this.isSavingItem()) return;
     this.isSavingItem.set(true); this.itemError.set(null);
     this.shoppingItemService.createBatch(requests).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (ids) => { const list = this.itemList(); this.isSavingItem.set(false); this.itemList.set(null); this.addedItemIds.set(ids ?? []); this.viewingItems.set(list); this.feedbackMessage.set(requests.length + ' itens adicionados à lista.'); this.loadOverview(false); },
+      next: () => { this.isSavingItem.set(false); this.itemList.set(null); this.feedbackMessage.set(requests.length + ' itens adicionados à lista.'); this.loadOverview(false); },
       error: () => { this.isSavingItem.set(false); this.itemError.set('Não foi possível adicionar os itens. Revise os dados e tente novamente.'); },
     });
   }

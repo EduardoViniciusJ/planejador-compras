@@ -233,6 +233,14 @@ td:first-child {
   color: var(--app-text-soft);
 }
 
+.page-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
 .page-state-mascot {
   margin-bottom: 0.15rem;
 }
