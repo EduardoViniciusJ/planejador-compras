@@ -1,4 +1,5 @@
 using PlanejadorCompras.Application.Features.Authentication.Contracts;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Domain.Repositories;
 using PlanejadorCompras.Domain.Repositories.User;
@@ -30,13 +31,17 @@ public sealed class ResetPasswordUseCase
 
         if (userToken is null || !userToken.IsValid())
         {
-            throw new InvalidOperationException("Token inválido ou expirado.");
+            throw new BadRequestException("Token inválido ou expirado.", "invalid_or_expired_token");
         }
 
         var newPasswordHash = _passwordHasher.HashPassword(request.NewPassword);
         userToken.User.UpdatePassword(newPasswordHash);
+        userToken.User.ConfirmEmail();
         
-        _userTokenRepository.Remove(userToken);
+        await _userTokenRepository.RemoveByUserAndTypeAsync(
+            userToken.UserId,
+            "PasswordReset",
+            cancellationToken);
         _userRepository.Update(userToken.User);
         
         await _unitOfWork.CommitAsync(cancellationToken);

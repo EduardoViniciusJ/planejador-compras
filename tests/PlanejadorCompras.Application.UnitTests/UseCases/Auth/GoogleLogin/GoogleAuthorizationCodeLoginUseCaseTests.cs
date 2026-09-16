@@ -22,7 +22,7 @@ public sealed class GoogleAuthorizationCodeLoginUseCaseTests
         var request = new GoogleAuthorizationCodeLoginRequestDto("valid-auth-code");
         var idToken = "valid-id-token";
         var googleUser = new GoogleUserInfo("google-123", "user@test.com", "Test User");
-        var existingUser = User.Create(googleUser.GoogleId, googleUser.Email);
+        var existingUser = User.CreateGoogleUser(googleUser.GoogleId, googleUser.Email);
 
         _googleAuthorizationCodeExchangerMock
             .Setup(x => x.ExchangeForIdTokenAsync(request.Code, It.IsAny<CancellationToken>()))

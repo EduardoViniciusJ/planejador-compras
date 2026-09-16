@@ -66,7 +66,7 @@ public sealed class GoogleLoginUseCaseTests
     {
         var request = new GoogleLoginRequestDto("valid-id-token");
         var googleUser = new GoogleUserInfo("google-123", "existing@test.com", "Existing User");
-        var existingUser = User.Create(googleUser.GoogleId, googleUser.Email);
+        var existingUser = User.CreateGoogleUser(googleUser.GoogleId, googleUser.Email);
 
         _googleTokenValidatorMock
             .Setup(x => x.ValidateAsync(request.IdToken, It.IsAny<CancellationToken>()))
@@ -102,7 +102,7 @@ public sealed class GoogleLoginUseCaseTests
     {
         var request = new GoogleLoginRequestDto("valid-id-token");
         var googleUser = new GoogleUserInfo("google-123", "user@test.com", "Test User");
-        var existingUser = User.Create(googleUser.GoogleId, googleUser.Email);
+        var existingUser = User.CreateGoogleUser(googleUser.GoogleId, googleUser.Email);
 
         _googleTokenValidatorMock
             .Setup(x => x.ValidateAsync(request.IdToken, It.IsAny<CancellationToken>()))

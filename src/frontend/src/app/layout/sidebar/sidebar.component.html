@@ -41,23 +41,23 @@
 
   <nav class="sidebar-navigation" aria-label="Menu principal">
     <ul class="sidebar-menu">
-    @for (item of navigationItems; track item.route) {
-      <li>
-        <a
-          class="sidebar-nav-link"
-          [routerLink]="item.route"
-          routerLinkActive="sidebar-nav-link-active"
-          [routerLinkActiveOptions]="{ exact: item.exact }"
-          nz-tooltip
-          [nzTooltipTitle]="collapsed() ? item.label : null"
-          nzTooltipPlacement="right"
-          (click)="notifyNavigation()"
-        >
-          <app-icon [name]="item.icon" [size]="20" />
-          <span>{{ item.label }}</span>
-        </a>
-      </li>
-    }
+      @for (item of navigationItems; track item.route) {
+        <li>
+          <a
+            class="sidebar-nav-link"
+            [routerLink]="item.route"
+            routerLinkActive="sidebar-nav-link-active"
+            [routerLinkActiveOptions]="{ exact: item.exact }"
+            nz-tooltip
+            [nzTooltipTitle]="collapsed() ? item.label : null"
+            nzTooltipPlacement="right"
+            (click)="notifyNavigation()"
+          >
+            <app-icon [name]="item.icon" [size]="20" />
+            <span>{{ item.label }}</span>
+          </a>
+        </li>
+      }
     </ul>
   </nav>
 
@@ -85,11 +85,11 @@
         aria-controls="profile-menu"
         [attr.aria-expanded]="isProfileMenuOpen()"
         aria-label="Abrir menu do perfil"
-        [attr.title]="collapsed() ? 'Perfil' : null"
+        [attr.title]="currentUser()?.email ?? 'Perfil'"
         (click)="profileRequested.emit()"
       >
         <app-icon name="user-circle" [size]="20" />
-        <span>{{ profileLabel() }}</span>
+        <span class="sidebar-profile-label">{{ profileLabel() }}</span>
       </button>
 
       @if (isProfileMenuOpen()) {

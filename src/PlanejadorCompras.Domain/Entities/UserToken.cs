@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 namespace PlanejadorCompras.Domain.Entities;
 
 public sealed class UserToken
@@ -21,7 +23,10 @@ public sealed class UserToken
 
     public static UserToken Create(Guid userId, string type, TimeSpan validFor)
     {
-        var token = Guid.NewGuid().ToString("N");
+        ArgumentException.ThrowIfNullOrWhiteSpace(type);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(validFor, TimeSpan.Zero);
+
+        var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
         return new UserToken(Guid.NewGuid(), userId, token, type, DateTime.UtcNow.Add(validFor));
     }
 

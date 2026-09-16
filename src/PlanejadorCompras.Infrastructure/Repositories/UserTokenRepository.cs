@@ -26,6 +26,18 @@ public sealed class UserTokenRepository : IUserTokenRepository
             .FirstOrDefaultAsync(x => x.Token == token && x.Type == type, cancellationToken);
     }
 
+    public async Task RemoveByUserAndTypeAsync(
+        Guid userId,
+        string type,
+        CancellationToken cancellationToken = default)
+    {
+        var tokens = await _context.UserTokens
+            .Where(token => token.UserId == userId && token.Type == type)
+            .ToListAsync(cancellationToken);
+
+        _context.UserTokens.RemoveRange(tokens);
+    }
+
     public void Remove(UserToken userToken)
     {
         _context.UserTokens.Remove(userToken);

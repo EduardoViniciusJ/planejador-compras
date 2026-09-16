@@ -54,7 +54,13 @@ const LEGAL_ROUTES = [
   '/politica-de-cookies',
 ] as const;
 
-const AUTH_ROUTES = ['/login'] as const;
+const AUTH_ROUTES = [
+  '/login',
+  '/cadastro',
+  '/esqueci-minha-senha',
+  '/reset-password',
+  '/confirmar-email',
+] as const;
 
 const HERO_SCENE_STATES: Record<HeroStepId, HeroSceneState> = {
   list: {

@@ -8,6 +8,31 @@ export const routes: Routes = [
     path: 'login',
     title: 'Entrar | Planejador de Compras',
     component: LoginPageComponent,
+    data: { authMode: 'login' },
+  },
+  {
+    path: 'cadastro',
+    title: 'Criar conta | Planejador de Compras',
+    component: LoginPageComponent,
+    data: { authMode: 'register' },
+  },
+  {
+    path: 'esqueci-minha-senha',
+    title: 'Recuperar senha | Planejador de Compras',
+    component: LoginPageComponent,
+    data: { authMode: 'forgot-password' },
+  },
+  {
+    path: 'reset-password',
+    title: 'Redefinir senha | Planejador de Compras',
+    component: LoginPageComponent,
+    data: { authMode: 'reset-password' },
+  },
+  {
+    path: 'confirmar-email',
+    title: 'Confirmar e-mail | Planejador de Compras',
+    component: LoginPageComponent,
+    data: { authMode: 'confirm-email' },
   },
   {
     path: 'politica-de-privacidade',

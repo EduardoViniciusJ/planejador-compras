@@ -11,9 +11,21 @@ public sealed class ResendEmailService : IEmailService
 
     public ResendEmailService(IConfiguration configuration)
     {
-        var apiKey = configuration["Resend:ApiKey"] ?? throw new InvalidOperationException("Resend API Key is not configured.");
+        var apiKey = configuration["Resend:ApiKey"];
+        var fromEmail = configuration["Resend:FromEmail"];
+
+        if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            throw new InvalidOperationException("Missing configuration 'Resend:ApiKey'.");
+        }
+
+        if (string.IsNullOrWhiteSpace(fromEmail))
+        {
+            throw new InvalidOperationException("Missing configuration 'Resend:FromEmail'.");
+        }
+
         _resend = ResendClient.Create(apiKey);
-        _fromEmail = configuration["Resend:FromEmail"] ?? "onboarding@resend.dev";
+        _fromEmail = fromEmail;
     }
 
     public async Task SendEmailAsync(string to, string subject, string body, CancellationToken cancellationToken = default)
