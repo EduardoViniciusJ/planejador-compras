@@ -316,7 +316,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.6rem;
   padding: 0.75rem var(--lists-card-padding);
   border-top: 1px solid var(--app-border-color);
 }
@@ -329,8 +329,16 @@
 }
 
 .primary-actions {
+  flex: 1 1 auto;
+  min-width: 0;
   flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.secondary-actions {
+  flex: 0 0 auto;
+  justify-content: flex-start;
 }
 
 .icon-action {
@@ -360,9 +368,17 @@
 
 .shopping-list-card-actions .ant-btn {
   min-width: 0;
-  padding-inline: 0.7rem;
-  font-size: 0.78rem;
+  height: 2rem;
+  min-height: 2rem;
+  padding-inline: 0.58rem;
+  font-size: 0.73rem;
+  line-height: 1;
   white-space: nowrap;
+}
+
+.secondary-actions .ant-btn {
+  width: 2rem;
+  padding-inline: 0;
 }
 
 @container (max-width: 24rem) {
@@ -376,12 +392,13 @@
 
   .shopping-list-card-actions {
     align-items: stretch;
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 
   .primary-actions {
     display: grid;
-    grid-template-columns: 1fr;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .primary-actions .ant-btn {
@@ -550,11 +567,12 @@
 
   .shopping-list-card-actions {
     align-items: stretch;
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 
   .primary-actions {
     display: grid;
+    width: 100%;
     grid-template-columns: 1fr 1fr;
   }
 

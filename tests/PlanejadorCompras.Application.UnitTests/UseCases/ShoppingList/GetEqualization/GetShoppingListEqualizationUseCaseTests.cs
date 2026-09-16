@@ -128,6 +128,33 @@ public sealed class GetShoppingListEqualizationUseCaseTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_ShouldKeepQuoteWithFallbackName_WhenSupplierWasRemoved()
+    {
+        var listId = Guid.NewGuid();
+        var item = GetShoppingListEqualizationTestHelper.CreateShoppingItem(listId, "Item", 2m);
+
+        _helper.ShoppingListAccessServiceMock
+            .Setup(x => x.GetForCurrentUserAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(GetShoppingListEqualizationTestHelper.CreateShoppingList());
+        _helper.ShoppingItemRepositoryMock
+            .Setup(x => x.GetByShoppingListIdAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ShoppingItemEntity> { item });
+        _helper.ItemQuoteRepositoryMock
+            .Setup(x => x.GetByShoppingListIdAsync(listId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ItemQuoteEntity>
+            {
+                ItemQuoteEntity.Create(item.Id, Guid.NewGuid(), 12m)
+            });
+
+        var result = await _handler.ExecuteAsync(listId);
+        var quote = Assert.Single(Assert.Single(result.Items).Quotes);
+
+        Assert.Equal("Fornecedor removido", Assert.Single(result.Suppliers));
+        Assert.Equal("Fornecedor removido", quote.SupplierName);
+        Assert.Equal(24m, quote.TotalPrice);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_ShouldReturnEmpty_WhenNoItemsExist()
     {
         var listId = Guid.NewGuid();

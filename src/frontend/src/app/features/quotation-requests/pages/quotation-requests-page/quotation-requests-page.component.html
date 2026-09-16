@@ -63,19 +63,19 @@
   } @else {
     <div class="requests-grid">
       @for (request of filteredRequests(); track request.id) {
-        <article class="request-card management-surface">
-          <header>
+        <article class="quotation-request-card management-surface">
+          <header class="quotation-request-card-header">
             <div>
-              <strong>{{ request.code }}</strong>
-              <span>Emitida em {{ formatDateTime(request.createdAtUtc) }}</span>
+              <span class="quotation-request-code">{{ request.code }}</span>
+              <span class="quotation-request-date">Emitida em {{ formatDateTime(request.createdAtUtc) }}</span>
             </div>
           </header>
-          <div class="request-content">
+          <div class="quotation-request-card-content">
             <span class="management-eyebrow">Lista de origem</span>
-            <h2>{{ request.shoppingListName }}</h2>
+            <h3>{{ request.shoppingListName }}</h3>
             <p>Responsável: {{ request.buyerName }}</p>
           </div>
-          <dl>
+          <dl class="quotation-request-card-information">
             <div><dt>Itens</dt><dd>{{ request.itemCount }}</dd></div>
             <div><dt>Responder até</dt><dd>{{ formatDate(request.responseDeadline) }}</dd></div>
           </dl>

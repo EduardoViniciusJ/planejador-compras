@@ -29,6 +29,12 @@
   place-items: center;
 }
 
+.whatsapp-button {
+  border-color: color-mix(in srgb, var(--app-success) 48%, var(--app-border-color));
+  background: var(--app-success-soft);
+  color: var(--app-success-strong);
+}
+
 nz-date-picker {
   width: 100%;
 }

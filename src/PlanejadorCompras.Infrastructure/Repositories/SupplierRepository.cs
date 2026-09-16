@@ -14,7 +14,7 @@ public sealed class SupplierRepository(PlanejadorComprasDbContext context) : ISu
         IEnumerable<Guid> ids,
         CancellationToken cancellationToken = default)
     {
-        var supplierIds = ids.Distinct().ToArray();
+        var supplierIds = ids.Distinct().ToList();
         return context.Suppliers
             .AsNoTracking()
             .Where(supplier => supplierIds.Contains(supplier.Id))

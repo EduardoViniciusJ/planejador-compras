@@ -9,51 +9,114 @@
       <button nz-button type="button" (click)="retry()">Tentar novamente</button>
     </div>
   } @else if (request(); as request) {
-    <header class="management-page-header">
-      <div class="management-page-heading">
-        <a class="back-link" routerLink="/app/quotation-requests"><app-icon name="arrow-left" [size]="18" /> Solicitações</a>
-        <span class="management-eyebrow">{{ request.code }}</span>
+    <header class="quotation-hero management-surface">
+      <div class="quotation-hero-copy">
+        <a class="back-link" routerLink="/app/quotation-requests">
+          <app-icon name="arrow-left" [size]="18" />
+          Solicitações
+        </a>
+        <div class="quotation-title-row">
+          <span class="quotation-code">{{ request.code }}</span>
+          <span class="quotation-date">Emitida em {{ formatDateTime(request.createdAtUtc) }}</span>
+        </div>
         <h1>Solicitação de cotação</h1>
-        <p>{{ request.shoppingListName }} · emitida em {{ formatDateTime(request.createdAtUtc) }}</p>
+        <p>{{ request.shoppingListName }}</p>
       </div>
+
       <div class="management-actions">
         <button nz-button type="button" [nzLoading]="isPreparingPdf()" (click)="downloadPdf()">
-          @if (!isPreparingPdf()) { <app-icon name="download" [size]="18" /> }
+          @if (!isPreparingPdf()) {
+            <app-icon name="download" [size]="18" />
+          }
           Baixar PDF
         </button>
-        <button nz-button nzType="primary" type="button" [disabled]="isPreparingPdf()" (click)="share()">
-          <app-icon name="brand-whatsapp" [size]="18" /> Compartilhar
+        <button
+          nz-button
+          type="button"
+          class="whatsapp-button"
+          [disabled]="isPreparingPdf()"
+          (click)="share()"
+        >
+          <app-icon name="brand-whatsapp" [size]="18" />
+          Compartilhar
         </button>
       </div>
     </header>
 
-    @if (actionError()) { <nz-alert nzType="error" nzShowIcon [nzMessage]="actionError()!" /> }
-    @if (feedback()) { <nz-alert nzType="success" nzShowIcon [nzMessage]="feedback()!" /> }
+    @if (actionError()) {
+      <nz-alert nzType="error" nzShowIcon [nzMessage]="actionError()!" />
+    }
+    @if (feedback()) {
+      <nz-alert nzType="success" nzShowIcon [nzMessage]="feedback()!" />
+    }
 
-    <section class="detail-summary management-surface">
-      <div><span>Número</span><strong>{{ request.code }}</strong></div>
-      <div><span>Responsável</span><strong>{{ request.buyerName }}</strong><small>{{ request.buyerEmail }}</small></div>
-      <div><span>Responder até</span><strong>{{ formatDate(request.responseDeadline) }}</strong></div>
-      <div><span>Itens</span><strong>{{ request.items.length }}</strong></div>
+    <section class="detail-summary" aria-label="Resumo da solicitação">
+      <div class="summary-card management-surface">
+        <div>
+          <span>Número</span>
+          <strong>{{ request.code }}</strong>
+        </div>
+      </div>
+      <div class="summary-card management-surface">
+        <div>
+          <span>Responsável</span>
+          <strong>{{ request.buyerName }}</strong>
+          <small>{{ request.buyerEmail }}</small>
+        </div>
+      </div>
+      <div class="summary-card management-surface">
+        <div>
+          <span>Responder até</span>
+          <strong>{{ formatDate(request.responseDeadline) }}</strong>
+        </div>
+      </div>
+      <div class="summary-card management-surface">
+        <div>
+          <span>Itens</span>
+          <strong>{{ request.items.length }}</strong>
+        </div>
+      </div>
     </section>
 
     <section class="detail-section management-surface">
-      <header><div><span class="management-eyebrow">Conteúdo enviado</span><h2>Itens solicitados</h2></div></header>
+      <header>
+        <div>
+          <span class="management-eyebrow">Conteúdo enviado</span>
+          <h2>Itens solicitados</h2>
+        </div>
+        <span class="items-count">{{ request.items.length }} itens</span>
+      </header>
       <div class="items-table-wrapper">
         <table>
-          <thead><tr><th>Item</th><th>Quantidade</th><th>Unidade</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Quantidade</th>
+              <th>Unidade</th>
+            </tr>
+          </thead>
           <tbody>
             @for (item of request.items; track $index) {
-              <tr><td><strong>{{ item.name }}</strong></td><td>{{ item.quantity }}</td><td>{{ item.unit }}</td></tr>
+              <tr>
+                <td><strong>{{ item.name }}</strong></td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.unit }}</td>
+              </tr>
             }
           </tbody>
         </table>
       </div>
     </section>
 
-    <section class="detail-notes management-surface">
-      <div><span>Local de entrega</span><p>{{ request.deliveryAddress || 'Não informado' }}</p></div>
-      <div><span>Orientações ao fornecedor</span><p>{{ request.instructions || 'Nenhuma orientação adicional.' }}</p></div>
+    <section class="detail-notes">
+      <div class="note-card management-surface">
+        <span>Local de entrega</span>
+        <p>{{ request.deliveryAddress || 'Não informado' }}</p>
+      </div>
+      <div class="note-card management-surface">
+        <span>Orientações ao fornecedor</span>
+        <p>{{ request.instructions || 'Nenhuma orientação adicional.' }}</p>
+      </div>
     </section>
   }
 </section>

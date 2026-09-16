@@ -6,37 +6,32 @@
     </div>
   } @else if (loadError()) {
     <div class="detail-state" role="alert">
-      <app-icon name="alert-triangle" [size]="24" />
+      <app-icon name="alert-triangle" [size]="26" />
       <h1>Não foi possível abrir o pedido</h1>
       <p>{{ loadError() }}</p>
-      <button nz-button type="button" (click)="retry()">
-        Tentar novamente
-      </button>
+      <button nz-button type="button" (click)="retry()">Tentar novamente</button>
     </div>
   } @else if (order(); as purchaseOrder) {
-    <header class="management-page-header">
-      <div class="management-page-heading">
+    <header class="order-hero management-surface">
+      <div class="order-hero-copy">
         <a class="back-link" routerLink="/app/purchase-orders">
           <app-icon name="arrow-left" [size]="18" />
-          Voltar para pedidos
+          Pedidos
         </a>
-        <span class="management-eyebrow">Pedido de compra</span>
-        <div class="title-row">
-          <h1>{{ purchaseOrder.code }}</h1>
+        <div class="order-title-row">
+          <span class="order-code">{{ purchaseOrder.code }}</span>
           <span class="order-status" [attr.data-status]="purchaseOrder.status">
             {{ statusLabels[purchaseOrder.status] }}
           </span>
+          <span class="order-date">Emitido em {{ formatDateTime(purchaseOrder.createdAtUtc) }}</span>
         </div>
-        <p>Emitido em {{ formatDateTime(purchaseOrder.createdAtUtc) }}</p>
+        <h1>Pedido de compra</h1>
+        <p>{{ purchaseOrder.shoppingListName }}</p>
       </div>
 
       <div class="management-actions">
         @if (purchaseOrder.equalizationId) {
-          <a
-            nz-button
-
-            [routerLink]="['/app/equalizations', purchaseOrder.equalizationId]"
-          >
+          <a nz-button [routerLink]="['/app/equalizations', purchaseOrder.equalizationId]">
             <app-icon name="scale" [size]="18" />
             Ver equalização de origem
           </a>
@@ -64,139 +59,120 @@
           @if (!isSharing()) {
             <app-icon name="brand-whatsapp" [size]="19" />
           }
-          Enviar pelo WhatsApp
+          Compartilhar
         </button>
       </div>
     </header>
 
-    @if (feedback()) {
-      <div class="detail-feedback" role="status">
-        <app-icon name="circle-check" [size]="18" />
-        <span>{{ feedback() }}</span>
-        <button type="button" aria-label="Fechar mensagem" (click)="feedback.set(null)">
-          <app-icon name="x" [size]="17" />
-        </button>
-      </div>
-    }
-
     @if (actionError()) {
-      <div class="detail-error" role="alert">{{ actionError() }}</div>
+      <nz-alert nzType="error" nzShowIcon [nzMessage]="actionError()!" />
+    }
+    @if (feedback()) {
+      <nz-alert nzType="success" nzShowIcon [nzMessage]="feedback()!" />
     }
 
-    <div class="detail-grid">
-      <section class="management-surface detail-main">
-        <header class="management-surface-header">
-          <div>
-            <span class="management-eyebrow">Documento</span>
-            <h2>Informações do pedido</h2>
-            <p>Dados registrados no momento da emissão.</p>
-          </div>
-        </header>
+    <section class="detail-summary" aria-label="Resumo do pedido">
+      <div class="summary-card management-surface">
+        <span>Fornecedor</span>
+        <strong>{{ purchaseOrder.supplierName }}</strong>
+      </div>
+      <div class="summary-card management-surface">
+        <span>Responsável</span>
+        <strong>{{ purchaseOrder.buyerName }}</strong>
+        <small>{{ purchaseOrder.buyerEmail || 'Não informado' }}</small>
+      </div>
+      <div class="summary-card management-surface">
+        <span>Total do pedido</span>
+        <strong>{{ formatCurrency(purchaseOrder.totalPrice) }}</strong>
+      </div>
+      <div class="summary-card management-surface">
+        <span>Itens</span>
+        <strong>{{ purchaseOrder.items.length }}</strong>
+      </div>
+    </section>
 
-        <dl class="detail-information">
-          <div>
-            <dt>Fornecedor</dt>
-            <dd>{{ purchaseOrder.supplierName }}</dd>
-          </div>
-          <div>
-            <dt>Lista de origem</dt>
-            <dd>{{ purchaseOrder.shoppingListName }}</dd>
-          </div>
-          <div>
-            <dt>Responsável</dt>
-            <dd>{{ purchaseOrder.buyerName }}</dd>
-          </div>
-          <div>
-            <dt>E-mail</dt>
-            <dd>{{ purchaseOrder.buyerEmail || 'Não informado' }}</dd>
-          </div>
-          <div>
-            <dt>Previsão de entrega</dt>
-            <dd>{{ formatDate(purchaseOrder.expectedDeliveryDate) }}</dd>
-          </div>
-          <div>
-            <dt>Condição de pagamento</dt>
-            <dd>{{ purchaseOrder.paymentTerms || 'Não informada' }}</dd>
-          </div>
-        </dl>
+    <section class="detail-section management-surface">
+      <header>
+        <div>
+          <span class="management-eyebrow">Conteúdo do pedido</span>
+          <h2>Itens do pedido</h2>
+        </div>
+        <span class="items-count">{{ purchaseOrder.items.length }} itens</span>
+      </header>
+      <div class="items-table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Quantidade</th>
+              <th>Valor unitário</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of purchaseOrder.items; track item.sourceShoppingItemId) {
+              <tr>
+                <td><strong>{{ item.name }}</strong></td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ formatCurrency(item.unitPrice) }}</td>
+                <td>{{ formatCurrency(item.totalPrice) }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">Total do pedido</td>
+              <td>{{ formatCurrency(purchaseOrder.totalPrice) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
 
-        <div class="detail-items-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Quantidade</th>
-                <th>Valor unitário</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (item of purchaseOrder.items; track item.sourceShoppingItemId) {
-                <tr>
-                  <td>
-                    <strong>{{ item.name }}</strong>
-                  </td>
-                  <td>{{ item.quantity }} {{ item.unit }}</td>
-                  <td>{{ formatCurrency(item.unitPrice) }}</td>
-                  <td>{{ formatCurrency(item.totalPrice) }}</td>
-                </tr>
-              }
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="3">Total do pedido</td>
-                <td>{{ formatCurrency(purchaseOrder.totalPrice) }}</td>
-              </tr>
-            </tfoot>
-          </table>
+    <section class="detail-notes">
+      <div class="note-card management-surface">
+        <span>Local de entrega</span>
+        <p>{{ purchaseOrder.deliveryAddress || 'Não informado' }}</p>
+      </div>
+      <div class="note-card management-surface">
+        <span>Condição de pagamento</span>
+        <p>{{ purchaseOrder.paymentTerms || 'Não informada' }}</p>
+      </div>
+      <div class="note-card management-surface">
+        <span>Observações</span>
+        <p>{{ purchaseOrder.notes || 'Nenhuma observação registrada.' }}</p>
+      </div>
+    </section>
+
+    @if (purchaseOrder.status === 'issued') {
+      <section class="status-actions management-surface">
+        <div class="status-actions-copy">
+          <span class="management-eyebrow">Andamento</span>
+          <h2>Atualizar situação</h2>
+          <p>Finalize quando a compra for concluída ou cancele este pedido.</p>
+        </div>
+        <div class="status-actions-buttons">
+          <button
+            nz-button
+            nzType="primary"
+            type="button"
+            [disabled]="isUpdatingStatus()"
+            (click)="updateStatus('completed')"
+          >
+            <app-icon name="circle-check" [size]="18" />
+            Marcar como concluído
+          </button>
+          <button
+            nz-button
+            nzDanger
+            type="button"
+            [disabled]="isUpdatingStatus()"
+            (click)="updateStatus('cancelled')"
+          >
+            Cancelar pedido
+          </button>
         </div>
       </section>
-
-      <aside class="detail-sidebar">
-        <section class="management-surface condition-card">
-          <header>
-            <app-icon name="map-pin" [size]="19" />
-            <h2>Local de entrega</h2>
-          </header>
-          <p>{{ purchaseOrder.deliveryAddress || 'Não informado' }}</p>
-        </section>
-
-        <section class="management-surface condition-card">
-          <header>
-            <app-icon name="notes" [size]="19" />
-            <h2>Observações</h2>
-          </header>
-          <p>{{ purchaseOrder.notes || 'Nenhuma observação registrada.' }}</p>
-        </section>
-
-        @if (purchaseOrder.status === 'issued') {
-          <section class="management-surface status-actions">
-            <h2>Atualizar situação</h2>
-            <p>Finalize quando a compra for concluída ou cancele este pedido.</p>
-            <button
-              nz-button
-              nzType="primary"
-              type="button"
-
-              [disabled]="isUpdatingStatus()"
-              (click)="updateStatus('completed')"
-            >
-              <app-icon name="circle-check" [size]="18" />
-              Marcar como concluído
-            </button>
-            <button
-              nz-button
-              nzDanger
-              type="button"
-
-              [disabled]="isUpdatingStatus()"
-              (click)="updateStatus('cancelled')"
-            >
-              Cancelar pedido
-            </button>
-          </section>
-        }
-      </aside>
-    </div>
+    }
   }
 </section>
