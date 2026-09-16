@@ -31,7 +31,11 @@ public sealed class ShoppingListOverviewQuery : IShoppingListOverviewQuery
             return Array.Empty<ShoppingListOverviewDto>();
         }
 
-        var listIds = lists.Select(list => list.Id).ToArray();
+        // Keep this as a List rather than an array. On .NET 10, the array
+        // Contains overload can be bound through ReadOnlySpan<T> while EF is
+        // extracting query parameters, which cannot be represented by the
+        // expression interpreter and results in an HTTP 500.
+        var listIds = lists.Select(list => list.Id).ToList();
         var items = await _context.ShoppingItems
             .AsNoTracking()
             .Where(item => listIds.Contains(item.ShoppingListId))

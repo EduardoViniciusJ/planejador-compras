@@ -1,6 +1,8 @@
 using PlanejadorCompras.Application.Features.Authentication.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using PlanejadorCompras.API.Configuration;
 using PlanejadorCompras.API.Security;
 using PlanejadorCompras.Application.Services.Interfaces;
 using PlanejadorCompras.Application.UseCases.Auth;
@@ -28,6 +30,7 @@ public sealed class AuthController : ControllerBase
 
     [HttpPost("google-code")]
     [AllowAnonymous]
+    [EnableRateLimiting(ApiRateLimitingConfiguration.LoginPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
@@ -71,6 +74,7 @@ public sealed class AuthController : ControllerBase
     }
 
     [HttpPost("logout")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public IActionResult Logout()
@@ -82,17 +86,22 @@ public sealed class AuthController : ControllerBase
 
     [HttpPost("register")]
     [AllowAnonymous]
+    [EnableRateLimiting(ApiRateLimitingConfiguration.EmailPolicy)]
     public async Task<IActionResult> Register(
         [FromBody] RegisterRequestDto request,
         [FromServices] RegisterUseCase useCase,
         CancellationToken cancellationToken)
     {
         await useCase.ExecuteAsync(request, cancellationToken);
-        return Ok(new { message = "Usuário registrado com sucesso. Por favor, verifique seu e-mail para confirmar a conta." });
+        return Ok(new
+        {
+            message = "Se o e-mail puder ser cadastrado, você receberá uma mensagem para confirmar a conta."
+        });
     }
 
     [HttpPost("login")]
     [AllowAnonymous]
+    [EnableRateLimiting(ApiRateLimitingConfiguration.LoginPolicy)]
     public async Task<IActionResult> Login(
         [FromBody] LoginRequestDto request,
         [FromServices] LoginUseCase useCase,
@@ -105,6 +114,7 @@ public sealed class AuthController : ControllerBase
 
     [HttpPost("confirm-email")]
     [AllowAnonymous]
+    [EnableRateLimiting(ApiRateLimitingConfiguration.EmailPolicy)]
     public async Task<IActionResult> ConfirmEmail(
         [FromBody] ConfirmEmailRequestDto request,
         [FromServices] ConfirmEmailUseCase useCase,
@@ -116,6 +126,7 @@ public sealed class AuthController : ControllerBase
 
     [HttpPost("forgot-password")]
     [AllowAnonymous]
+    [EnableRateLimiting(ApiRateLimitingConfiguration.EmailPolicy)]
     public async Task<IActionResult> ForgotPassword(
         [FromBody] ForgotPasswordRequestDto request,
         [FromServices] ForgotPasswordUseCase useCase,
@@ -127,6 +138,7 @@ public sealed class AuthController : ControllerBase
 
     [HttpPost("reset-password")]
     [AllowAnonymous]
+    [EnableRateLimiting(ApiRateLimitingConfiguration.EmailPolicy)]
     public async Task<IActionResult> ResetPassword(
         [FromBody] ResetPasswordRequestDto request,
         [FromServices] ResetPasswordUseCase useCase,

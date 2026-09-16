@@ -105,5 +105,6 @@ public static class DependencyInjectionExtensions
         services.AddSingleton<ISavedEqualizationCodeGenerator, SavedEqualizationCodeGenerator>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IEmailService, ResendEmailService>();
+        services.AddSingleton<IFrontendUrlService, FrontendUrlService>();
     }
 }

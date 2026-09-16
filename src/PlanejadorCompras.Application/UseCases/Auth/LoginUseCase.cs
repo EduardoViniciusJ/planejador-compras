@@ -1,5 +1,6 @@
 using PlanejadorCompras.Application.Features.Authentication.Contracts;
 using PlanejadorCompras.Application.Services.Interfaces;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Domain.Repositories.User;
 
 namespace PlanejadorCompras.Application.UseCases.Auth;
@@ -26,17 +27,21 @@ public sealed class LoginUseCase
 
         if (user is null || user.PasswordHash is null)
         {
-            throw new InvalidOperationException("E-mail ou senha inválidos.");
+            // Keep the expensive password work on failed lookups to reduce timing-based enumeration.
+            _passwordHasher.HashPassword(request.Password);
+            throw new UnauthorizedException("E-mail ou senha inválidos.", "invalid_credentials");
         }
 
         if (!_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
         {
-            throw new InvalidOperationException("E-mail ou senha inválidos.");
+            throw new UnauthorizedException("E-mail ou senha inválidos.", "invalid_credentials");
         }
 
         if (!user.IsEmailConfirmed)
         {
-            throw new InvalidOperationException("Por favor, confirme seu e-mail antes de fazer login.");
+            throw new ForbiddenException(
+                "Por favor, confirme seu e-mail antes de fazer login.",
+                "email_not_confirmed");
         }
 
         // We don't have user.Name in User entity, so we pass string.Empty or email as name

@@ -1,4 +1,5 @@
 using PlanejadorCompras.Application.Features.Authentication.Contracts;
+using PlanejadorCompras.Application.Exceptions;
 using PlanejadorCompras.Domain.Repositories;
 using PlanejadorCompras.Domain.Repositories.User;
 
@@ -23,7 +24,7 @@ public sealed class ConfirmEmailUseCase
 
         if (userToken is null || !userToken.IsValid())
         {
-            throw new InvalidOperationException("Token inválido ou expirado.");
+            throw new BadRequestException("Token inválido ou expirado.", "invalid_or_expired_token");
         }
 
         userToken.User.ConfirmEmail();

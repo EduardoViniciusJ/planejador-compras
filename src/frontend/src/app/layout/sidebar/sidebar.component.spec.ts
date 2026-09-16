@@ -81,4 +81,20 @@ describe('SidebarComponent', () => {
     expect(host.querySelector('.profile-menu-panel')?.textContent).toContain('Maria Compras');
     expect(host.querySelector('.profile-menu-panel')?.textContent).toContain('maria@example.com');
   });
+
+  it('should expose the full account email without allowing the visible label to overflow', () => {
+    const fixture = TestBed.createComponent(SidebarComponent);
+    const email = 'eduardoviniciusjorge@gmail.com';
+    fixture.componentRef.setInput('currentUser', { id: 'user-1', name: null, email });
+    fixture.detectChanges();
+
+    const profileButton = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+      '.sidebar-profile-button',
+    );
+    const profileLabel = profileButton?.querySelector<HTMLElement>('.sidebar-profile-label');
+
+    expect(profileButton?.title).toBe(email);
+    expect(profileLabel?.textContent?.trim()).toBe(email);
+    expect(profileLabel?.classList.contains('sidebar-profile-label')).toBe(true);
+  });
 });

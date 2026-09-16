@@ -6,12 +6,13 @@ import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { provideNzI18n, pt_BR } from 'ng-zorro-antd/i18n';
 
 import { apiCredentialsInterceptor } from './core/api/api-credentials.interceptor';
+import { apiAuthenticationInterceptor } from './core/api/api-authentication.interceptor';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideHttpClient(withInterceptors([apiCredentialsInterceptor])),
+    provideHttpClient(withInterceptors([apiCredentialsInterceptor, apiAuthenticationInterceptor])),
     provideRouter(routes),
     provideNzI18n(pt_BR),
     provideNzIcons([SearchOutline]),
