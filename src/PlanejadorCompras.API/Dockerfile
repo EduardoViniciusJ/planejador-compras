@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /source
 
 COPY src/PlanejadorCompras.API/PlanejadorCompras.API.csproj src/PlanejadorCompras.API/
@@ -14,7 +14,7 @@ COPY src/PlanejadorCompras.Infrastructure/ src/PlanejadorCompras.Infrastructure/
 RUN dotnet publish src/PlanejadorCompras.API/PlanejadorCompras.API.csproj \
     --configuration Release --no-restore --output /app/publish /p:UseAppHost=false
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 ENV ASPNETCORE_HTTP_PORTS=8080
 ENV ASPNETCORE_ENVIRONMENT=Production
