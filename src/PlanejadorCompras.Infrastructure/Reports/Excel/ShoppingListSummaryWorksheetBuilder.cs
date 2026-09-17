@@ -27,6 +27,7 @@ internal static class ShoppingListSummaryWorksheetBuilder
                 ? "Não informada"
                 : reportData.Description);
         worksheet.Cell("B4").Style.Alignment.WrapText = true;
+        worksheet.Row(4).AdjustToContents(1, 4, 24, 48);
 
         ClosedXmlReportStyles.SetText(worksheet.Cell("A5"), "Gerado em");
         worksheet.Range("B5:D5").Merge();
@@ -57,7 +58,12 @@ internal static class ShoppingListSummaryWorksheetBuilder
         worksheet.Columns(2, 3).Width = 18;
         worksheet.Column(4).Width = 22;
         worksheet.SheetView.FreezeRows(1);
-        ClosedXmlReportStyles.ConfigurePrintLayout(worksheet, landscape: false);
+        ClosedXmlReportStyles.ConfigurePrintLayout(
+            worksheet,
+            landscape: false,
+            fitToPageWidth: true,
+            printAreaLastRow: 11,
+            printAreaLastColumn: 4);
         ClosedXmlReportStyles.ApplyRangeBorders(worksheet.Range("A3:D5"));
         ClosedXmlReportStyles.ApplyRangeBorders(worksheet.Range("A7:D11"));
     }

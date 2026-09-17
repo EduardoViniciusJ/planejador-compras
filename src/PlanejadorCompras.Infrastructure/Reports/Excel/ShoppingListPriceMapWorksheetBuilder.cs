@@ -38,11 +38,13 @@ internal static class ShoppingListPriceMapWorksheetBuilder
         ShoppingListPriceMapRowsWriter.WriteSupplierHeaders(
             worksheet,
             suppliers,
+            headerRow - 1,
             headerRow);
 
         ClosedXmlReportStyles.ApplyHeaderStyle(
-            worksheet.Range(headerRow, 1, headerRow, lastColumn));
-        worksheet.Row(headerRow).Height = 42;
+            worksheet.Range(headerRow - 1, 1, headerRow, lastColumn));
+        worksheet.Row(headerRow - 1).Height = 24;
+        worksheet.Row(headerRow).Height = 36;
 
         var row = firstItemRow;
         foreach (var item in reportData.Items)
@@ -92,12 +94,24 @@ internal static class ShoppingListPriceMapWorksheetBuilder
         worksheet.Column(2).Width = 13;
         worksheet.Column(3).Width = 12;
         worksheet.Columns(4, lastColumn).Width = 20;
+        worksheet.Range(firstItemRow, 1, totalRow, 1).Style.Alignment.WrapText = true;
+        worksheet.Rows(firstItemRow, totalRow).AdjustToContents(
+            1,
+            lastColumn,
+            22,
+            42);
         worksheet.SheetView.FreezeRows(headerRow);
         worksheet.SheetView.FreezeColumns(3);
-        ClosedXmlReportStyles.ConfigurePrintLayout(worksheet, landscape: true);
+        ClosedXmlReportStyles.ConfigurePrintLayout(
+            worksheet,
+            landscape: true,
+            fitToPageWidth: false,
+            printAreaLastRow: totalRow,
+            printAreaLastColumn: lastColumn,
+            repeatedHeaderRow: headerRow);
         ClosedXmlReportStyles.ApplyRangeBorders(worksheet.Range(3, 1, 4, lastColumn));
         ClosedXmlReportStyles.ApplyRangeBorders(
-            worksheet.Range(headerRow, 1, totalRow, lastColumn));
+            worksheet.Range(headerRow - 1, 1, totalRow, lastColumn));
     }
 
 }

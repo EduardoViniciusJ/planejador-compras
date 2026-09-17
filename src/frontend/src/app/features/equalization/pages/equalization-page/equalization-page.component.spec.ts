@@ -171,9 +171,7 @@ describe('EqualizationPageComponent', () => {
     fixture.detectChanges();
 
     expect(savedEqualizationService.save).toHaveBeenCalledWith('list-1', expect.any(String));
-    expect(navigate).toHaveBeenCalledWith(['/app/equalizations', 'equalization-1'], {
-      state: { equalizationCreated: true },
-    });
+    expect(navigate).toHaveBeenCalledWith(['/app/equalizations', 'equalization-1']);
   });
 
   it('should render the insufficient quotes state', async () => {

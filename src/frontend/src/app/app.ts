@@ -44,7 +44,7 @@ interface HeroSceneState {
 
 const HERO_STEPS: readonly HeroStep[] = [
   { id: 'list', number: '01', icon: 'list-check', label: 'Lista' },
-  { id: 'quote', number: '02', icon: 'building-store', label: 'Cotacao' },
+  { id: 'quote', number: '02', icon: 'building-store', label: 'Cotação' },
   { id: 'choice', number: '03', icon: 'circle-check', label: 'Escolha' },
 ];
 
@@ -109,13 +109,13 @@ const HERO_SCENE_STATES: Record<HeroStepId, HeroSceneState> = {
     footerLabel: 'Propostas comparadas',
     footerValue: '3 fornecedores comparados',
     topChipIcon: 'building-store',
-    topChipLabel: 'precos comparados',
+    topChipLabel: 'preços comparados',
     bottomChipIcon: 'repeat',
     bottomChipLabel: '3 propostas recebidas',
   },
   choice: {
     headerIcon: 'sparkles',
-    headerLabel: 'Resumo da decisao',
+    headerLabel: 'Resumo da decisão',
     headerValue: '3/3 itens',
     columns: [
       { id: 'indicator', label: 'Indicador' },
@@ -138,10 +138,10 @@ const HERO_SCENE_STATES: Record<HeroStepId, HeroSceneState> = {
       { id: 'coverage', values: ['Cobertura', '3/3 itens', 'lista atendida'], emphasizedIndex: 1 },
     ],
     footerIcon: 'sparkles',
-    footerLabel: 'Decisao final',
+    footerLabel: 'Decisão final',
     footerValue: 'Beta com menor custo',
     topChipIcon: 'bolt',
-    topChipLabel: 'melhor opcao pronta',
+    topChipLabel: 'melhor opção pronta',
     bottomChipIcon: 'trending-down',
     bottomChipLabel: '3/3 itens cobertos',
   },

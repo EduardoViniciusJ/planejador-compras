@@ -33,14 +33,17 @@
       </button>
       @if (detail(); as activeList) {
         @if (activeList.totalItems > 0 && activeList.quotedItems > 0) {
-          <a
+          <button
             nz-button
             nzType="primary"
             class="equalization-action"
-            [routerLink]="['/app/lists', activeList.id, 'equalization']"
+            type="button"
+            [nzLoading]="isSaving()"
+            [disabled]="isSaving()"
+            (click)="generateEqualization()"
           >
             <app-icon name="layout-grid" [size]="18" /> Gerar equalização
-          </a>
+          </button>
         }
         <button nz-button type="button" (click)="openSupplierPicker()">
           <app-icon name="building-plus" [size]="18" /> Adicionar fornecedor

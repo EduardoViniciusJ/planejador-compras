@@ -6,7 +6,19 @@
       <tr [class.invalid]="attempted() && invalid(row) && !isEmpty(row)">
         <td><input nz-input data-name [attr.aria-label]="'Item da linha ' + (i + 1)" [attr.aria-invalid]="attempted() && invalid(row) && !isEmpty(row)" [(ngModel)]="row.name" (paste)="paste($event, i)" placeholder="Ex.: Cimento CP II 50 kg" /></td>
         <td><input nz-input inputmode="decimal" [attr.aria-label]="'Quantidade da linha ' + (i + 1)" [(ngModel)]="row.quantity" /></td>
-        <td><input nz-input [attr.aria-label]="'Unidade da linha ' + (i + 1)" [(ngModel)]="row.unit" (keydown.enter)="nextRow($event, i)" /></td>
+        <td>
+          <nz-select
+            class="inline-unit-select"
+            nzSize="small"
+            [attr.aria-label]="'Unidade da linha ' + (i + 1)"
+            [nzDisabled]="submitting()"
+            [(ngModel)]="row.unit"
+          >
+            @for (option of unitOptionsFor(row.unit); track option.value) {
+              <nz-option [nzValue]="option.value" [nzLabel]="option.value" />
+            }
+          </nz-select>
+        </td>
         <td><div class="row-actions"><button nz-button type="button" (click)="add(row)" [disabled]="rows().length >= 200" [attr.aria-label]="'Duplicar linha ' + (i + 1)">Duplicar</button><button nz-button nzDanger type="button" (click)="remove(i)" [attr.aria-label]="'Remover linha ' + (i + 1)">Remover</button></div></td>
       </tr>
     }</tbody>

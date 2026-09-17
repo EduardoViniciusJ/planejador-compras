@@ -1,5 +1,6 @@
 using PlanejadorCompras.Application.Features.Reports.Contracts;
 using MigraDoc.DocumentObjectModel;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
@@ -14,7 +15,7 @@ public sealed class QuotationRequestPdfDocumentBuilder
             "Solicitação de cotação");
         var section = OperationalPdfTheme.AddPortraitSection(document, 1.6);
         QuotationRequestPdfContentBuilder.AddContent(section, data);
-        OperationalPdfTheme.AddFooter(section, 7);
+        OperationalPdfTheme.AddFooter(section, ReportDesignSystem.FooterFontSize);
 
         return document;
     }

@@ -1,6 +1,7 @@
 using PlanejadorCompras.Application.Features.Reports.Contracts;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
@@ -18,7 +19,8 @@ internal static class QuotationRequestPdfContentBuilder
     private static void AddHeader(Section section, QuotationRequestReportDataDto data)
     {
         var title = section.AddParagraph("Solicitação de cotação");
-        title.Format.Font.Size = Unit.FromPoint(20);
+        title.Format.Font.Name = ReportDesignSystem.FontFamily;
+        title.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.TitleFontSize);
         title.Format.Font.Bold = true;
         title.Format.SpaceAfter = Unit.FromPoint(3);
 
@@ -39,6 +41,8 @@ internal static class QuotationRequestPdfContentBuilder
         section.AddParagraph("Informações da solicitação", StyleNames.Heading1);
 
         var table = section.AddTable();
+        table.Format.Font.Name = ReportDesignSystem.FontFamily;
+        table.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.TableFontSize);
         table.Borders.Width = Unit.FromPoint(0.5);
         table.Borders.Color = OperationalPdfTheme.BorderColor;
         table.AddColumn(Unit.FromCentimeter(4.2));
@@ -81,6 +85,8 @@ internal static class QuotationRequestPdfContentBuilder
         AddSectionTitle(section, "Itens solicitados");
 
         var table = section.AddTable();
+        table.Format.Font.Name = ReportDesignSystem.FontFamily;
+        table.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.TableFontSize);
         table.Borders.Width = Unit.FromPoint(0.5);
         table.Borders.Color = OperationalPdfTheme.BorderColor;
         table.AddColumn(Unit.FromCentimeter(11.5));

@@ -1,6 +1,7 @@
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using PlanejadorCompras.Application.Features.Reports.Contracts;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
@@ -30,7 +31,7 @@ internal static class ShoppingListPriceMapCellWriter
             unitPrice.AddText(ShoppingListPdfTheme.FormatCurrency(quote.UnitPrice));
 
             var totalPrice = cell.AddParagraph();
-            totalPrice.Format.Font.Size = Unit.FromPoint(6.7);
+            totalPrice.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.SmallFontSize);
             totalPrice.AddText(
                 $"Total: {ShoppingListPdfTheme.FormatCurrency(quote.TotalPrice)}");
 
@@ -80,7 +81,7 @@ internal static class ShoppingListPriceMapCellWriter
         cell.Format.Alignment = ParagraphAlignment.Center;
 
         var paragraph = cell.AddParagraph();
-        paragraph.Format.Font.Size = Unit.FromPoint(6.8);
+        paragraph.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.SmallFontSize);
         paragraph.AddText(message);
     }
 
@@ -99,7 +100,7 @@ internal static class ShoppingListPriceMapCellWriter
         cell.Format.Font.Color = ShoppingListPdfTheme.BestPriceForeground;
 
         var bestPrice = cell.AddParagraph();
-        bestPrice.Format.Font.Size = Unit.FromPoint(6.2);
+        bestPrice.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.SmallFontSize);
         bestPrice.Format.Font.Bold = true;
         bestPrice.AddText("Melhor preço");
     }
@@ -115,7 +116,7 @@ internal static class ShoppingListPriceMapCellWriter
         total.AddText(ShoppingListPdfTheme.FormatCurrency(supplier.QuotedTotal));
 
         var status = cell.AddParagraph();
-        status.Format.Font.Size = Unit.FromPoint(6.3);
+        status.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.SmallFontSize);
         status.AddText(
             supplier.HasCompleteCoverage
                 ? "Cobertura completa"

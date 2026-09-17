@@ -1,5 +1,6 @@
 using System.Globalization;
 using MigraDoc.DocumentObjectModel;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
@@ -11,13 +12,15 @@ internal static class ShoppingListPdfTheme
 
     internal static readonly CultureInfo BrazilianCulture =
         CultureInfo.GetCultureInfo("pt-BR");
-    internal static readonly Color DarkBlue = Color.FromRgb(24, 24, 27);
-    internal static readonly Color BorderBlue = Color.FromRgb(212, 212, 216);
-    internal static readonly Color LightBlue = Color.FromRgb(244, 244, 245);
-    internal static readonly Color BestPriceBackground = Color.FromRgb(226, 240, 217);
-    internal static readonly Color BestPriceForeground = Color.FromRgb(0, 97, 0);
-    internal static readonly Color MissingPriceBackground = Color.FromRgb(255, 242, 204);
-    internal static readonly Color MissingPriceForeground = Color.FromRgb(156, 101, 0);
+    internal static readonly Color DarkBlue = ToColor(ReportDesignSystem.Primary);
+    internal static readonly Color TextColor = ToColor(ReportDesignSystem.Text);
+    internal static readonly Color MutedColor = ToColor(ReportDesignSystem.Muted);
+    internal static readonly Color BorderBlue = ToColor(ReportDesignSystem.Border);
+    internal static readonly Color LightBlue = ToColor(ReportDesignSystem.Surface);
+    internal static readonly Color BestPriceBackground = ToColor(ReportDesignSystem.BestPriceBackground);
+    internal static readonly Color BestPriceForeground = ToColor(ReportDesignSystem.BestPriceForeground);
+    internal static readonly Color MissingPriceBackground = ToColor(ReportDesignSystem.MissingPriceBackground);
+    internal static readonly Color MissingPriceForeground = ToColor(ReportDesignSystem.MissingPriceForeground);
 
     internal static string FormatCurrency(decimal value) =>
         value.ToString("C2", BrazilianCulture);
@@ -29,4 +32,7 @@ internal static class ShoppingListPdfTheme
         value.Length <= maximumLength
             ? value
             : $"{value[..(maximumLength - 3)]}...";
+
+    private static Color ToColor(ReportRgbColor color) =>
+        Color.FromRgb(color.Red, color.Green, color.Blue);
 }

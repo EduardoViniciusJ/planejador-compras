@@ -1,6 +1,7 @@
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using PlanejadorCompras.Application.Features.Reports.Contracts;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
@@ -19,6 +20,8 @@ internal static class ShoppingListPdfPageChrome
         row.VerticalAlignment = VerticalAlignment.Center;
 
         var listParagraph = row.Cells[0].AddParagraph();
+        listParagraph.Format.Font.Name = ReportDesignSystem.FontFamily;
+        listParagraph.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.BodyFontSize);
         listParagraph.Format.SpaceAfter = Unit.FromPoint(1);
         listParagraph.AddFormattedText("Lista: ", TextFormat.Bold);
         listParagraph.AddText(
@@ -29,8 +32,9 @@ internal static class ShoppingListPdfPageChrome
         if (!string.IsNullOrWhiteSpace(reportData.Description))
         {
             var descriptionParagraph = row.Cells[0].AddParagraph();
-            descriptionParagraph.Format.Font.Size = Unit.FromPoint(7.2);
-            descriptionParagraph.Format.Font.Color = Colors.DimGray;
+            descriptionParagraph.Format.Font.Name = ReportDesignSystem.FontFamily;
+            descriptionParagraph.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.SmallFontSize);
+            descriptionParagraph.Format.Font.Color = ShoppingListPdfTheme.MutedColor;
             descriptionParagraph.AddText(
                 ShoppingListPdfTheme.LimitText(
                     reportData.Description,
@@ -38,8 +42,9 @@ internal static class ShoppingListPdfPageChrome
         }
 
         var generatedParagraph = row.Cells[0].AddParagraph();
-        generatedParagraph.Format.Font.Size = Unit.FromPoint(7.2);
-        generatedParagraph.Format.Font.Color = Colors.DimGray;
+        generatedParagraph.Format.Font.Name = ReportDesignSystem.FontFamily;
+        generatedParagraph.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.SmallFontSize);
+        generatedParagraph.Format.Font.Color = ShoppingListPdfTheme.MutedColor;
         generatedParagraph.AddText(
             $"Gerado em {reportData.GeneratedAt.ToString("dd/MM/yyyy HH:mm", ShoppingListPdfTheme.BrazilianCulture)}");
     }
@@ -47,8 +52,9 @@ internal static class ShoppingListPdfPageChrome
     internal static void AddFooter(Section section)
     {
         var footer = section.Footers.Primary.AddParagraph();
-        footer.Format.Font.Size = Unit.FromPoint(7);
-        footer.Format.Font.Color = Colors.DimGray;
+        footer.Format.Font.Name = ReportDesignSystem.FontFamily;
+        footer.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.FooterFontSize);
+        footer.Format.Font.Color = ShoppingListPdfTheme.MutedColor;
         footer.Format.Alignment = ParagraphAlignment.Right;
         footer.Format.Borders.Top.Width = Unit.FromPoint(0.5);
         footer.Format.Borders.Top.Color = ShoppingListPdfTheme.BorderBlue;
@@ -64,7 +70,8 @@ internal static class ShoppingListPdfPageChrome
         ShoppingListReportDataDto reportData)
     {
         var title = section.AddParagraph("Equalização de preços");
-        title.Format.Font.Size = Unit.FromPoint(20);
+        title.Format.Font.Name = ReportDesignSystem.FontFamily;
+        title.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.TitleFontSize);
         title.Format.Font.Bold = true;
         title.Format.Font.Color = ShoppingListPdfTheme.DarkBlue;
         title.Format.SpaceAfter = Unit.FromPoint(3);
@@ -72,8 +79,9 @@ internal static class ShoppingListPdfPageChrome
 
         var subtitle = section.AddParagraph(
             "Comparativo consolidado dos preços informados pelos fornecedores.");
-        subtitle.Format.Font.Size = Unit.FromPoint(8);
-        subtitle.Format.Font.Color = Colors.DimGray;
+        subtitle.Format.Font.Name = ReportDesignSystem.FontFamily;
+        subtitle.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.SmallFontSize);
+        subtitle.Format.Font.Color = ShoppingListPdfTheme.MutedColor;
         subtitle.Format.SpaceAfter = Unit.FromPoint(7);
         subtitle.Format.KeepWithNext = true;
 

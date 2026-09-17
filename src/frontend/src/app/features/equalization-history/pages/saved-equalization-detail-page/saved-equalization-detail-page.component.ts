@@ -5,7 +5,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
-import { MascotComponent } from '../../../../shared/ui/mascot/mascot.component';
 import { mapEqualization } from '../../../equalization/models/equalization.mapper';
 import { Equalization, EqualizationCell } from '../../../equalization/models/equalization.model';
 import { SavedEqualizationService } from '../../data-access/saved-equalization.service';
@@ -23,7 +22,7 @@ interface SupplierPurchaseOrderOption {
 
 @Component({
   selector: 'app-saved-equalization-detail-page',
-  imports: [RouterLink, AppIconComponent, MascotComponent, NzButtonModule, NzSpinModule],
+  imports: [RouterLink, AppIconComponent, NzButtonModule, NzSpinModule],
   templateUrl: './saved-equalization-detail-page.component.html',
   styleUrl: './saved-equalization-detail-page.component.scss',
 })
@@ -37,7 +36,6 @@ export class SavedEqualizationDetailPageComponent implements OnInit {
   protected readonly matrix = signal<Equalization | null>(null);
   protected readonly isLoading = signal(true);
   protected readonly loadError = signal<string | null>(null);
-  protected readonly wasJustCreated = Boolean(globalThis.history?.state?.['equalizationCreated']);
   protected readonly supplierOrderOptions = computed<readonly SupplierPurchaseOrderOption[]>(() => {
     const matrix = this.matrix();
     const detail = this.detail();

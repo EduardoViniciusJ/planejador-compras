@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 
+import { SavedEqualizationService } from '../../../equalization-history/data-access/saved-equalization.service';
 import { ItemQuoteService } from '../../../quotes/data-access/item-quote.service';
 import { ShoppingListReportService } from '../../../reports/data-access/shopping-list-report.service';
 import { ReportFileDownloadService } from '../../../reports/services/report-file-download.service';
@@ -38,6 +39,9 @@ describe('PriceMapPageComponent', () => {
   };
   let fileDownloadService: {
     download: ReturnType<typeof vi.fn>;
+  };
+  let savedEqualizationService: {
+    save: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
@@ -97,6 +101,9 @@ describe('PriceMapPageComponent', () => {
       ),
     };
     fileDownloadService = { download: vi.fn() };
+    savedEqualizationService = {
+      save: vi.fn(() => of({ id: 'equalization-1' })),
+    };
 
     const detail = createShoppingListDetail();
     await TestBed.configureTestingModule({
@@ -150,6 +157,7 @@ describe('PriceMapPageComponent', () => {
         },
         { provide: ShoppingListReportService, useValue: reportService },
         { provide: ReportFileDownloadService, useValue: fileDownloadService },
+        { provide: SavedEqualizationService, useValue: savedEqualizationService },
       ],
     }).compileComponents();
 
@@ -168,7 +176,17 @@ describe('PriceMapPageComponent', () => {
     expect(host().querySelector('thead')?.textContent).toContain('Unidade');
     expect(host().querySelector('thead')?.textContent).toContain('Preço unitário');
     expect(host().querySelector('thead')?.textContent).toContain('Preço total');
-    expect(host().querySelector('a[href="/app/lists/list-1/equalization"]')).toBeTruthy();
+    expect(host().querySelector('button.equalization-action')).toBeTruthy();
+  });
+
+  it('should save and open the historical equalization from the price map', () => {
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    click('button.equalization-action');
+
+    expect(savedEqualizationService.save).toHaveBeenCalledWith('list-1', expect.any(String));
+    expect(navigate).toHaveBeenCalledWith(['/app/equalizations', 'equalization-1']);
   });
 
   it('should highlight the lowest available price', () => {

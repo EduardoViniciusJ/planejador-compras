@@ -23,9 +23,7 @@
               Voltar para equalizações
             </a>
             <span>{{ saved.code }} · Lista: {{ saved.shoppingListName }}</span>
-            <div class="saved-title-row">
-              <h1>Equalização salva</h1>
-            </div>
+            <h1>Equalização salva</h1>
             <p>
               Concluída em {{ formatDate(saved.createdAtUtc) }} por
               {{ saved.createdByName || saved.createdByEmail }}.
@@ -36,13 +34,6 @@
             Ver pedidos
           </a>
         </div>
-
-        @if (wasJustCreated) {
-          <div class="saved-feedback" role="status">
-            <app-icon name="circle-check" [size]="18" />
-            Equalização {{ saved.code }} salva com sucesso.
-          </div>
-        }
 
         <div class="metrics">
           <div>
@@ -173,13 +164,6 @@
         </div>
       </section>
 
-      <aside class="history-footer">
-        <app-mascot variant="03" size="small" />
-        <p>
-          <strong>Dados desta decisão.</strong>
-          Para comparar novos preços, conclua uma nova equalização.
-        </p>
-      </aside>
     }
   }
 </section>

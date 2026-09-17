@@ -8,11 +8,13 @@ internal static class ShoppingListPriceMapRowsWriter
     internal static void WriteSupplierHeaders(
         IXLWorksheet worksheet,
         IReadOnlyList<ShoppingListReportSupplierDto> suppliers,
+        int supplierHeaderRow,
         int headerRow)
     {
         if (suppliers.Count == 0)
         {
-            ClosedXmlReportStyles.SetText(worksheet.Cell(headerRow, 4), "Situação");
+            worksheet.Range(supplierHeaderRow, 4, headerRow, 4).Merge();
+            ClosedXmlReportStyles.SetText(worksheet.Cell(supplierHeaderRow, 4), "Situação");
             return;
         }
 
@@ -20,12 +22,20 @@ internal static class ShoppingListPriceMapRowsWriter
         {
             var supplier = suppliers[index];
             var unitPriceColumn = 4 + (index * 2);
+            worksheet.Range(
+                supplierHeaderRow,
+                unitPriceColumn,
+                supplierHeaderRow,
+                unitPriceColumn + 1).Merge();
+            ClosedXmlReportStyles.SetText(
+                worksheet.Cell(supplierHeaderRow, unitPriceColumn),
+                supplier.Name);
             ClosedXmlReportStyles.SetText(
                 worksheet.Cell(headerRow, unitPriceColumn),
-                $"{supplier.Name}\nPreço unitário");
+                "Preço unitário");
             ClosedXmlReportStyles.SetText(
                 worksheet.Cell(headerRow, unitPriceColumn + 1),
-                $"{supplier.Name}\nTotal");
+                "Total");
         }
     }
 

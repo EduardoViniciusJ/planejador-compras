@@ -88,9 +88,7 @@ export class EqualizationPageComponent implements OnInit {
       )
       .subscribe({
         next: (saved) => {
-          void this.router.navigate(['/app/equalizations', saved.id], {
-            state: { equalizationCreated: true },
-          });
+          void this.router.navigate(['/app/equalizations', saved.id]);
         },
         error: (error: { error?: { errorCode?: string } }) => {
           this.saveError.set(

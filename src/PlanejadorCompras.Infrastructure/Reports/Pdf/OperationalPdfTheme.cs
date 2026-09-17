@@ -1,6 +1,7 @@
 using System.Globalization;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
@@ -9,10 +10,10 @@ internal static class OperationalPdfTheme
     internal static readonly CultureInfo BrazilianCulture =
         CultureInfo.GetCultureInfo("pt-BR");
 
-    internal static readonly Color TextColor = Color.FromRgb(24, 24, 27);
-    internal static readonly Color MutedColor = Color.FromRgb(82, 82, 91);
-    internal static readonly Color BorderColor = Color.FromRgb(212, 212, 216);
-    internal static readonly Color HeaderBackground = Color.FromRgb(244, 244, 245);
+    internal static readonly Color TextColor = ToColor(ReportDesignSystem.Text);
+    internal static readonly Color MutedColor = ToColor(ReportDesignSystem.Muted);
+    internal static readonly Color BorderColor = ToColor(ReportDesignSystem.Border);
+    internal static readonly Color HeaderBackground = ToColor(ReportDesignSystem.Surface);
 
     internal static Document CreateDocument(string title, string subject)
     {
@@ -22,13 +23,13 @@ internal static class OperationalPdfTheme
 
         var normal = document.Styles[StyleNames.Normal]!;
         normal.Font.Name = EmbeddedPdfFontResolver.FamilyName;
-        normal.Font.Size = Unit.FromPoint(9);
+        normal.Font.Size = Unit.FromPoint(ReportDesignSystem.BodyFontSize);
         normal.Font.Color = TextColor;
         normal.ParagraphFormat.SpaceAfter = Unit.FromPoint(2);
 
         var heading = document.Styles[StyleNames.Heading1]!;
         heading.Font.Name = EmbeddedPdfFontResolver.FamilyName;
-        heading.Font.Size = Unit.FromPoint(12);
+        heading.Font.Size = Unit.FromPoint(ReportDesignSystem.SectionFontSize);
         heading.Font.Bold = true;
         heading.Font.Color = TextColor;
         heading.ParagraphFormat.SpaceBefore = Unit.FromPoint(10);
@@ -57,6 +58,7 @@ internal static class OperationalPdfTheme
     {
         var footer = section.Footers.Primary.AddParagraph();
         footer.Format.Alignment = ParagraphAlignment.Right;
+        footer.Format.Font.Name = ReportDesignSystem.FontFamily;
         footer.Format.Font.Size = Unit.FromPoint(fontSize);
         footer.Format.Font.Color = MutedColor;
         footer.Format.Borders.Top.Width = Unit.FromPoint(0.5);
@@ -89,4 +91,7 @@ internal static class OperationalPdfTheme
         value.Length <= maximumLength
             ? value
             : $"{value[..(maximumLength - 3)]}...";
+
+    private static Color ToColor(ReportRgbColor color) =>
+        Color.FromRgb(color.Red, color.Green, color.Blue);
 }

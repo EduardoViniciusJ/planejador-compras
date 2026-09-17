@@ -188,95 +188,74 @@
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(24rem, 0.82fr);
-  gap: clamp(2rem, 5vw, 4.5rem);
+  grid-template-columns: minmax(18rem, 0.78fr) minmax(34rem, 1.22fr);
+  gap: clamp(2.5rem, 6vw, 7rem);
   align-items: center;
   min-height: calc(100dvh - var(--app-header-height));
   width: 100%;
   max-width: var(--app-content-wide-max-width);
   margin-inline: auto;
-  padding: clamp(4rem, 8vh, 6rem) var(--app-page-padding-x);
+  padding: clamp(3rem, 7vh, 5rem) var(--app-page-padding-x);
 }
 
 .hero-copy {
-  width: min(100%, 34rem);
+  width: min(100%, 31rem);
 }
 
 .hero-combo-scene {
-  --combo-scene-inset: 8%;
-  --combo-bottom-lane: 4.8rem;
+  --combo-scene-inset: 0;
+  --combo-bottom-lane: 1.5rem;
 
   position: relative;
-  width: min(100%, 34rem);
-  aspect-ratio: 0.9;
+  width: min(100%, 42rem);
+  min-height: 37rem;
   justify-self: end;
-  border: 1px solid color-mix(in srgb, var(--app-primary) 18%, var(--app-border-color));
-  border-radius: var(--app-radius-xl);
+  border: 0;
+  border-radius: 0;
   background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--app-primary) 13%, transparent),
-      transparent 38%
+    radial-gradient(
+      circle at 72% 38%,
+      color-mix(in srgb, var(--app-primary) 12%, transparent),
+      transparent 44%
     ),
-    color-mix(in srgb, var(--app-surface-elevated-bg) 82%, var(--app-page-bg));
-  box-shadow:
-    0 24px 70px color-mix(in srgb, var(--app-brand-ink) 14%, transparent),
-    0 0 80px color-mix(in srgb, var(--app-primary) 18%, transparent);
-  overflow: hidden;
+    radial-gradient(
+      circle at 36% 76%,
+      color-mix(in srgb, var(--app-primary) 7%, transparent),
+      transparent 42%
+    );
+  overflow: visible;
   animation: comboSceneFloat 7s ease-in-out infinite;
-}
-
-.hero-mascot {
-  position: absolute;
-  right: clamp(0.5rem, 2vw, 1rem);
-  bottom: -2.75rem;
-  z-index: 4;
-  width: clamp(5rem, 10vw, 7.25rem);
-  height: auto;
-  pointer-events: none;
-  filter: drop-shadow(0 0.85rem 1rem color-mix(in srgb, var(--app-brand-ink) 18%, transparent));
-  transform: translateY(0.55rem) rotate(2deg);
-  transform-origin: bottom center;
-  transition: transform 260ms ease;
-  user-select: none;
-}
-
-.hero-combo-scene:hover .hero-mascot {
-  transform: translateY(0) rotate(0);
 }
 
 .combo-scene-grid {
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background-image:
-    linear-gradient(
-      color-mix(in srgb, var(--app-border-color) 50%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--app-border-color) 50%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 3rem 3rem;
-  opacity: 0.34;
+  inset: 7% 0 3% 5%;
+  border-radius: 2rem;
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--app-border-color) 62%, transparent) 1px,
+    transparent 1.5px
+  );
+  background-size: 1.25rem 1.25rem;
+  opacity: 0.22;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 78%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 78%, transparent);
   pointer-events: none;
 }
 
 .combo-panel {
   position: absolute;
   z-index: 2;
-  inset: var(--combo-scene-inset) var(--combo-scene-inset) var(--combo-bottom-lane);
+  inset: 3.25rem 0 var(--combo-bottom-lane) 0.75rem;
   min-width: 0;
   display: grid;
-  gap: 0.85rem;
-  padding: 1rem;
-  border: 1px solid color-mix(in srgb, var(--app-border-color) 72%, transparent);
-  border-radius: var(--app-radius-lg);
-  background: color-mix(in srgb, var(--app-surface-bg) 88%, transparent);
-  box-shadow: var(--app-shadow-lg);
-  backdrop-filter: blur(18px);
+  gap: 1.15rem;
+  padding: 0 0.75rem 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .combo-panel-header,
@@ -288,6 +267,11 @@
   gap: 1rem;
 }
 
+.combo-panel-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--app-border-color);
+}
+
 .combo-panel-header span,
 .combo-panel-footer span {
   min-width: 0;
@@ -295,6 +279,7 @@
   align-items: center;
   gap: 0.45rem;
   color: var(--app-text-muted);
+  font-size: 0.82rem;
 }
 
 .combo-panel-header app-icon,
@@ -306,6 +291,7 @@
 .combo-panel-footer strong {
   color: var(--app-text-color);
   text-align: right;
+  font-size: 0.95rem;
 }
 
 .hero-combo-scene-list .combo-panel {
@@ -317,8 +303,8 @@
 }
 
 .hero-combo-scene-choice .combo-panel {
-  gap: 0.62rem;
-  padding: 0.85rem;
+  gap: 0.95rem;
+  padding: 0 0.75rem 0 0;
   animation: comboPanelRevealChoice 280ms ease both;
 }
 
@@ -336,11 +322,11 @@
   display: grid;
   justify-items: center;
   gap: 0.35rem;
-  padding: 0.65rem 0.4rem;
-  border: 1px solid var(--app-border-color);
-  border-radius: var(--app-radius-sm);
-  background: color-mix(in srgb, var(--app-surface-elevated-bg) 76%, transparent);
-  color: inherit;
+  padding: 0.62rem 0.7rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--app-text-muted);
   cursor: pointer;
   font: inherit;
   line-height: inherit;
@@ -355,9 +341,9 @@
 }
 
 .combo-flow-step:hover {
-  border-color: color-mix(in srgb, var(--app-primary) 34%, var(--app-border-color));
-  background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-elevated-bg));
-  box-shadow: 0 0 18px color-mix(in srgb, var(--app-primary) 10%, transparent);
+  border-color: var(--app-border-color);
+  background: color-mix(in srgb, var(--app-surface-bg) 70%, transparent);
+  box-shadow: none;
 }
 
 .combo-flow-step:focus-visible {
@@ -366,46 +352,43 @@
 }
 
 .combo-flow-step span {
-  color: var(--app-primary);
+  color: currentColor;
   font-size: 0.72rem;
   font-weight: 900;
 }
 
 .combo-flow-step app-icon {
-  color: var(--app-primary);
-  font-size: 1.1rem;
+  color: currentColor;
+  font-size: 1rem;
+  transform: scale(0.88);
 }
 
 .combo-flow-step strong {
-  color: var(--app-text-color);
-  font-size: 0.92rem;
+  color: currentColor;
+  font-size: 0.86rem;
 }
 
 .combo-flow-step-active {
-  border-color: color-mix(in srgb, var(--app-primary) 48%, var(--app-border-color));
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--app-primary) 14%, transparent), transparent),
-    color-mix(in srgb, var(--app-surface-elevated-bg) 82%, transparent);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--app-primary) 16%, transparent);
+  border-color: var(--app-primary);
+  background: var(--app-primary);
+  color: var(--app-brand-accent-contrast);
+  box-shadow: 0 5px 16px color-mix(in srgb, var(--app-primary) 16%, transparent);
   animation-delay: 1.1s;
 }
 
 .combo-flow-line {
   min-width: 2rem;
-  height: 2px;
+  height: 1px;
   border-radius: var(--app-radius-pill);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in srgb, var(--app-primary) 70%, transparent),
-    transparent
-  );
+  background: var(--app-border-color);
   animation: comboLinePulse 4.8s ease-in-out infinite;
 }
 
 .combo-comparison {
   display: grid;
-  gap: 0.5rem;
+  gap: 0;
+  border-top: 1px solid var(--app-border-color);
+  border-bottom: 1px solid var(--app-border-color);
 }
 
 .combo-grid-head,
@@ -428,9 +411,12 @@
 }
 
 .combo-grid-head {
+  padding: 0.7rem 0.85rem 0.45rem;
   color: var(--app-text-soft);
-  font-size: 0.76rem;
+  font-size: 0.68rem;
   font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .combo-grid-head span,
@@ -440,11 +426,12 @@
 }
 
 .combo-grid-row {
-  min-height: 2.55rem;
-  padding: 0.6rem 0.7rem;
-  border: 1px solid var(--app-border-color);
-  border-radius: var(--app-radius-sm);
-  background: color-mix(in srgb, var(--app-surface-elevated-bg) 78%, transparent);
+  min-height: 3rem;
+  padding: 0.72rem 0.85rem;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--app-border-color) 78%, transparent);
+  border-radius: 0;
+  background: transparent;
   color: var(--app-text-muted);
   animation: comboContentReveal 260ms ease both;
   transition:
@@ -454,8 +441,8 @@
 }
 
 .hero-combo-scene-quote .combo-grid-row {
-  min-height: 2.42rem;
-  padding-block: 0.55rem;
+  min-height: 2.95rem;
+  padding-block: 0.68rem;
 }
 
 .hero-combo-scene-choice .combo-grid-head,
@@ -464,9 +451,9 @@
 }
 
 .hero-combo-scene-choice .combo-grid-row {
-  min-height: 2.18rem;
-  padding: 0.42rem 0.58rem;
-  font-size: 0.86rem;
+  min-height: 2.9rem;
+  padding: 0.68rem 0.85rem;
+  font-size: 0.9rem;
 }
 
 .hero-combo-scene-choice .combo-panel-footer {
@@ -479,19 +466,20 @@
 }
 
 .combo-grid-row-best {
-  border-color: color-mix(in srgb, var(--app-primary) 50%, var(--app-border-color));
+  border-bottom-color: transparent;
+  border-radius: 0.8rem;
   background:
     linear-gradient(
       90deg,
-      color-mix(in srgb, var(--app-primary) 18%, transparent),
+      color-mix(in srgb, var(--app-primary) 10%, transparent),
       transparent 70%
     ),
-    color-mix(in srgb, var(--app-surface-elevated-bg) 88%, transparent);
+    color-mix(in srgb, var(--app-surface-bg) 62%, transparent);
   animation: comboBestPulse 3.8s ease-in-out infinite;
 }
 
 .combo-panel-footer {
-  padding-top: 0.15rem;
+  padding-top: 0.95rem;
   border-top: 1px solid var(--app-border-color);
 }
 
@@ -502,46 +490,53 @@
   align-items: center;
   gap: 0.5rem;
   max-width: calc(100% - 2rem);
-  min-height: 2.45rem;
-  padding: 0.65rem 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--app-primary) 30%, var(--app-border-color));
+  min-height: 2.2rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--app-border-color);
   border-radius: var(--app-radius-pill);
-  background: color-mix(in srgb, var(--app-surface-bg) 86%, transparent);
+  background: var(--app-surface-bg);
   box-shadow: var(--app-shadow-md);
   color: var(--app-text-color);
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 700;
   backdrop-filter: blur(16px);
   animation: comboChipFloat 5.4s ease-in-out infinite;
 }
 
 .combo-floating-chip app-icon {
-  color: var(--app-primary);
+  color: currentColor;
 }
 
 .combo-floating-chip-top {
-  top: 1rem;
-  right: 1rem;
+  top: 0.75rem;
+  right: 0;
 }
 
 .combo-floating-chip-bottom {
-  bottom: 1rem;
-  left: calc(var(--combo-scene-inset) + 0.2rem);
+  bottom: 0;
+  left: 0.75rem;
   animation-delay: 1.4s;
 }
 
 .hero-title {
-  max-width: 14ch;
-  font-size: 3.75rem;
-  line-height: 1;
-  font-weight: 900;
+  max-width: 13ch;
+  margin-bottom: 1.35rem;
+  font-size: clamp(3.4rem, 6vw, 5rem);
+  line-height: 0.95;
+  font-weight: 750;
+  letter-spacing: -0.065em;
   color: var(--app-text-color);
 }
 
+.hero-title span {
+  display: block;
+}
+
 .hero-description {
-  max-width: 38rem;
-  font-size: 1.32rem;
-  line-height: 1.6;
+  max-width: 30rem;
+  margin-bottom: 2rem;
+  font-size: 1.12rem;
+  line-height: 1.55;
   color: var(--app-text-muted);
 }
 
@@ -559,7 +554,7 @@
   justify-content: center;
   gap: 0.75rem;
   padding-inline: 1.25rem;
-  border-radius: var(--app-control-radius);
+  border-radius: 8px;
   font-weight: 700;
 }
 
@@ -568,13 +563,13 @@
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  box-shadow: var(--app-shadow-md);
+  box-shadow: none;
   text-align: center;
 }
 
 .google-login-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--app-shadow-lg);
+  transform: none;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--app-primary) 16%, transparent);
 }
 
 .google-login-btn:active {
@@ -607,29 +602,31 @@
 
 .hero-secondary-link {
   border-color: var(--app-border-strong);
-  background: color-mix(in srgb, var(--app-surface-bg) 72%, transparent);
+  background: transparent;
   color: var(--app-text-color);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
   text-decoration: none;
 }
 
 .hero-secondary-link:hover,
 .hero-secondary-link:focus-visible {
-  border-color: color-mix(in srgb, var(--app-primary) 42%, var(--app-border-strong));
-  background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-bg));
+  border-color: var(--app-primary);
+  background: var(--app-surface-bg);
   color: var(--app-text-color);
 }
 
 .hero-summary {
-  display: flex;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1rem;
+  margin-top: 2.2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--app-border-color);
   color: var(--app-text-muted);
 }
 
 .hero-summary div {
-  min-width: 8rem;
-  padding-left: 0.85rem;
-  border-left: 1px solid color-mix(in srgb, var(--app-primary) 38%, var(--app-border-color));
+  min-width: 0;
 }
 
 .hero-summary strong,
@@ -639,12 +636,13 @@
 
 .hero-summary strong {
   color: var(--app-text-color);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
 }
 
 .hero-summary span {
   margin-top: 0.2rem;
-  font-size: 0.875rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
 }
 
 .process-section,
@@ -1047,8 +1045,13 @@
 
   .hero-combo-scene {
     justify-self: center;
-    width: min(100%, 30rem);
-    margin-top: 1rem;
+    width: min(100%, 38rem);
+    min-height: 34rem;
+    margin-top: 2rem;
+  }
+
+  .hero-copy {
+    width: min(100%, 34rem);
   }
 
   .hero-title {
@@ -1095,15 +1098,16 @@
   }
 
   .hero-content {
-    padding-block: 3rem;
+    padding-block: 3rem 4rem;
   }
 
   .hero-title {
-    font-size: 2.45rem;
+    max-width: 13ch;
+    font-size: clamp(2.7rem, 13vw, 3.6rem);
   }
 
   .hero-description {
-    font-size: 1.05rem;
+    font-size: 1rem;
   }
 
   .hero-actions {
@@ -1115,22 +1119,30 @@
   }
 
   .hero-summary {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    margin-top: 1.75rem;
+    padding-top: 1rem;
   }
 
   .hero-combo-scene {
-    --combo-scene-inset: 0.75rem;
-    --combo-bottom-lane: 0rem;
+    --combo-scene-inset: 0;
+    --combo-bottom-lane: 0.5rem;
 
-    width: min(100%, 22rem);
-    aspect-ratio: 0.72;
+    width: min(100%, 26rem);
+    min-height: 29rem;
+    aspect-ratio: auto;
     animation: none;
   }
 
   .combo-panel {
-    inset: var(--combo-scene-inset);
-    padding: 0.7rem;
-    gap: 0.52rem;
+    inset: 2rem 0 0.5rem 0;
+    padding: 0;
+    gap: 0.7rem;
+  }
+
+  .combo-panel-header {
+    padding-bottom: 0.7rem;
   }
 
   .combo-panel-header,
@@ -1153,9 +1165,9 @@
     align-items: center;
     justify-content: center;
     justify-items: center;
-    min-height: 4.2rem;
+    min-height: 3.8rem;
     gap: 0.25rem;
-    padding: 0.42rem 0.2rem;
+    padding: 0.36rem 0.2rem;
   }
 
   .combo-flow-step span {
@@ -1163,7 +1175,7 @@
   }
 
   .combo-flow-step app-icon {
-    transform: scale(0.9);
+    transform: scale(0.82);
   }
 
   .combo-flow-step strong {
@@ -1180,6 +1192,11 @@
     font-size: 0.74rem;
   }
 
+  .combo-grid-head {
+    padding: 0.5rem 0.55rem 0.35rem;
+    font-size: 0.6rem;
+  }
+
   .hero-combo-scene-list .combo-grid-head,
   .hero-combo-scene-list .combo-grid-row {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.52fr) minmax(0, 0.48fr) minmax(0, 0.72fr);
@@ -1193,13 +1210,13 @@
   }
 
   .combo-grid-row {
-    min-height: 2rem;
-    padding: 0.36rem 0.42rem;
+    min-height: 2.3rem;
+    padding: 0.55rem;
   }
 
   .hero-combo-scene-choice .combo-grid-row {
-    min-height: 1.9rem;
-    padding: 0.32rem 0.38rem;
+    min-height: 2.3rem;
+    padding: 0.5rem 0.55rem;
     font-size: 0.72rem;
   }
 
@@ -1234,7 +1251,6 @@
   }
 
   .hero-combo-scene,
-  .hero-mascot,
   .combo-panel,
   .combo-flow-step,
   .combo-floating-chip,

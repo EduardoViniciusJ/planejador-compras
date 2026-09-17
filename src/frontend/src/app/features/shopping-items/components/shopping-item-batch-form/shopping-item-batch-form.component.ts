@@ -2,7 +2,9 @@ import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 import { ShoppingItemRequestDto } from '../../dtos/shopping-item.dto';
+import { SHOPPING_ITEM_UNIT_OPTIONS } from '../../models/shopping-item-unit-option';
 
 interface Row { name: string; quantity: string; unit: string; }
 
@@ -23,7 +25,7 @@ export function parsePastedRows(text: string): Row[] {
 
 @Component({
   selector: 'app-shopping-item-batch-form',
-  imports: [FormsModule, NzButtonModule, NzInputModule],
+  imports: [FormsModule, NzButtonModule, NzInputModule, NzSelectModule],
   templateUrl: './shopping-item-batch-form.component.html',
   styleUrl: './shopping-item-batch-form.component.scss',
 })
@@ -34,10 +36,16 @@ export class ShoppingItemBatchFormComponent {
   readonly saveRequested = output<readonly ShoppingItemRequestDto[]>();
   readonly cancelRequested = output<void>();
   readonly rows = signal<Row[]>([this.blank(), this.blank(), this.blank()]);
+  readonly unitOptions = SHOPPING_ITEM_UNIT_OPTIONS;
   readonly attempted = signal(false);
   readonly pasteError = signal<string | null>(null);
 
   blank(): Row { return { name: '', quantity: '1', unit: 'un' }; }
+  unitOptionsFor(unit: string) {
+    return this.unitOptions.some(option => option.value === unit)
+      ? this.unitOptions
+      : [...this.unitOptions, { value: unit, label: unit }];
+  }
   isEmpty(row: Row): boolean { return !row.name.trim() && row.quantity === '1' && row.unit === 'un'; }
   add(copy?: Row): void {
     if (this.submitting() || this.rows().length >= 200) return;

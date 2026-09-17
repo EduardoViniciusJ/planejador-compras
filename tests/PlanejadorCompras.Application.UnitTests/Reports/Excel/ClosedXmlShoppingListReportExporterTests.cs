@@ -50,11 +50,13 @@ public sealed class ClosedXmlShoppingListReportExporterTests
         Assert.Equal(25m, summary.Cell("D10").GetValue<decimal>());
         Assert.Equal(4m, summary.Cell("D11").GetValue<decimal>());
         Assert.Contains("R$", summary.Cell("D8").Style.NumberFormat.Format);
+        Assert.Equal("Liberation Sans", summary.Cell("A1").Style.Font.FontName);
         Assert.Equal(XLPageOrientation.Portrait, summary.PageSetup.PageOrientation);
 
         var priceMap = workbook.Worksheet("Mapa de preços");
-        Assert.Equal("Fornecedor A\nPreço unitário", priceMap.Cell("D6").GetString());
-        Assert.Equal("Fornecedor B\nTotal", priceMap.Cell("G6").GetString());
+        Assert.Equal("Fornecedor A", priceMap.Cell("D5").GetString());
+        Assert.Equal("Preço unitário", priceMap.Cell("D6").GetString());
+        Assert.Equal("Total", priceMap.Cell("G6").GetString());
         Assert.Equal(XLDataType.Number, priceMap.Cell("B7").DataType);
         Assert.Equal(2m, priceMap.Cell("B7").GetValue<decimal>());
         Assert.Equal(10m, priceMap.Cell("D7").GetValue<decimal>());
@@ -67,6 +69,8 @@ public sealed class ClosedXmlShoppingListReportExporterTests
             XLColor.FromHtml("#FFF2CC"),
             priceMap.Cell("F8").Style.Fill.BackgroundColor);
         Assert.True(priceMap.AutoFilter.IsEnabled);
+        Assert.Equal("Liberation Sans", priceMap.Cell("D7").Style.Font.FontName);
+        Assert.Equal(0, priceMap.PageSetup.PagesWide);
         Assert.Equal(XLPageOrientation.Landscape, priceMap.PageSetup.PageOrientation);
     }
 
@@ -101,8 +105,8 @@ public sealed class ClosedXmlShoppingListReportExporterTests
             workbook.Worksheet("Mapa de preços").Cell("A7"),
             unsafeItemName);
         AssertTextWithoutFormula(
-            workbook.Worksheet("Mapa de preços").Cell("D6"),
-            $"{unsafeSupplierName}\nPreço unitário");
+            workbook.Worksheet("Mapa de preços").Cell("D5"),
+            unsafeSupplierName);
     }
 
     [Fact]

@@ -1,10 +1,11 @@
 using PdfSharp.Fonts;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
 internal sealed class EmbeddedPdfFontResolver : IFontResolver
 {
-    public const string FamilyName = "Liberation Sans";
+    public const string FamilyName = ReportDesignSystem.FontFamily;
 
     private const string RegularFaceName = "LiberationSans#Regular";
     private const string BoldFaceName = "LiberationSans#Bold";

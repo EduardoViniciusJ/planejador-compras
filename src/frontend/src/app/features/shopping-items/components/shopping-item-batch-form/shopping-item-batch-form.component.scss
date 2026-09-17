@@ -7,7 +7,15 @@ th { text-align: left; font-weight: 500; }
 td, th { padding: .5rem .3rem; }
 td:first-child { width: 45%; }
 td:nth-child(2) { width: 16%; }
-td:nth-child(3) { width: 12%; }
+td:nth-child(3) {
+  width: 5.5rem;
+  min-width: 5.5rem;
+  max-width: 5.5rem;
+}
+.inline-unit-select {
+  width: 100%;
+  min-width: 0;
+}
 .row-actions, .actions { display: flex; gap: .5rem; }
 .actions { justify-content: flex-end; margin-top: 1.5rem; flex-wrap: wrap; }
 .invalid input { border-color: var(--app-danger); }

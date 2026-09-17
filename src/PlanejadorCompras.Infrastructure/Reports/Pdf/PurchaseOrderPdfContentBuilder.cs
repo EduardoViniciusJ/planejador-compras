@@ -1,5 +1,6 @@
 using PlanejadorCompras.Application.Features.Reports.Contracts;
 using MigraDoc.DocumentObjectModel;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
@@ -16,7 +17,8 @@ internal static class PurchaseOrderPdfContentBuilder
     private static void AddTitle(Section section, PurchaseOrderReportDataDto data)
     {
         var title = section.AddParagraph("Pedido de compra");
-        title.Format.Font.Size = Unit.FromPoint(20);
+        title.Format.Font.Name = ReportDesignSystem.FontFamily;
+        title.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.TitleFontSize);
         title.Format.Font.Bold = true;
         title.Format.SpaceAfter = Unit.FromPoint(3);
 

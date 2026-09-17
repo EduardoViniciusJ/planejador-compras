@@ -55,11 +55,13 @@
         <section class="hero-section">
           <div class="hero-content">
             <div class="hero-copy">
-              <h1 class="hero-title">Planeje compras para sua obra</h1>
+              <h1 class="hero-title">
+                <span>Planeje suas</span>
+                <span>compras</span>
+              </h1>
 
               <p class="hero-description">
-                Organize materiais, compare cotações e escolha fornecedores com clareza.
-                Mais controle sobre os custos de obras e operações industriais.
+                Centralize listas, compare propostas e escolha o menor custo.
               </p>
 
               <div class="hero-actions">
@@ -67,7 +69,7 @@
                   <span class="google-logo" aria-hidden="true">
                     <img src="/icons/google-g.svg" alt="" />
                   </span>
-                  <span>Continuar com Google</span>
+                  <span>Entrar com Google</span>
                 </a>
 
                 <a nz-button class="hero-secondary-link" href="#como-funciona">
@@ -79,15 +81,15 @@
               <div class="hero-summary" aria-label="Resumo do produto">
                 <div>
                   <strong>Listas</strong>
-                  <span>centralize pedidos e itens</span>
+                  <span>materiais centralizados</span>
                 </div>
                 <div>
-                  <strong>Cotações</strong>
-                  <span>compare fornecedores</span>
+                  <strong>Propostas</strong>
+                  <span>fornecedores comparados</span>
                 </div>
                 <div>
-                  <strong>Escolha</strong>
-                  <span>veja o menor custo</span>
+                  <strong>Decisão</strong>
+                  <span>menor custo escolhido</span>
                 </div>
               </div>
             </div>
@@ -97,7 +99,7 @@
               [class.hero-combo-scene-list]="selectedHeroStep() === 'list'"
               [class.hero-combo-scene-quote]="selectedHeroStep() === 'quote'"
               [class.hero-combo-scene-choice]="selectedHeroStep() === 'choice'"
-              aria-label="Demonstração visual do fluxo de compras"
+              aria-label="Demonstração interativa do fluxo de compras"
             >
               <div class="combo-scene-grid"></div>
 
@@ -120,7 +122,7 @@
                       (click)="selectHeroStep(step.id)"
                     >
                       <span>{{ step.number }}</span>
-                      <app-icon [name]="step.icon" [size]="20" />
+                      <app-icon [name]="step.icon" [size]="18" />
                       <strong>{{ step.label }}</strong>
                     </button>
 
@@ -168,17 +170,6 @@
                 <app-icon [name]="heroScene().bottomChipIcon" [size]="18" />
                 {{ heroScene().bottomChipLabel }}
               </div>
-
-              <img
-                class="hero-mascot"
-                src="/images/mascotes/mascote-02.png"
-                alt=""
-                width="521"
-                height="760"
-                loading="eager"
-                decoding="async"
-                aria-hidden="true"
-              />
             </div>
           </div>
         </section>
@@ -195,7 +186,9 @@
                 <app-icon name="checklist" [size]="24" />
               </div>
               <h3>Monte sua lista</h3>
-              <p>Liste os materiais, quantidades e unidades necessários para sua obra ou operação.</p>
+              <p>
+                Liste os materiais, quantidades e unidades necessários para sua obra ou operação.
+              </p>
             </article>
 
             <article class="process-card">

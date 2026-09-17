@@ -1,6 +1,7 @@
 using PlanejadorCompras.Application.Features.Reports.Contracts;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
@@ -11,6 +12,8 @@ internal static class PurchaseOrderPdfItemsBuilder
         section.AddParagraph("Itens", StyleNames.Heading1);
 
         var table = section.AddTable();
+        table.Format.Font.Name = ReportDesignSystem.FontFamily;
+        table.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.TableFontSize);
         table.Borders.Width = Unit.FromPoint(0.5);
         table.Borders.Color = OperationalPdfTheme.BorderColor;
         table.AddColumn(Unit.FromCentimeter(7.2));

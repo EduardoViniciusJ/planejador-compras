@@ -18,6 +18,7 @@ import { ModalDialogComponent } from '../../../../shared/ui/modal-dialog/modal-d
 import { AppIconComponent } from '../../../../shared/ui/app-icon/app-icon.component';
 import { MascotComponent } from '../../../../shared/ui/mascot/mascot.component';
 import { ShoppingItemBatchFormComponent } from '../../../shopping-items/components/shopping-item-batch-form/shopping-item-batch-form.component';
+import { ShoppingListItemsDialogComponent } from '../../../shopping-items/components/shopping-list-items-dialog/shopping-list-items-dialog.component';
 import { ShoppingItemService } from '../../../shopping-items/data-access/shopping-item.service';
 import { ShoppingItemRequestDto } from '../../../shopping-items/dtos/shopping-item.dto';
 import { ShoppingListReportFile } from '../../../reports/models/shopping-list-report-file.model';
@@ -69,6 +70,7 @@ const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
   imports: [
     ShoppingListFormComponent,
     ShoppingItemBatchFormComponent,
+    ShoppingListItemsDialogComponent,
     QuotationRequestFormComponent,
     ModalDialogComponent,
     AppIconComponent,
@@ -118,6 +120,7 @@ export class ShoppingListsPageComponent implements OnInit {
   protected readonly formError = signal<string | null>(null);
   protected readonly isSaving = signal(false);
   protected readonly itemList = signal<ShoppingList | null>(null);
+  protected readonly itemsDialogList = signal<ShoppingList | null>(null);
   protected readonly itemError = signal<string | null>(null);
   protected readonly isSavingItem = signal(false);
 
@@ -160,6 +163,11 @@ export class ShoppingListsPageComponent implements OnInit {
 
     if (this.itemList()) {
       this.closeItemForm();
+      return;
+    }
+
+    if (this.itemsDialogList()) {
+      this.closeItemsDialog();
       return;
     }
 
@@ -253,7 +261,16 @@ export class ShoppingListsPageComponent implements OnInit {
   }
 
   protected viewItems(list: ShoppingList): void {
-    this.openPriceMap(list);
+    this.feedbackMessage.set(null);
+    this.itemsDialogList.set(list);
+  }
+
+  protected closeItemsDialog(): void {
+    this.itemsDialogList.set(null);
+  }
+
+  protected refreshListOverview(): void {
+    this.loadOverview(false);
   }
 
   protected addItem(list: ShoppingList): void {

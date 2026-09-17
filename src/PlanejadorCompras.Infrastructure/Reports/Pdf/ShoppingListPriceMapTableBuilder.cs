@@ -1,6 +1,7 @@
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using PlanejadorCompras.Application.Features.Reports.Contracts;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
@@ -14,7 +15,8 @@ internal static class ShoppingListPriceMapTableBuilder
         var table = section.AddTable();
         table.Borders.Width = Unit.FromPoint(0.35);
         table.Borders.Color = ShoppingListPdfTheme.BorderBlue;
-        table.Format.Font.Size = Unit.FromPoint(7.2);
+        table.Format.Font.Name = ReportDesignSystem.FontFamily;
+        table.Format.Font.Size = Unit.FromPoint(ReportDesignSystem.TableFontSize);
         table.AddColumn(Unit.FromCentimeter(5.5));
         table.AddColumn(Unit.FromCentimeter(1.4));
         table.AddColumn(Unit.FromCentimeter(1.3));

@@ -3,7 +3,7 @@ import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { forkJoin, map, of, switchMap } from 'rxjs';
+import { finalize, forkJoin, map, of, switchMap } from 'rxjs';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -28,6 +28,7 @@ import {
   ShoppingListDetailItem,
 } from '../../../shopping-lists/models/shopping-list-detail.model';
 import { ShoppingList } from '../../../shopping-lists/models/shopping-list.model';
+import { SavedEqualizationService } from '../../../equalization-history/data-access/saved-equalization.service';
 import { SupplierFormComponent } from '../../../suppliers/components/supplier-form/supplier-form.component';
 import { SupplierService } from '../../../suppliers/data-access/supplier.service';
 import { SupplierRequestDto } from '../../../suppliers/dtos/supplier.dto';
@@ -96,6 +97,7 @@ export class PriceMapPageComponent implements OnInit {
   private readonly itemService = inject(ShoppingItemService);
   private readonly supplierService = inject(SupplierService);
   private readonly quoteService = inject(ItemQuoteService);
+  private readonly savedEqualizationService = inject(SavedEqualizationService);
 
   protected readonly listId = signal('');
   protected readonly lists = signal<readonly ShoppingList[]>([]);
@@ -220,6 +222,34 @@ export class PriceMapPageComponent implements OnInit {
     if (listId) this.rememberList(listId);
     else this.forgetRememberedList();
     void this.router.navigate(listId ? ['/app/price-map', listId] : ['/app/price-map']);
+  }
+
+  protected generateEqualization(): void {
+    const shoppingListId = this.listId();
+    if (!shoppingListId || this.isSaving()) {
+      return;
+    }
+
+    this.isSaving.set(true);
+    this.actionError.set(null);
+    this.savedEqualizationService
+      .save(shoppingListId, crypto.randomUUID())
+      .pipe(
+        finalize(() => this.isSaving.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (saved) => {
+          void this.router.navigate(['/app/equalizations', saved.id]);
+        },
+        error: (error: { error?: { errorCode?: string } }) => {
+          this.actionError.set(
+            error.error?.errorCode === 'equalization_without_prices'
+              ? 'A equalização precisa ter ao menos um preço para ser salva.'
+              : 'Não foi possível concluir e salvar a equalização. Tente novamente.',
+          );
+        },
+      });
   }
 
   protected retry(): void {

@@ -1,5 +1,6 @@
 using MigraDoc.DocumentObjectModel;
 using PlanejadorCompras.Application.Features.Reports.Contracts;
+using PlanejadorCompras.Infrastructure.Reports;
 
 namespace PlanejadorCompras.Infrastructure.Reports.Pdf;
 
@@ -14,12 +15,13 @@ internal static class ShoppingListPdfDocumentFactory
 
         var normalStyle = document.Styles[StyleNames.Normal]!;
         normalStyle.Font.Name = EmbeddedPdfFontResolver.FamilyName;
-        normalStyle.Font.Size = Unit.FromPoint(8.5);
+        normalStyle.Font.Size = Unit.FromPoint(ReportDesignSystem.BodyFontSize);
+        normalStyle.Font.Color = ShoppingListPdfTheme.TextColor;
         normalStyle.ParagraphFormat.SpaceAfter = Unit.FromPoint(2);
 
         var headingStyle = document.Styles[StyleNames.Heading1]!;
         headingStyle.Font.Name = EmbeddedPdfFontResolver.FamilyName;
-        headingStyle.Font.Size = Unit.FromPoint(13);
+        headingStyle.Font.Size = Unit.FromPoint(ReportDesignSystem.SectionFontSize);
         headingStyle.Font.Bold = true;
         headingStyle.Font.Color = ShoppingListPdfTheme.DarkBlue;
         headingStyle.ParagraphFormat.SpaceBefore = Unit.FromPoint(7);
@@ -36,8 +38,8 @@ internal static class ShoppingListPdfDocumentFactory
         section.PageSetup.Orientation = Orientation.Landscape;
         section.PageSetup.LeftMargin = Unit.FromCentimeter(1.2);
         section.PageSetup.RightMargin = Unit.FromCentimeter(1.2);
-        section.PageSetup.TopMargin = Unit.FromCentimeter(3.1);
-        section.PageSetup.BottomMargin = Unit.FromCentimeter(1.6);
+        section.PageSetup.TopMargin = Unit.FromCentimeter(2.8);
+        section.PageSetup.BottomMargin = Unit.FromCentimeter(1.5);
         section.PageSetup.HeaderDistance = Unit.FromCentimeter(0.6);
         section.PageSetup.FooterDistance = Unit.FromCentimeter(0.7);
         section.PageSetup.DifferentFirstPageHeaderFooter = false;

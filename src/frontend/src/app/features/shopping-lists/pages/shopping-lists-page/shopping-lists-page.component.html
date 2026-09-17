@@ -271,6 +271,14 @@
   </app-modal-dialog>
 }
 
+@if (itemsDialogList(); as list) {
+  <app-shopping-list-items-dialog
+    [list]="list"
+    (changed)="refreshListOverview()"
+    (closeRequested)="closeItemsDialog()"
+  />
+}
+
 @if (quotationRequestList(); as list) {
   <app-modal-dialog
     title="Solicitação de cotação"
